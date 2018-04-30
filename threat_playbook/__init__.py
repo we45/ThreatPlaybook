@@ -26,15 +26,15 @@ class CreateThreatModelPlaybook:
 
         entities_dir = os.path.join(os.getcwd(), "{0}/entities".format(self.proj_name))
         try:
-            entities_file = open(entities_dir + "entities_connections.yml", 'r')
+            entities_file = open(entities_dir + "/entities_connections.yml", 'r')
         except IOError:
-            entities_file = open(entities_dir + "entities_connections.yml", 'w')
+            entities_file = open(entities_dir + "/entities_connections.yml", 'w')
 
         stdir = os.path.join(os.getcwd(), "{0}/security_tests".format(self.proj_name))
         try:
-            entities_file = open(stdir + "security_tests.yml", 'r')
+            entities_file = open(stdir + "/security_tests.yml", 'r')
         except IOError:
-            entities_file = open(stdir + "security_tests.yml", 'w')
+            entities_file = open(stdir + "/security_tests.yml", 'w')
 
 
 def execute_from_command_line(argv=None):

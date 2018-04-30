@@ -1,5 +1,5 @@
 sql_injection_auto:
-  description: Use OWASP ZAP to test for SQL Injection
+  description: Use Automated Vulnerability Scanners to test for SQL Injection
   type: A
   tags: zap,burp,arachni
 
