@@ -1,1 +1,16 @@
 
+
+example/*.html
+example/*.xml
+example/*.json
+example/*.png
+example/*.txt
+example/*.mmd
+example/*.md
+results/
+tv/
+
+
+
+
+
