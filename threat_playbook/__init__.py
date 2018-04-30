@@ -4,12 +4,13 @@ import sys
 
 class CreateThreatModelPlaybook:
     def __init__(self, argv):
-        self.argv = argv or sys.argv[:]
+        self.argv = argv
         self.args = sys.argv[1:]
         if self.args:
             self.proj_name = self.args[0]
         else:
-            self.proj_name = self.argv
+            print('Warning : Please enter project name. Example: "threat-playbook ProjectName"')
+            sys.exit(0)
 
     def execute(self):
         list_of_directories = ['results', 'cases', 'entities', 'security_tests']
@@ -36,7 +37,7 @@ class CreateThreatModelPlaybook:
             entities_file = open(stdir + "security_tests.yml", 'w')
 
 
-def execute_from_command_line(argv):
+def execute_from_command_line(argv=None):
     utility = CreateThreatModelPlaybook(argv)
     utility.execute()
 
