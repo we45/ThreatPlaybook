@@ -9,8 +9,5 @@ example/*.mmd
 example/*.md
 results/
 tv/
-
-
-
-
-
+ThreatPlaybook.egg-info/*
+dist/*

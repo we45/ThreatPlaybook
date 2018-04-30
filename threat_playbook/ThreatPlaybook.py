@@ -147,23 +147,30 @@ class ThreatPlaybook(object):
                for ab_case,details in all_abuse_cases.items():
                    AbuseCase.objects(short_name = ab_case).update_one(short_name = ab_case, description = details['description'], project = self.project, upsert = True)
                    abuse_cases.append(AbuseCase.objects.get(short_name = ab_case).id)
-                   all_threat_models = details['threat_models']
+                   all_threat_models = details['threat_scenarios']
                    print all_threat_models
                    for model, mdeets in all_threat_models.items():
-                      if mdeets['dread'] == None:
-                          ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
-                                                                     project=self.project, cwe=mdeets['cwe'],
-                                                                     upsert=True)
-                      else:
-                          dread = list(map(int, mdeets['dread'].split(',')))
-                          ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
-                                                                     project=self.project, cwe=mdeets['cwe'],dread = dread,
-                                                                     upsert=True)
+                       if mdeets.has_key('cwe'):
+                           if "," in str(mdeets['cwe']):
+                               cwes = list(map(int, mdeets['cwe'].split(',')))
+                           else:
+                               cwes = [mdeets['cwe']]
+                       else:
+                           cwes = [0]
 
-                      mytm = ThreatModel.objects.get(name=model)
-                      threat_models.append(mytm.id)
+                       if mdeets['dread'] == None:
+                           ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
+                                                                     project=self.project, cwe=cwes,
+                                                                     upsert=True)
+                       else:
+                           dread = list(map(int, mdeets['dread'].split(',')))
+                           ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
+                                                                     project=self.project, cwe=cwes,dread = dread,
+                                                                     upsert=True)
+                       mytm = ThreatModel.objects.get(name=model)
+                       threat_models.append(mytm.id)
 
-                      if link_tests:
+                       if link_tests:
                           if not Path(test_path + "security_tests.yml").exists():
                               raise Exception("There are no security tests. Exiting.")
                           else:
@@ -190,16 +197,24 @@ class ThreatPlaybook(object):
 
                    AbuseCase.objects(short_name=ab_case).update_one(models=threat_models, upsert=True)
                UseCase.objects(short_name=use_case).update_one(models=threat_models, abuses=abuse_cases, upsert=True)
-           elif content[use_case].has_key('threat_models'):
-               for md, deets in content[use_case]['threat_models'].items():
+           elif content[use_case].has_key('threat_scenarios'):
+               for md, deets in content[use_case]['threat_scenarios'].items():
+                   if deets.has_key('cwe'):
+                       if "," in str(deets['cwe']):
+                           cwes = list(map(int, deets['cwe'].split(',')))
+                       else:
+                           cwes = [deets['cwe']]
+                   else:
+                       cwes = [0]
+
                    if deets['dread'] == None:
-                       ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
-                                                                  project=self.project, cwe=mdeets['cwe'],
+                       ThreatModel.objects(name=model).update_one(name=model, description=deets['description'],
+                                                                  project=self.project, cwe=cwes,
                                                                   upsert=True)
                    else:
-                       dread = list(map(int, mdeets['dread'].split(',')))
-                       ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
-                                                                  project=self.project, cwe=mdeets['cwe'], dread=dread,
+                       dread = list(map(int, deets['dread'].split(',')))
+                       ThreatModel.objects(name=model).update_one(name=model, description=deets['description'],
+                                                                  project=self.project, cwe=cwes, dread=dread,
                                                                   upsert=True)
                    mytm_2 = ThreatModel.objects.get(name=md)
                    threat_models.append(mytm_2.id)

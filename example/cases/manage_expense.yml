@@ -3,7 +3,7 @@ create_expense:
   abuse_cases:
     create excess approved expense:
       description: As a malicious user, I would create an expense that is beyond the budget of my project or pre-approve my expense, so I can have my manager approved expenses beyond the budget
-      threat_models:
+      threat_scenarios:
         sql injection expense limit bypass:
           description: Perform SQL Injection to compromise the Database, and raise project budget limits or bypass expense controls
           cwe: 89

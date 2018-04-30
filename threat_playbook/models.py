@@ -32,8 +32,6 @@ class TestCase(Document):
     case_type = StringField(max_length=10, choices = TEST_TYPES)
     tags = ListField()
 
-# class ThreatScenario(EmbeddedDocument):
-
 
 class ThreatModel(Document):
     name = StringField(max_length=200, required=True, unique = True)
@@ -41,7 +39,7 @@ class ThreatModel(Document):
     dread = ListField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     cases = ListField(ReferenceField(TestCase))
-    cwe = IntField()
+    cwe = ListField()
 
 class AbuseCase(Document):
     short_name = StringField(max_length=100, unique=True)
