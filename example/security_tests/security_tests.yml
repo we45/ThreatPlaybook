@@ -1,0 +1,140 @@
+sql_injection_auto:
+  description: Use OWASP ZAP to test for SQL Injection
+  type: A
+  tags: zap,burp,arachni
+
+template_injection_auto:
+  description: Check for Template Injection with Burp
+  type: A
+  tags: burp,tplmap
+
+sql_injection_manual:
+  description: Manual SQL Injection Tests
+  type: M
+  tags: zap,burp,arachni
+
+sql_injection_sqlmap:
+  description: Attempt to Exploit SQL Injection with SQLMap
+  type: A
+  tags: manual
+
+generic_error_messages:
+  description: Attempt to force generic Error Messages, especially 500 Errors
+  type: A
+  tags: zap,burp,arachni
+
+default_passwords:
+  description: Check for Default passwords for ZAP Fuzzer
+  type: A
+  tags: nmap,zap,burp,arachni
+
+bruteforce_login:
+  description: Check for weak passwords for ZAP Fuzzer
+  type: A
+  tags: zap,burp,arachni
+
+persistent_xss_zap:
+  description: check for persistent XSS with ZAP
+  type: A
+  tags: zap,burp,arachni
+
+persistent_xss_manual:
+  description: check for manual XSS persistent
+  type: M
+  tags: zap,burp,arachni
+
+reflected_xss_zap:
+  description: check for reflected XSS ZAP
+  type: A
+  tags: zap,burp,arachni
+
+reflected_xss_manual:
+  description: check for manual XSS reflected
+  type: M
+  tags: manual
+
+check_cors:
+  description: check for CORS configuration manually
+  type: M
+  tags: manual
+
+browser_security_headers:
+  description: check for security headers with ZAP
+  type: A
+  tags: zap,burp,arachni
+
+retirejs:
+  description: check for security dependency issues with RetireJS
+  type: A
+  tags: burp
+
+malicious_file_upload:
+  description: check manually for upload of files of all types and sizes
+  type: M
+  tags: manual
+
+xxe_manual:
+  description: check manually for XXE in File Upload Functionality
+  type: M
+  tags: manual
+
+xxe_auto:
+  description: check for XXE in file upload with ZAP
+  type: A
+  tags: zap,burp,arachni
+
+idor_manual:
+  description: check for IDOR Manually
+  type: M
+  tags: manual
+
+mass_assignment_manual:
+  description: attempt to tamper with params and manipulate JSON payloads with Mass Assignment
+  type: M
+  tags: manual
+
+database_hardening_check:
+  description: check database for low-priv users, authorization and hardening
+  type: A
+  tags: nessus,nmap
+
+log_management_checks:
+  description: check logs for exposed PII/sensitive data
+  type: M
+  type: manual
+
+system_hardening_checks:
+  description: run system hardening check tools to identify vulnerabilities
+  type: A
+  tags: nessus,nmap
+
+network_segmentation_checks:
+  description: check for network segmentation
+  type: A
+  tags: nessus,nmap
+
+nmap_all_tcp_ports:
+  description: run nmap against all tcp ports
+  type: R
+  tags: nessus,nmap
+
+nmap_vulnerability_scan:
+  description: run nmap with nse and vuln_discovery
+  type: A
+  tags: nmap
+
+brute_directories:
+  description: bruteforce directories with tools
+  type: A
+  tags: wfuzz
+
+ssl_checks:
+  description: tests against SSL with SSLLabs.com, Burp and Zap
+  type: A
+  tags: burp,zap,ssllab
+
+csrf_manual:
+  description: test for CSRF against application, manually
+  type: M
+  tags: manual
+

@@ -1,0 +1,38 @@
+login_user:
+  description: |
+    As an employee of the organization,
+    I would like to login to the Expense Management application to submit and upload expense information
+  abuse_cases:
+    external_attacker_account_takeover:
+      description: As an external attacker, I would compromise a single/multiple user accounts to gain access to sensitive corporate information, like expenses
+      threat_models:
+        sql injection user account access:
+          description: External Attacker may be able to gain access to user accounts by successfully performing SQL Injection Attacks against some of the unauthenticated pages in the application
+          dread: 9,9,9,9,7
+          cwe: 89
+          cases:
+            - sql_injection_auto
+            - sql_injection_manual
+            - sql_injection_sqlmap
+            - generic_error_messages
+        end user weak password:
+          description: External attacker may be able to bypass user authentication by compromising weak passwords of users
+          dread: 5,10,10,4,9
+          cwe: 521
+          cases:
+            - default_passwords
+            - bruteforce_login
+        end user default password:
+          description: External attacker may be able to bypass user authentication by compromising default passwords of users
+          dread: 9,10,10,8,9
+          cwe: 284
+          cases:
+            - default_passwords
+        auth token hijacking mitm:
+          description: Attacker attempts to compromise auth token by gaining access to the end user's auth token by performing Man in the Middle Attacks
+          dread: 7,10,10,5,10
+          cwe: 295
+          cases:
+            - ssl_checks
+
+
