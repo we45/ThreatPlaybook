@@ -27,62 +27,62 @@ ${REPORT_AUTHOR}  Abhay Bhargav
 ${SCANPOLICY}  Light
 
 *** Test Cases ***
-Manage Entities
-    load entity file
-    find or create entities
-    find or connect entities
-
-load_test_cases
-    process test cases
-
-generate threat models
-    find or load cases from directory  link_tests=True
-
-Create Targets
-    find or create target  ${TARGET_NAME}  ${TARGET_URI}
-
-
-Port Scan and Service Enumeration
-    nmap default scan  ${TARGET_HOST}  file_export=${RESULTS_PATH}/flask.txt
-    nmap print results
-    create and link recon  nmap  ${TARGET_NAME}  tags=nmap,
-
-#Bruteforcing Directories
-#    [Timeout]  15 seconds
-#    brute_directories  http://${TARGET_URI}/FUZZ  concur=3  file_name=${RESULTS_PATH}/${WFUZZ_FILE}
-#    create and link recon  wfuzz  ${TARGET_NAME}  file_name=${RESULTS_PATH}/${WFUZZ_FILE}  tags=wfuzz,
+#Manage Entities
+#    load entity file
+#    find or create entities
+#    find or connect entities
 #
-Initialize ZAP
-    [Tags]  zap_init
-    start gui zap  ${ZAP_PATH}
-    sleep  10
-    zap open url  http://${TARGET_URI}
-
-WebService Walk Operations
-    Authenticate to Web Service ZAP
-    Get Customer by ID
-    Post Customer By ID
-    Search Customer by Username
-
-ZAP Contextualize
-    [Tags]  zap_context
-    ${contextid}=  zap define context  ${CONTEXT}  http://${TARGET_URI}
-    set suite variable  ${CONTEXT_ID}  ${contextid}
-
-ZAP Active Scan
-    [Tags]  zap_scan
-    ${scan_id}=  zap start ascan  ${CONTEXT_ID}  http://${TARGET_URI}  ${SCANPOLICY}
-    set suite variable  ${SCAN_ID}  ${scan_id}
-    zap scan status  ${scan_id}
-
-ZAP Generate Report
-    [Tags]  zap_generate_report
-    zap export report  ${RESULTS_PATH}/${ZAP_REPORT_FILE}  ${REPORT_FORMAT}  ${REPORT_TITLE}  ${REPORT_AUTHOR}
-
-ZAP Die
-    [Tags]  zap_kill
-    zap shutdown
-    sleep  3
+#load_test_cases
+#    process test cases
+#
+#generate threat models
+#    find or load cases from directory  link_tests=True
+#
+#Create Targets
+#    find or create target  ${TARGET_NAME}  ${TARGET_URI}
+#
+#
+#Port Scan and Service Enumeration
+#    nmap default scan  ${TARGET_HOST}  file_export=${RESULTS_PATH}/flask.txt
+#    nmap print results
+#    create and link recon  nmap  ${TARGET_NAME}  tags=nmap,
+#
+##Bruteforcing Directories
+##    [Timeout]  15 seconds
+##    brute_directories  http://${TARGET_URI}/FUZZ  concur=3  file_name=${RESULTS_PATH}/${WFUZZ_FILE}
+##    create and link recon  wfuzz  ${TARGET_NAME}  file_name=${RESULTS_PATH}/${WFUZZ_FILE}  tags=wfuzz,
+##
+#Initialize ZAP
+#    [Tags]  zap_init
+#    start gui zap  ${ZAP_PATH}
+#    sleep  10
+#    zap open url  http://${TARGET_URI}
+#
+#WebService Walk Operations
+#    Authenticate to Web Service ZAP
+#    Get Customer by ID
+#    Post Customer By ID
+#    Search Customer by Username
+#
+#ZAP Contextualize
+#    [Tags]  zap_context
+#    ${contextid}=  zap define context  ${CONTEXT}  http://${TARGET_URI}
+#    set suite variable  ${CONTEXT_ID}  ${contextid}
+#
+#ZAP Active Scan
+#    [Tags]  zap_scan
+#    ${scan_id}=  zap start ascan  ${CONTEXT_ID}  http://${TARGET_URI}  ${SCANPOLICY}
+#    set suite variable  ${SCAN_ID}  ${scan_id}
+#    zap scan status  ${scan_id}
+#
+#ZAP Generate Report
+#    [Tags]  zap_generate_report
+#    zap export report  ${RESULTS_PATH}/${ZAP_REPORT_FILE}  ${REPORT_FORMAT}  ${REPORT_TITLE}  ${REPORT_AUTHOR}
+#
+#ZAP Die
+#    [Tags]  zap_kill
+#    zap shutdown
+#    sleep  3
 
 Write ZAP Results to DB
     parse zap json  ${RESULTS_PATH}/${ZAP_REPORT_FILE}  ${TARGET_NAME}

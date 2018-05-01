@@ -6,7 +6,8 @@ create_expense:
       threat_scenarios:
         sql injection expense limit bypass:
           description: Perform SQL Injection to compromise the Database, and raise project budget limits or bypass expense controls
-          cwe: 89
+          cwe:
+            - 89
           dread: 9,9,9,9,7
           cases:
             - sql_injection_auto
@@ -14,14 +15,16 @@ create_expense:
             - generic_error_messages
         compromise manager password:
           description: Compromise my manager's password and increase budgets to create expenses with larger amounts
-          cwe: 287
+          cwe:
+            - 287
           dread: 6,8,9,5,9
           cases:
             - default_passwords
             - bruteforce_login
         compromise manager auth token:
           description: Attempt to steal manager's authentication token through XSS to elevate privileges to manager's account and increase project expense budgets
-          cwe: 287
+          cwe:
+            - 287
           dread: 7,8,6,7,9
           cases:
             - persistent_xss_auto
@@ -33,7 +36,8 @@ create_expense:
             - retirejs
         csrf manager:
           description: Attempt to perform a CSRF attack against the manager (Social Engineering), to force the manager to generate an approval request on your expense
-          cwe: 352
+          cwe:
+            - 352
           dread: 7,5,7,6,10
           cases:
             - csrf_token_auto

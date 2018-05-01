@@ -9,15 +9,16 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='0.8',
-    packages=['threat_playbook'],
+    version='0.92',
+    packages=[''],
+    package_dir={'': 'threat_playbook'},
     entry_points={
         'console_scripts': [
             'threat-playbook = threat_playbook:execute_from_command_line'
         ]
     },
     url='https://we45.gitbook.io/threatplaybook/',
-    license='MIT',
+    license='LGPL',
     author='we45',
     author_email='info@we45.com',
     install_requires=[

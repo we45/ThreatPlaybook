@@ -89,7 +89,7 @@ class ThreatPlaybook(object):
             st = Entity.objects.get(short = econn[0])
             end = Entity.objects.get(short = econn[1])
             if len(econn) == 3:
-                EntityMapping.objects(start = st.id, end = end.id, link_text = econn[2], project = self.project).update_one(start = st, end = end, link_text = econn[2], project = self.project, session = self.session, upsert=True)
+                EntityMapping.objects(start = st.id, end = end.id, link_text = econn[2], project = self.project).update_one(start = st, end = end, link_text = econn[2], project = self.project, upsert=True)
             elif len(econn) == 4:
                 EntityMapping.objects(start=st.id, end=end.id, link_text=econn[2], subgraph = econn[3], project=self.project).update_one(start=st,end=end,link_text=econn[2],subgraph = econn[3], project=self.project, upsert=True)
 
@@ -208,12 +208,12 @@ class ThreatPlaybook(object):
                        cwes = [0]
 
                    if deets['dread'] == None:
-                       ThreatModel.objects(name=model).update_one(name=model, description=deets['description'],
+                       ThreatModel.objects(name=md).update_one(name=md, description=deets['description'],
                                                                   project=self.project, cwe=cwes,
                                                                   upsert=True)
                    else:
                        dread = list(map(int, deets['dread'].split(',')))
-                       ThreatModel.objects(name=model).update_one(name=model, description=deets['description'],
+                       ThreatModel.objects(name=md).update_one(name=md, description=deets['description'],
                                                                   project=self.project, cwe=cwes, dread=dread,
                                                                   upsert=True)
                    mytm_2 = ThreatModel.objects.get(name=md)
@@ -333,6 +333,11 @@ class ThreatPlaybook(object):
         call("mmdc -i {0} -o {1} -b transparent".format(result_path + 'process_diagram.mmd', diagram_file), shell=True)
         return diagram_file
 
+
+    def average_dread(self, dread_list):
+        return sum(dread_list) / len(dread_list)
+
+
     def write_markdown_report(self):
         '''
         Writes a Markdown Report in the results directory of CWD by default
@@ -346,27 +351,79 @@ class ThreatPlaybook(object):
             mdfile.write('### Process Flow Diagram\n')
             diagram_file = self.generate_mermaid_diagram()
             mdfile.write("![Flow Diagram]({0})\n".format(diagram_file))
-            ## Threat Models
-            mdfile.write("## User Story to Threat Model Mapping\n")
-            all_uses = UseCase.objects(project = self.project)
-            for use in all_uses:
-                mdfile.write("### {0}\n".format(use.short_name))
-                mdfile.write(use.description + "\n")
-                mdfile.write("#### Abuse Cases\n")
-                mdfile.write("\n")
 
-                for single_abuse in use.abuses:
-                    mdfile.write("##### " + single_abuse.description + "\n")
-                    if single_abuse.models:
-                        for model in single_abuse.models:
-                            if model.dread:
-                                mdfile.write("* {0}, DREAD: {1}\n".format(model.description, ", ".join(str(d) for d in model.dread)))
-                            else:
-                                mdfile.write("* {0}\n".format(model.description))
+            # Threat Model to Test Case Mapping
+            ## Threat Models
+            mdfile.write("## Threat Models\n")
+            all_uses = UseCase.objects(project=self.project)
+            for use in all_uses:
+                mdfile.write("### Functionality: {0}\n".format(use.short_name))
+                mdfile.write(use.description + "\n")
+                if use.abuses:
+                    mdfile.write("#### Abuse Cases\n")
+                    mdfile.write("\n")
+
+                    for single_abuse in use.abuses:
+                        mdfile.write("##### " + single_abuse.description + "\n")
+                        if single_abuse.models:
+                            for model in single_abuse.models:
+                                if model.dread:
+                                    avg_dread = self.average_dread(model.dread) or 0
+                                    mdfile.write("**{0}, DREAD: {1}**\n".format(model.description, avg_dread))
+                                else:
+                                    mdfile.write("**{0}**\n".format(model.description))
+
+                                if model.cases:
+                                    mdfile.write("##### Test Cases\n")
+                                    mdfile.write("| Description | type | tags |\n")
+                                    mdfile.write("|----------|:----------:|:--------:|\n")
+                                    for test_case in model.cases:
+                                        if test_case.case_type == 'A':
+                                            case_type = "Automated Test"
+                                        elif test_case.case_type == 'M':
+                                            case_type = "Manual Test"
+                                        else:
+                                            case_type = "Recon"
+
+                                        mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
+                                                                                    ','.join(test_case.tags)))
+
+                        mdfile.write("\n")
+                        mdfile.write("\n")
+
+                    mdfile.write("\n")
+                if not use.abuses and use.models:
+                    for use_model in use.models:
+                        if use_model.dread:
+                            avg_dread = self.average_dread(use_model.dread)
+                            mdfile.write("**{0}, DREAD: {1}**\n".format(use_model.description, avg_dread))
+                            mdfile.write("\n")
+                        else:
+                            mdfile.write("**{0}**\n".format(use_model.description))
+                            mdfile.write("\n")
+
+                        if use_model.cases:
+                            mdfile.write("##### Test Cases\n")
+                            mdfile.write("| Description | type | tags |\n")
+                            mdfile.write("|----------|:----------:|:--------:|\n")
+                            for test_case in use_model.cases:
+                                if test_case.case_type == 'A':
+                                    case_type = "Automated Test"
+                                elif test_case.case_type == 'M':
+                                    case_type = "Manual Test"
+                                else:
+                                    case_type = "Recon"
+
+                                mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
+                                                                            ','.join(test_case.tags)))
+                        mdfile.write("\n")
+                        mdfile.write("\n")
+
+                    mdfile.write("\n")
                     mdfile.write("\n")
 
             ## Vulnerabilities
-            mdfile.write("## Vulnerability - Information\n")
+            mdfile.write("## Vulnerabilities\n")
             mdfile.write("\n")
             all_vuls = Vulnerability.objects(session = self.session)
             for vul in all_vuls:
@@ -412,6 +469,10 @@ class ThreatPlaybook(object):
                             param = ""
 
                         mdfile.write("| {0} | {1} | {2}, {3} |\n".format(single_evidence.url, param, other_info, attack))
+
+
+
+
 
 
 
