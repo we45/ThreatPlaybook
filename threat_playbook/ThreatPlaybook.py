@@ -8,8 +8,9 @@ from mongoengine import *
 from sys import exit
 from glob import glob
 from pathlib import Path
-from utils import parse_zap_json_file
+from utils import parse_zap_json_file, manage_recon_results
 from subprocess import call
+import textwrap
 
 class ThreatPlaybook(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -271,12 +272,7 @@ class ThreatPlaybook(object):
         recon = Recon()
         recon.tool = tool
         if file_name:
-            logger.warn("In File Loop")
-            with open(file_name, 'r') as result_file:
-                results = b64encode(result_file.read())
-
-            logger.warn(results)
-            recon.result = results
+            recon.result = file_name
         else:
             logger.warn("there's no file. There will be no results stored from your recon results")
 
@@ -328,14 +324,76 @@ class ThreatPlaybook(object):
             for single in all_mappings:
                 mmd.write("\t{0}({1})-->|{2}|{3}({4})\n".format(single.start.short, single.start.caption, single.link_text, single.end.short, single.end.caption))
 
-        diagram_file = result_path + "diagram.png"
+        diagram_file = result_path + "diagram.svg"
 
-        call("mmdc -i {0} -o {1} -b transparent".format(result_path + 'process_diagram.mmd', diagram_file), shell=True)
+        call("mmdc -i {0} -o {1} -b transparent -w 1024 -H 768".format(result_path + 'process_diagram.mmd', diagram_file), shell=True)
         return diagram_file
 
 
     def average_dread(self, dread_list):
         return sum(dread_list) / len(dread_list)
+
+    def generate_threat_maps(self):
+        result_path = os.path.join(os.getcwd(), "results/")
+
+        if not os.path.exists(result_path + "threat_maps/"):
+            os.makedirs(result_path + "threat_maps")
+
+        map_file_path = os.path.join(result_path, "threat_maps/")
+
+        all_uses = UseCase.objects(project=self.project)
+        for use in all_uses:
+            user_story_file = "{0}.mmd".format(use.short_name.replace(" ",""))
+            with open(map_file_path + user_story_file, "w") as mdfile:
+                mdfile.write("graph LR\n")
+                use_name = use.short_name.replace(" ", "_")
+                break_use_description = textwrap.fill(use.description, 30)
+                break_use_description = break_use_description.replace("\n", "<br />")
+                if use.abuses:
+                    for single_abuse in use.abuses:
+                        abuse_desc = textwrap.fill(single_abuse.description, 30)
+                        abuse_desc = abuse_desc.replace("\n", "<br />")
+                        abuse_name = single_abuse.short_name.replace(" ", "_")
+                        mdfile.write("\t{0}[{1}]-->{2}[{3}]\n".format(use_name, break_use_description, abuse_name, abuse_desc))
+                        if single_abuse.models:
+                            for model in single_abuse.models:
+                                model_name = model.name.replace(" ", "_")
+                                model_desc = textwrap.fill(model.description, 30)
+                                model_desc = model_desc.replace("\n", "<br />")
+                                mdfile.write("\t{0}[{1}]-->{2}[{3}]\n".format(abuse_name, abuse_desc,
+                                                                              model_name, model_desc))
+                                if model.cases:
+                                    for test_case in model.cases:
+                                        test_name = test_case.short_name.replace(" ", "_")
+                                        test_desc = textwrap.fill(test_case.description, 30)
+                                        test_desc = test_desc.replace("\n", "<br />")
+                                        mdfile.write(
+                                            "\t{0}[{1}]-->{2}[{3}]\n".format(model_name, model_desc,
+                                                                             test_name, test_desc))
+
+
+
+                if not use.abuses and use.models:
+                    for use_model in use.models:
+                        umodel_name = use_model.name.replace(" ", "_")
+                        umodel_desc = textwrap.fill(use_model.description, 30)
+                        umodel_desc = umodel_desc.replace("\n", "<br />")
+                        mdfile.write("\t{0}[{1}]-->{2}[{3}]\n".format(use_name, break_use_description,
+                                                                      umodel_name, umodel_desc))
+                        if use_model.cases:
+                            for u_test_case in use_model.cases:
+                                utest_desc = textwrap.fill(u_test_case.description, 30)
+                                u_test_case = utest_desc.replace("\n", "<br />")
+                                mdfile.write(
+                                    "\t{0}[{1}]-->{2}[{3}]\n".format(use_model.name, umodel_desc,
+                                                                     u_test_case.short_name.replace(" ", "_"), u_test_case))
+
+            user_story_diagram = "{0}.png".format(use.short_name.replace(" ", ""))
+            diagram_file = map_file_path + user_story_diagram
+
+            call("mmdc -i {0} -o {1} -b transparent -w 1024 -H 768".format(map_file_path + user_story_file,
+                                                                           diagram_file), shell=True)
+
 
 
     def write_markdown_report(self):
@@ -469,6 +527,34 @@ class ThreatPlaybook(object):
                             param = ""
 
                         mdfile.write("| {0} | {1} | {2}, {3} |\n".format(single_evidence.url, param, other_info, attack))
+
+            # Recon
+            # if write_recon == True:
+            mdfile.write("## Reconnaissance\n")
+            mdfile.write("\n")
+            all_recons = Recon.objects(session = self.session)
+            if all_recons:
+                for single_recon in all_recons:
+                    mdfile.write("### Reconnaissance Tool: {0}\n".format(single_recon.tool))
+                    if single_recon.cases:
+                        mdfile.write("#### Linked Test Cases\n")
+                        for single_case in single_recon.cases:
+                            mdfile.write("* {0} - {1}\n".format(single_case.short_name, single_case.description))
+                        mdfile.write("\n")
+
+                    mdfile.write("#### Target: {0}\n".format(single_recon.target.name))
+                    mdfile.write("\n")
+                    if single_recon.result and single_recon.tool == 'nmap':
+                        recon_text_string = manage_recon_results(single_recon.result,single_recon.tool)
+                        mdfile.write("```\n")
+                        mdfile.write("\n")
+                        mdfile.write(recon_text_string)
+                        mdfile.write("\n")
+                        mdfile.write("```\n")
+
+
+
+
 
 
 

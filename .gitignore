@@ -1,5 +1,3 @@
-
-
 example/*.html
 example/*.xml
 example/*.json
@@ -11,3 +9,6 @@ results/
 tv/
 ThreatPlaybook.egg-info/*
 dist/*
+threat_playbook/ThreatPlaybook.egg-info/dependency_links.txt
+threat_playbook/ThreatPlaybook.egg-info/entry_points.txt
+threat_playbook/ThreatPlaybook.egg-info/PKG-INFO

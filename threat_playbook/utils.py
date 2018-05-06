@@ -59,6 +59,17 @@ def parse_zap_json_file(zap_file, target, session):
 
 
 
+def manage_recon_results(recon_file, tool):
+    content = ""
+    if tool == 'nmap':
+        with open(recon_file, 'r') as nmapfile:
+            content = nmapfile.read()
+    elif tool == "wfuzz":
+        with open(recon_file, 'r') as wfuzzfile:
+            wfuzz_dict = json.loads(wfuzzfile.read())
+        if isinstance(wfuzz_dict, list):
+            for single in wfuzz_dict:
+                content += "{0} - {1}\n".format(single['code'], single['url'])
 
-
+    return content
 

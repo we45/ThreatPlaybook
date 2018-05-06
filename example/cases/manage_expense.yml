@@ -35,7 +35,7 @@ create_expense:
             - browser_security_headers
             - retirejs
         csrf manager:
-          description: Attempt to perform a CSRF attack against the manager (Social Engineering), to force the manager to generate an approval request on your expense
+          description: Attempt to perform a CSRF Social Engineering attack against the manager to force the manager to generate an approval request on your expense
           cwe:
             - 352
           dread: 7,5,7,6,10
