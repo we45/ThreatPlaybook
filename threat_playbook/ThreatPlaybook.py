@@ -30,6 +30,8 @@ class ThreatPlaybook(object):
 
         All these params have to be set if the default_connection is initialized with `False`
 
+        | ThreatPlaybook  | project_name | default_connection=True/False |
+
         '''
 
         try:
@@ -60,7 +62,9 @@ class ThreatPlaybook(object):
         You can specify a custom path by setting the file_path param with an absolute path + filename
 
         :param filepath: optional
-        :return:
+
+        | load entity file  | filepath (optional) |
+
         '''
         if not filepath:
             filepath = os.path.join(os.getcwd(), "entities/entities_connections.yml")
@@ -74,7 +78,8 @@ class ThreatPlaybook(object):
     def find_or_create_entities(self):
         '''
         Find or Create Entities. Does not duplicate entities, unless they have changed in someway from a previous occasion
-        :return:
+
+        | find or create entities  |
         '''
         if isinstance(self.entity_info, dict):
             for short, deets in self.entity_info['entities'].iteritems():
@@ -84,7 +89,8 @@ class ThreatPlaybook(object):
     def find_or_connect_entities(self):
         '''
         Finds or Connect Entities. Does not duplicate entities, unless they have changed in someway from a previous occasion
-        :return:
+        | find or connect entities |
+
         '''
         for econn in self.entity_info['connections']:
             st = Entity.objects.get(short = econn[0])
@@ -100,8 +106,10 @@ class ThreatPlaybook(object):
         Processes all test cases in default security_tests directory. If you want to specify a custom location,
         you need to provide a absolute path to yaml files with security_tests
 
-        :param test_path:
-        :return:
+        :param test_path: optional
+
+        | process test cases | test_path (optional |
+
         '''
         if test_path == None:
             test_path = os.path.join(os.getcwd(), "security_tests/")
@@ -126,7 +134,9 @@ class ThreatPlaybook(object):
        :param link_tests: optional params. Set to false. If enabled, all the test cases linked to threat model wiill be associated with said model
        :param case_path: default is current working directory + cases. You can change if you want
        :param test_path: default is current working directory + security_tests. You can change if you want
-       :return:
+
+       | find or load cases from directory  | link_tests (optional)  | case_path (optional)  | test_path (optional)
+
        '''
        if case_path == None:
            case_path = os.path.join(os.getcwd(), "cases/")
@@ -254,7 +264,9 @@ class ThreatPlaybook(object):
         Creates a target for security testing
         :param name: this needs to be unique
         :param uri: any URI
-        :return:
+
+        | find or create target  | name  | uri  |
+
         '''
         Target.objects(name = name).update_one(name = name, url = uri, project = self.project, upsert = True)
         # my_target = Target.objects.get(name = name)
@@ -267,7 +279,9 @@ class ThreatPlaybook(object):
         :param target_name: target name, should be already loaded as a target. Name is unique
         :param file_name: file name of the recon results. This is optional
         :param tags: tags of the tool to link by. This will query the tags with the test cases and link the recon to the specific test case.
-        :return:
+
+        | create and link recon  | tool  | target_name  | file_name (optional)  | tags (optional)  |
+
         '''
         recon = Recon()
         recon.tool = tool
@@ -303,7 +317,9 @@ class ThreatPlaybook(object):
         will parse a ZAP JSON file and load  into the DB as vulnerabilities. The Vulnerabilities link with the Threat Models by CWE
         :param zap_file:
         :param target_name:
-        :return:
+
+        | parse zap json  | zap_file  | target_name  |
+
         '''
         if not target_name:
             raise Exception("No target name specified. Exiting...")
@@ -315,7 +331,8 @@ class ThreatPlaybook(object):
     def generate_mermaid_diagram(self):
         '''
         Generates the process flow diagram based on entities and connections already loaded
-        :return:
+        This is not directly a keyword
+
         '''
         result_path = os.path.join(os.getcwd(), "results/")
         with open(result_path + "process_diagram.mmd", 'w') as mmd:
@@ -334,6 +351,12 @@ class ThreatPlaybook(object):
         return sum(dread_list) / len(dread_list)
 
     def generate_threat_maps(self):
+        '''
+        Generates Threat Maps to the threat maps directory within results. Will create it if not already there
+
+        | generate threat maps |
+
+        '''
         result_path = os.path.join(os.getcwd(), "results/")
 
         if not os.path.exists(result_path + "threat_maps/"):
