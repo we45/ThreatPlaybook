@@ -9,9 +9,8 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='0.94',
-    packages=[''],
-    package_dir={'': 'threat_playbook'},
+    version='0.95',
+    packages=['threat_playbook'],
     entry_points={
         'console_scripts': [
             'threat-playbook = threat_playbook:execute_from_command_line'
