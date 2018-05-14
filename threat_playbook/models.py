@@ -35,8 +35,9 @@ class TestCase(Document):
 
 class ThreatModel(Document):
     name = StringField(max_length=200, required=True, unique = True)
-    description = StringField()
-    dread = ListField()
+    description = StringField(required = True)
+    #dread = ListField()
+    severity = IntField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     cases = ListField(ReferenceField(TestCase))
     cwe = ListField()

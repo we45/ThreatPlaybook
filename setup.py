@@ -18,7 +18,7 @@ setup(
         ]
     },
     url='https://we45.gitbook.io/threatplaybook/',
-    license='LGPL',
+    license='GPL',
     author='we45',
     author_email='info@we45.com',
     install_requires=[

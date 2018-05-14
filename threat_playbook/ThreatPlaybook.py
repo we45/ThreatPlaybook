@@ -169,14 +169,14 @@ class ThreatPlaybook(object):
                        else:
                            cwes = [0]
 
-                       if mdeets['dread'] == None:
+                       if not mdeets.has_key('severity'):
                            ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
                                                                      project=self.project, cwe=cwes,
                                                                      upsert=True)
                        else:
-                           dread = list(map(int, mdeets['dread'].split(',')))
+                           severity = mdeets['severity']
                            ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
-                                                                     project=self.project, cwe=cwes,dread = dread,
+                                                                     project=self.project, cwe=cwes,severity = severity,
                                                                      upsert=True)
                        mytm = ThreatModel.objects.get(name=model)
                        threat_models.append(mytm.id)
@@ -218,14 +218,14 @@ class ThreatPlaybook(object):
                    else:
                        cwes = [0]
 
-                   if deets['dread'] == None:
+                   if not deets.has_key('severity'):
                        ThreatModel.objects(name=md).update_one(name=md, description=deets['description'],
                                                                   project=self.project, cwe=cwes,
                                                                   upsert=True)
                    else:
-                       dread = list(map(int, deets['dread'].split(',')))
+                       severity = deets['severity']
                        ThreatModel.objects(name=md).update_one(name=md, description=deets['description'],
-                                                                  project=self.project, cwe=cwes, dread=dread,
+                                                                  project=self.project, cwe=cwes, severity=severity,
                                                                   upsert=True)
                    mytm_2 = ThreatModel.objects.get(name=md)
                    threat_models.append(mytm_2.id)
@@ -347,8 +347,8 @@ class ThreatPlaybook(object):
         return diagram_file
 
 
-    def average_dread(self, dread_list):
-        return sum(dread_list) / len(dread_list)
+    # def average_dread(self, dread_list):
+    #     return sum(dread_list) / len(dread_list)
 
     def generate_threat_maps(self):
         '''
@@ -448,9 +448,16 @@ class ThreatPlaybook(object):
                         mdfile.write("##### " + single_abuse.description + "\n")
                         if single_abuse.models:
                             for model in single_abuse.models:
-                                if model.dread:
-                                    avg_dread = self.average_dread(model.dread) or 0
-                                    mdfile.write("**{0}, DREAD: {1}**\n".format(model.description, avg_dread))
+                                if model.severity:
+                                    if model.severity == 3:
+                                        str_severity = "High"
+                                    elif model.severity == 2:
+                                        str_severity = "Medium"
+                                    elif model.severity == 1:
+                                        str_severity = "Low"
+                                    else:
+                                        str_severity = "Informational"
+                                    mdfile.write("**{0}, Severity: {1}**\n".format(model.description, str_severity))
                                 else:
                                     mdfile.write("**{0}**\n".format(model.description))
 
@@ -475,9 +482,16 @@ class ThreatPlaybook(object):
                     mdfile.write("\n")
                 if not use.abuses and use.models:
                     for use_model in use.models:
-                        if use_model.dread:
-                            avg_dread = self.average_dread(use_model.dread)
-                            mdfile.write("**{0}, DREAD: {1}**\n".format(use_model.description, avg_dread))
+                        if use_model.severity:
+                            if use_model.severity == 3:
+                                str_severity = "High"
+                            elif use_model.severity == 2:
+                                str_severity = "Medium"
+                            elif use_model.severity == 1:
+                                str_severity = "Low"
+                            else:
+                                str_severity = "Informational"
+                            mdfile.write("**{0}, Severity: {1}**\n".format(use_model.description, str_severity))
                             mdfile.write("\n")
                         else:
                             mdfile.write("**{0}**\n".format(use_model.description))
@@ -522,7 +536,7 @@ class ThreatPlaybook(object):
                 if vul.models:
                     mdfile.write("### Linked Threat Models\n")
                     for single_model in vul.models:
-                        mdfile.write("* {0}\n".format(single_model.name))
+                        mdfile.write("* {0}\n".format(single_model.description))
                     mdfile.write("\n")
                 mdfile.write("#### Description\n")
                 mdfile.write(vul.description + "\n")
