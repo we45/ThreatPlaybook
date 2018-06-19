@@ -15,3 +15,5 @@ threat_playbook/ThreatPlaybook.egg-info/PKG-INFO
 threat_playbook/ThreatPlaybook.egg-info/requires.txt
 threat_playbook/ThreatPlaybook.egg-info/SOURCES.txt
 threat_playbook/ThreatPlaybook.egg-info/top_level.txt
+venv3/*
+threat_playbook/*.bak

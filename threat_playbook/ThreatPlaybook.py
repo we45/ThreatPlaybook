@@ -1,14 +1,16 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import os
 from robot.api import logger
 import yaml
 import json
 from base64 import b64encode
-from models import *
+from .models import *
 from mongoengine import *
 from sys import exit
 from glob import glob
 from pathlib import Path
-from utils import parse_zap_json_file, manage_recon_results
+from .utils import parse_zap_json_file, manage_recon_results
 from subprocess import call
 import textwrap
 
@@ -120,7 +122,7 @@ class ThreatPlaybook(object):
         content = yaml.load(testval)
         if isinstance(content, dict):
             for case, deets in content.items():
-                if deets.has_key('tags'):
+                if 'tags' in deets:
                     tags = deets['tags'].split(',')
                 else:
                     tags = []
@@ -153,15 +155,15 @@ class ThreatPlaybook(object):
            abuse_cases = []
            threat_models = []
            UseCase.objects(short_name = use_case).update_one(short_name = use_case, description = content[use_case]['description'], project = self.project, upsert = True)
-           if content[use_case].has_key('abuse_cases'):
+           if 'abuse_cases' in content[use_case]:
                all_abuse_cases = content[use_case]['abuse_cases']
                for ab_case,details in all_abuse_cases.items():
                    AbuseCase.objects(short_name = ab_case).update_one(short_name = ab_case, description = details['description'], project = self.project, upsert = True)
                    abuse_cases.append(AbuseCase.objects.get(short_name = ab_case).id)
                    all_threat_models = details['threat_scenarios']
-                   print all_threat_models
+                   print(all_threat_models)
                    for model, mdeets in all_threat_models.items():
-                       if mdeets.has_key('cwe'):
+                       if 'cwe' in mdeets:
                            if "," in str(mdeets['cwe']):
                                cwes = list(map(int, mdeets['cwe'].split(',')))
                            else:
@@ -169,7 +171,7 @@ class ThreatPlaybook(object):
                        else:
                            cwes = [0]
 
-                       if not mdeets.has_key('severity'):
+                       if 'severity' not in mdeets:
                            ThreatModel.objects(name=model).update_one(name=model, description=mdeets['description'],
                                                                      project=self.project, cwe=cwes,
                                                                      upsert=True)
@@ -208,9 +210,9 @@ class ThreatPlaybook(object):
 
                    AbuseCase.objects(short_name=ab_case).update_one(models=threat_models, upsert=True)
                UseCase.objects(short_name=use_case).update_one(models=threat_models, abuses=abuse_cases, upsert=True)
-           elif content[use_case].has_key('threat_scenarios'):
+           elif 'threat_scenarios' in content[use_case]:
                for md, deets in content[use_case]['threat_scenarios'].items():
-                   if deets.has_key('cwe'):
+                   if 'cwe' in deets:
                        if "," in str(deets['cwe']):
                            cwes = list(map(int, deets['cwe'].split(',')))
                        else:
@@ -218,7 +220,7 @@ class ThreatPlaybook(object):
                    else:
                        cwes = [0]
 
-                   if not deets.has_key('severity'):
+                   if 'severity' not in deets:
                        ThreatModel.objects(name=md).update_one(name=md, description=deets['description'],
                                                                   project=self.project, cwe=cwes,
                                                                   upsert=True)
@@ -419,7 +421,7 @@ class ThreatPlaybook(object):
 
 
 
-    def write_markdown_report(self):
+    def write_markdown_report(self, no_diagram = True):
         '''
         Writes a Markdown Report in the results directory of CWD by default
         :return:
@@ -429,9 +431,10 @@ class ThreatPlaybook(object):
             print("in file write loop")
             mdfile.write("# {0}\n".format(self.project.name))
             mdfile.write('## Threat Model for: {0}\n'.format(self.project.name))
-            mdfile.write('### Process Flow Diagram\n')
-            diagram_file = self.generate_mermaid_diagram()
-            mdfile.write("![Flow Diagram]({0})\n".format(diagram_file))
+            if no_diagram:
+                mdfile.write('### Process Flow Diagram\n')
+                diagram_file = self.generate_mermaid_diagram()
+                mdfile.write("![Flow Diagram]({0})\n".format(diagram_file))
 
             # Threat Model to Test Case Mapping
             ## Threat Models
