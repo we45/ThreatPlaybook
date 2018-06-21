@@ -8,7 +8,8 @@ from mongoengine import *
 from sys import exit
 from glob import glob
 from pathlib import Path
-from utils import parse_zap_json_file, manage_recon_results
+from utils import parse_zap_json_file, manage_recon_results, vul_schema, \
+    manage_nodejsscan_results, manage_bandit_results, manage_brakeman_results
 from subprocess import call
 import textwrap
 
@@ -128,10 +129,47 @@ class ThreatPlaybook(object):
                 TestCase.objects(short_name = case).update_one(short_name = case, description = deets['description'], case_type = deets['type'], tags = tags, upsert = True)
 
 
+    def create_vulnerability(self, vul_obj):
+        '''
+        | create vulnerability  | vul_obj (dictionary with required & optional fields) |
+
+        required attributes for the vulnerability:
+        name (str), tool (str), cwe (int), description (int), target_name (str), severity
+
+        optional attributes
+        observation(str), remediation (str), evidence (obj):
+                                                    name (str):
+                                                    log (str)
+                                                    data (str)
+                                                    url (str)
+                                                    param (str)
+                                                    attack (str)
+                                                    evidence (str)
+                                                    other_info (str)
+
+        '''
+        validated = vul_schema.validate(vul_obj)
+        target = Target.objects.get(name = validated['target_name'])
+        if not target:
+            raise Exception("Target not Found. Please provide the name for a valid target")
+
+        validated.pop('target_name')
+        vul = Vulnerability(**validated)
+        vul.session = self.session
+        vul.target = target
+        vul.save()
+
+
+
+
+
+
+
+
     def find_or_load_cases_from_directory(self, link_tests = False, case_path = None, test_path = None):
        '''
        Loads cases from the default cases directory and runs through each file of type yml to load user stories, abuser stories, threat models and linked cases
-       :param link_tests: optional params. Set to false. If enabled, all the test cases linked to threat model wiill be associated with said model
+       :param link_tests: optional params. Set to false. If enabled, all the test cases linked to threat model will be associated with said model
        :param case_path: default is current working directory + cases. You can change if you want
        :param test_path: default is current working directory + security_tests. You can change if you want
 
@@ -327,6 +365,56 @@ class ThreatPlaybook(object):
         print(target)
         parse_zap_json_file(zap_file, target=target, session = self.session)
 
+
+    def parse_nodejsscan_result(self, json_file, target_name):
+        '''
+                will parse a NodeJSScan JSON file and load  into the DB as vulnerabilities.
+                As NodeJSScan does not provide a CWE, there will be NO link with Threat Models
+                :param json_file for NodeJS Scan:
+                :param target_name:
+
+                | parse nodejsscan result  | json_file  | target_name  |
+
+        '''
+
+        if not target_name:
+            raise Exception("No target name specified. Exiting...")
+        target = Target.objects.get(name = target_name)
+        manage_nodejsscan_results(json_file, target=target, session = self.session)
+
+
+    def parse_bandit_scan_result(self, json_file, target_name):
+        '''
+                will parse a Bandit JSON file and load  into the DB as vulnerabilities.
+                As Bandit does not provide a CWE, there will be NO link with Threat Models
+                :param json_file for Bandit Scan:
+                :param target_name:
+
+                | parse bandit scan result  | json_file  | target_name  |
+
+        '''
+
+        if not target_name:
+            raise Exception("No target name specified. Exiting...")
+        target = Target.objects.get(name = target_name)
+        manage_bandit_results(json_file, target=target, session=self.session)
+
+
+    def parse_brakeman_scan_result(self, json_file, target_name):
+        '''
+                will parse a Brakeman JSON file and load  into the DB as vulnerabilities.
+                As Brakeman does not provide a CWE, there will be NO link with Threat Models
+                :param json_file for Brakeman Scan:
+                :param target_name:
+
+                | parse brakeman scan result  | json_file  | target_name  |
+
+        '''
+
+        if not target_name:
+            raise Exception("No target name specified. Exiting...")
+        target = Target.objects.get(name = target_name)
+        manage_brakeman_results(json_file, target=target, session=self.session)
 
     def generate_mermaid_diagram(self):
         '''

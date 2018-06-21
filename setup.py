@@ -25,6 +25,7 @@ setup(
         'mongoengine==0.15.0',
         'pathlib==1.0.1',
         'PyYAML==3.12',
+        'schema==0.6.8',
         'robotframework==3.0.4'
     ],
     description='Threat-Models-as Code, An Action-Oriented Threat Modeling and Automation Framework',
