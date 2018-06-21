@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='0.97a',
+    version='0.974',
     packages=[''],
     package_dir={'': 'threat_playbook'},
     entry_points={
@@ -22,7 +22,6 @@ setup(
     author='we45',
     author_email='info@we45.com',
     install_requires=[
-        'future==0.16.0'
         'mongoengine==0.15.0',
         'pathlib==1.0.1',
         'PyYAML==3.12',

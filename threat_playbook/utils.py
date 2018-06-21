@@ -1,5 +1,4 @@
-from __future__ import absolute_import
-from .models import *
+from models import *
 import json
 from base64 import b64encode
 

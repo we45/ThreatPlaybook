@@ -1,16 +1,14 @@
-from __future__ import print_function
-from __future__ import absolute_import
 import os
 from robot.api import logger
 import yaml
 import json
 from base64 import b64encode
-from .models import *
+from models import *
 from mongoengine import *
 from sys import exit
 from glob import glob
 from pathlib import Path
-from .utils import parse_zap_json_file, manage_recon_results
+from utils import parse_zap_json_file, manage_recon_results
 from subprocess import call
 import textwrap
 
@@ -421,7 +419,7 @@ class ThreatPlaybook(object):
 
 
 
-    def write_markdown_report(self, no_diagram = True):
+    def write_markdown_report(self, gen_diagram = True, gen_threat_model = True):
         '''
         Writes a Markdown Report in the results directory of CWD by default
         :return:
@@ -431,94 +429,95 @@ class ThreatPlaybook(object):
             print("in file write loop")
             mdfile.write("# {0}\n".format(self.project.name))
             mdfile.write('## Threat Model for: {0}\n'.format(self.project.name))
-            if no_diagram:
+            if gen_diagram:
                 mdfile.write('### Process Flow Diagram\n')
                 diagram_file = self.generate_mermaid_diagram()
                 mdfile.write("![Flow Diagram]({0})\n".format(diagram_file))
 
             # Threat Model to Test Case Mapping
             ## Threat Models
-            mdfile.write("## Threat Models\n")
-            all_uses = UseCase.objects(project=self.project)
-            for use in all_uses:
-                mdfile.write("### Functionality: {0}\n".format(use.short_name))
-                mdfile.write(use.description + "\n")
-                if use.abuses:
-                    mdfile.write("#### Abuse Cases\n")
-                    mdfile.write("\n")
+            if gen_threat_model:
+                mdfile.write("## Threat Models\n")
+                all_uses = UseCase.objects(project=self.project)
+                for use in all_uses:
+                    mdfile.write("### Functionality: {0}\n".format(use.short_name))
+                    mdfile.write(use.description + "\n")
+                    if use.abuses:
+                        mdfile.write("#### Abuse Cases\n")
+                        mdfile.write("\n")
 
-                    for single_abuse in use.abuses:
-                        mdfile.write("##### " + single_abuse.description + "\n")
-                        if single_abuse.models:
-                            for model in single_abuse.models:
-                                if model.severity:
-                                    if model.severity == 3:
-                                        str_severity = "High"
-                                    elif model.severity == 2:
-                                        str_severity = "Medium"
-                                    elif model.severity == 1:
-                                        str_severity = "Low"
-                                    else:
-                                        str_severity = "Informational"
-                                    mdfile.write("**{0}, Severity: {1}**\n".format(model.description, str_severity))
-                                else:
-                                    mdfile.write("**{0}**\n".format(model.description))
-
-                                if model.cases:
-                                    mdfile.write("##### Test Cases\n")
-                                    mdfile.write("| Description | type | tags |\n")
-                                    mdfile.write("|----------|:----------:|:--------:|\n")
-                                    for test_case in model.cases:
-                                        if test_case.case_type == 'A':
-                                            case_type = "Automated Test"
-                                        elif test_case.case_type == 'M':
-                                            case_type = "Manual Test"
+                        for single_abuse in use.abuses:
+                            mdfile.write("##### " + single_abuse.description + "\n")
+                            if single_abuse.models:
+                                for model in single_abuse.models:
+                                    if model.severity:
+                                        if model.severity == 3:
+                                            str_severity = "High"
+                                        elif model.severity == 2:
+                                            str_severity = "Medium"
+                                        elif model.severity == 1:
+                                            str_severity = "Low"
                                         else:
-                                            case_type = "Recon"
+                                            str_severity = "Informational"
+                                        mdfile.write("**{0}, Severity: {1}**\n".format(model.description, str_severity))
+                                    else:
+                                        mdfile.write("**{0}**\n".format(model.description))
 
-                                        mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
-                                                                                    ','.join(test_case.tags)))
+                                    if model.cases:
+                                        mdfile.write("##### Test Cases\n")
+                                        mdfile.write("| Description | type | tags |\n")
+                                        mdfile.write("|----------|:----------:|:--------:|\n")
+                                        for test_case in model.cases:
+                                            if test_case.case_type == 'A':
+                                                case_type = "Automated Test"
+                                            elif test_case.case_type == 'M':
+                                                case_type = "Manual Test"
+                                            else:
+                                                case_type = "Recon"
 
-                        mdfile.write("\n")
-                        mdfile.write("\n")
+                                            mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
+                                                                                        ','.join(test_case.tags)))
 
-                    mdfile.write("\n")
-                if not use.abuses and use.models:
-                    for use_model in use.models:
-                        if use_model.severity:
-                            if use_model.severity == 3:
-                                str_severity = "High"
-                            elif use_model.severity == 2:
-                                str_severity = "Medium"
-                            elif use_model.severity == 1:
-                                str_severity = "Low"
-                            else:
-                                str_severity = "Informational"
-                            mdfile.write("**{0}, Severity: {1}**\n".format(use_model.description, str_severity))
                             mdfile.write("\n")
-                        else:
-                            mdfile.write("**{0}**\n".format(use_model.description))
                             mdfile.write("\n")
 
-                        if use_model.cases:
-                            mdfile.write("##### Test Cases\n")
-                            mdfile.write("| Description | type | tags |\n")
-                            mdfile.write("|----------|:----------:|:--------:|\n")
-                            for test_case in use_model.cases:
-                                if test_case.case_type == 'A':
-                                    case_type = "Automated Test"
-                                elif test_case.case_type == 'M':
-                                    case_type = "Manual Test"
+                        mdfile.write("\n")
+                    if not use.abuses and use.models:
+                        for use_model in use.models:
+                            if use_model.severity:
+                                if use_model.severity == 3:
+                                    str_severity = "High"
+                                elif use_model.severity == 2:
+                                    str_severity = "Medium"
+                                elif use_model.severity == 1:
+                                    str_severity = "Low"
                                 else:
-                                    case_type = "Recon"
+                                    str_severity = "Informational"
+                                mdfile.write("**{0}, Severity: {1}**\n".format(use_model.description, str_severity))
+                                mdfile.write("\n")
+                            else:
+                                mdfile.write("**{0}**\n".format(use_model.description))
+                                mdfile.write("\n")
 
-                                mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
-                                                                            ','.join(test_case.tags)))
+                            if use_model.cases:
+                                mdfile.write("##### Test Cases\n")
+                                mdfile.write("| Description | type | tags |\n")
+                                mdfile.write("|----------|:----------:|:--------:|\n")
+                                for test_case in use_model.cases:
+                                    if test_case.case_type == 'A':
+                                        case_type = "Automated Test"
+                                    elif test_case.case_type == 'M':
+                                        case_type = "Manual Test"
+                                    else:
+                                        case_type = "Recon"
+
+                                    mdfile.write("| {0} | {1} | {2} |\n".format(test_case.description, case_type,
+                                                                                ','.join(test_case.tags)))
+                            mdfile.write("\n")
+                            mdfile.write("\n")
+
                         mdfile.write("\n")
                         mdfile.write("\n")
-
-                    mdfile.write("\n")
-                    mdfile.write("\n")
 
             ## Vulnerabilities
             mdfile.write("## Vulnerabilities\n")
@@ -536,11 +535,12 @@ class ThreatPlaybook(object):
                     severity = "Info"
                 mdfile.write("CWE: {0}, Severity: {1}\n".format(vul.cwe, severity))
                 mdfile.write("\n")
-                if vul.models:
-                    mdfile.write("### Linked Threat Models\n")
-                    for single_model in vul.models:
-                        mdfile.write("* {0}\n".format(single_model.description))
-                    mdfile.write("\n")
+                if gen_threat_model:
+                    if vul.models:
+                        mdfile.write("### Linked Threat Models\n")
+                        for single_model in vul.models:
+                            mdfile.write("* {0}\n".format(single_model.description))
+                        mdfile.write("\n")
                 mdfile.write("#### Description\n")
                 mdfile.write(vul.description + "\n")
                 mdfile.write("#### Remediation\n")
