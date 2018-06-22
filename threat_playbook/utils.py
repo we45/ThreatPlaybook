@@ -176,44 +176,93 @@ def parse_zap_json_file(zap_file, target, session):
 
         alerts = zap_data['Report']['Sites']['Alerts']['AlertItem']
         if alerts:
-            for alert in alerts:
+            if isinstance(alerts, list):
+                for alert in alerts:
+                    vul = Vulnerability()
+                    vul.tool = 'zap'
+                    vul.target = target
+                    vul.name = alert['Alert']
+                    if alert['RiskDesc'] == 'High':
+                        vul.severity = 3
+                    elif alert['RiskDesc'] == 'Medium':
+                        vul.severity = 2
+                    elif alert['RiskDesc'] == 'Low':
+                        vul.severity = 1
+                    else:
+                        vul.severity = 0
+                    vul.description = alert['Desc']
+                    vul.cwe = alert['CWEID']
+                    vul.remediation = alert['Solution']
+
+                    evidence = VulnerabilityEvidence()
+                    if isinstance(alert['Item'], dict):
+                        evidence.url = alert['Item'].get('URI', None)
+                        evidence.param = alert['Item'].get('Param', None)
+                        evidence.attack = alert['Item'].get('Attack', None)
+                        evidence.evidence = alert['Item'].get('Evidence', None)
+                        evidence.other_info = alert['Item'].get('OtherInfo', None)
+                        vul.evidences.append(evidence)
+                    elif isinstance(alert['Item'], list):
+                        for item in alert['Item']:
+                            evidence.url = item.get('URI', None)
+                            evidence.param = item.get('Param', None)
+                            evidence.attack = item.get('Attack', None)
+                            evidence.evidence = item.get('Evidence', None)
+                            evidence.log = b64encode(
+                                "{0}{1} {2}{3}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
+                                                       item.get('ResponseHeader', None), item.get('ResponseBody', None)))
+                            evidence.other_info = item.get('OtherInfo', None)
+                            vul.evidences.append(evidence)
+
+                    all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
+                    if len(all_linked_models) > 0:
+                        rel_models = []
+                        [rel_models.append(one) for one in all_linked_models]
+                        model_ids = [model.id for model in rel_models]
+                        vul.models = model_ids
+
+                    vul.session = session
+                    vul.target = target
+                    vul.save()
+            elif isinstance(alerts, dict):
                 vul = Vulnerability()
                 vul.tool = 'zap'
                 vul.target = target
-                vul.name = alert['Alert']
-                if alert['RiskDesc'] == 'High':
+                vul.name = alerts['Alert']
+                if alerts['RiskDesc'] == 'High':
                     vul.severity = 3
-                elif alert['RiskDesc'] == 'Medium':
+                elif alerts['RiskDesc'] == 'Medium':
                     vul.severity = 2
-                elif alert['RiskDesc'] == 'Low':
+                elif alerts['RiskDesc'] == 'Low':
                     vul.severity = 1
                 else:
                     vul.severity = 0
-                vul.description = alert['Desc']
-                vul.cwe = alert['CWEID']
-                vul.remediation = alert['Solution']
+                vul.description = alerts['Desc']
+                vul.cwe = alerts['CWEID']
+                vul.remediation = alerts['Solution']
 
                 evidence = VulnerabilityEvidence()
-                if isinstance(alert['Item'], dict):
-                    evidence.url = alert['Item'].get('URI', None)
-                    evidence.param = alert['Item'].get('Param', None)
-                    evidence.attack = alert['Item'].get('Attack', None)
-                    evidence.evidence = alert['Item'].get('Evidence', None)
-                    evidence.other_info = alert['Item'].get('OtherInfo', None)
+                if isinstance(alerts['Item'], dict):
+                    evidence.url = alerts['Item'].get('URI', None)
+                    evidence.param = alerts['Item'].get('Param', None)
+                    evidence.attack = alerts['Item'].get('Attack', None)
+                    evidence.evidence = alerts['Item'].get('Evidence', None)
+                    evidence.other_info = alerts['Item'].get('OtherInfo', None)
                     vul.evidences.append(evidence)
-                elif isinstance(alert['Item'], list):
-                    for item in alert['Item']:
+                elif isinstance(alerts['Item'], list):
+                    for item in alerts['Item']:
                         evidence.url = item.get('URI', None)
                         evidence.param = item.get('Param', None)
                         evidence.attack = item.get('Attack', None)
                         evidence.evidence = item.get('Evidence', None)
                         evidence.log = b64encode(
                             "{0}{1} {2}{3}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
-                                                   item.get('ResponseHeader', None), item.get('ResponseBody', None)))
+                                                   item.get('ResponseHeader', None),
+                                                   item.get('ResponseBody', None)))
                         evidence.other_info = item.get('OtherInfo', None)
                         vul.evidences.append(evidence)
 
-                all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
+                all_linked_models = ThreatModel.objects(cwe=alerts['CWEID'])
                 if len(all_linked_models) > 0:
                     rel_models = []
                     [rel_models.append(one) for one in all_linked_models]
@@ -223,6 +272,10 @@ def parse_zap_json_file(zap_file, target, session):
                 vul.session = session
                 vul.target = target
                 vul.save()
+            else:
+                raise Exception("Unable to parse alerts in report.")
+
+
 
 
 def manage_recon_results(recon_file, tool):
