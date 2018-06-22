@@ -6,9 +6,9 @@ import lxml.etree as xml
 import os
 import re
 
-script_dir = os.path.dirname(__file__)
-file_path = os.path.join(script_dir, 'burp_db.json')
-cwe_dict = json.load(open(file_path,'r'))
+# script_dir = os.path.dirname(__file__)
+# file_path = os.path.join(script_dir, 'burp_db.json')
+cwe_dict = json.load(open("burp_db.json",'r'))
 
 vul_schema = Schema(
     {

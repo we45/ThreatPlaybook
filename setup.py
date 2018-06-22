@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='0.975',
+    version='0.9751',
     packages=[''],
     package_dir={'': 'threat_playbook'},
     entry_points={
