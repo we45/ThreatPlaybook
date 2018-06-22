@@ -12,6 +12,7 @@ from utils import parse_zap_json_file, manage_recon_results, vul_schema, \
     manage_nodejsscan_results, manage_bandit_results, manage_brakeman_results
 from subprocess import call
 import textwrap
+from uuid import uuid4
 
 class ThreatPlaybook(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -53,6 +54,7 @@ class ThreatPlaybook(object):
         self.project = Project.objects.get(name = project_name)
 
         new_session = Session(project = self.project)
+        new_session.name = str(uuid4())
         new_session.save()
         self.session = new_session
 
@@ -629,10 +631,12 @@ class ThreatPlaybook(object):
                         for single_model in vul.models:
                             mdfile.write("* {0}\n".format(single_model.description))
                         mdfile.write("\n")
-                mdfile.write("#### Description\n")
-                mdfile.write(vul.description + "\n")
-                mdfile.write("#### Remediation\n")
-                mdfile.write(vul.remediation + "\n")
+                if vul.description:
+                    mdfile.write("#### Description\n")
+                    mdfile.write(vul.description + "\n")
+                if vul.remediation:
+                    mdfile.write("#### Remediation\n")
+                    mdfile.write(vul.remediation + "\n")
 
 
                 mdfile.write("### Evidences\n")

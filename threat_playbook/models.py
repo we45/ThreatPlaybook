@@ -6,7 +6,7 @@ class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
 
 class Session(Document):
-    name = StringField(default = str(uuid.uuid4))
+    name = StringField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class Entity(Document):
