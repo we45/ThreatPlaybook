@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='0.9751',
+    version='0.9752',
     packages=[''],
     package_dir={'': 'threat_playbook'},
     entry_points={
@@ -26,7 +26,8 @@ setup(
         'pathlib==1.0.1',
         'PyYAML==3.12',
         'schema==0.6.8',
-        'robotframework==3.0.4'
+        'robotframework==3.0.4',
+        'lxml==4.2.1'
     ],
     description='Threat-Models-as Code, An Action-Oriented Threat Modeling and Automation Framework',
     long_description = long_description,
