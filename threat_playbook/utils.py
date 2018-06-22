@@ -158,16 +158,17 @@ cwe_dict = json.loads(burp_dict_string)
 vul_schema = Schema(
     {
         'cwe': And(Use(int)),
-        'name': And(str, len),
-        'tool': And(str, len),
+        'name': basestring,
+        'tool': basestring,
         'severity': And(Use(int), lambda n: 0 <= n <= 3),
-        'description': And(str, len),
-        'target_name': And(str, len),
-        Optional('observation'): And(str, len),
-        Optional('remediation'): And(str, len),
+        'description': basestring,
+        'target_name': basestring,
+        Optional('observation'): basestring,
+        Optional('remediation'): basestring,
     },
     ignore_extra_keys=False
 )
+
 
 def parse_zap_json_file(zap_file, target, session):
     with open(zap_file, 'r') as zapfile:
@@ -212,7 +213,7 @@ def parse_zap_json_file(zap_file, target, session):
                         evidence.other_info = item.get('OtherInfo', None)
                         vul.evidences.append(evidence)
 
-                all_linked_models = ThreatModel.objects(cwe = alert['CWEID'])
+                all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
                 if len(all_linked_models) > 0:
                     rel_models = []
                     [rel_models.append(one) for one in all_linked_models]
@@ -222,7 +223,6 @@ def parse_zap_json_file(zap_file, target, session):
                 vul.session = session
                 vul.target = target
                 vul.save()
-
 
 
 def manage_recon_results(recon_file, tool):
@@ -238,6 +238,7 @@ def manage_recon_results(recon_file, tool):
                 content += "{0} - {1}\n".format(single['code'], single['url'])
 
     return content
+
 
 def manage_nodejsscan_results(nfile, target, session):
     results = json.load(open(nfile, 'r'))
@@ -316,6 +317,7 @@ def manage_bandit_results(json_file, target, session):
         vul_dict.session = session
         vul_dict.save()
 
+
 def manage_brakeman_results(json_file, target, session):
     confidence_dict = {
         "High": 3,
@@ -354,10 +356,10 @@ def manage_brakeman_results(json_file, target, session):
             vul_dict = Vulnerability()
             vul_dict.name = name,
             vul_dict.tool = 'Brakeman'
-            vul_dict.severity = data.get('severity',1),
+            vul_dict.severity = data.get('severity', 1),
             vul_dict.target = target
-            vul_dict.description = data.get('description','')
-            all_evidences = data.get('evids',[])
+            vul_dict.description = data.get('description', '')
+            all_evidences = data.get('evids', [])
             vul_evidences = []
             if len(all_evidences) > 0:
                 for single_evidence in all_evidences:
@@ -369,6 +371,7 @@ def manage_brakeman_results(json_file, target, session):
 
             vul_dict.session = session
             vul_dict.save()
+
 
 def manage_burp_xml_file(xml_file, target, session):
     try:
@@ -442,6 +445,6 @@ def manage_burp_xml_file(xml_file, target, session):
             obs = ''
 
         vul = Vulnerability()
-        vul.name = re.sub('<[^<]+?>', '',vul_name)
+        vul.name = re.sub('<[^<]+?>', '', vul_name)
         vul.tool = "Burp"
         vul.severity = severity
