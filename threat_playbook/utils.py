@@ -170,11 +170,19 @@ vul_schema = Schema(
 )
 
 
-def parse_zap_json_file(zap_file, target, session):
+def parse_zap_json_file(zap_file, target, session, uri):
     with open(zap_file, 'r') as zapfile:
         zap_data = json.loads(zapfile.read())
-
-        alerts = zap_data['Report']['Sites']['Alerts']['AlertItem']
+        alerts = None
+        pre_alerts = zap_data['Report']['Sites']
+        if isinstance(pre_alerts, list):
+            for pre in pre_alerts:
+                if uri in pre['Host']:
+                    alerts = pre
+        if isinstance(pre_alerts, dict):
+            alerts = pre_alerts
+        
+        alerts = alerts['Alerts']['AlertItem']
         if alerts:
             if isinstance(alerts, list):
                 for alert in alerts:
