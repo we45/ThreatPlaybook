@@ -286,9 +286,9 @@ def manage_recon_results(recon_file, tool):
     if tool == 'nmap':
         with open(recon_file, 'r') as nmapfile:
             content = nmapfile.read()
-    elif tool == "wfuzz":
-        with open(recon_file, 'r') as wfuzzfile:
-            content = pp_json(wfuzzfile.read())
+    # elif tool == "wfuzz":
+    #     with open(recon_file, 'r') as wfuzzfile:
+    #         content = pp_json(wfuzzfile.read())
     elif tool == 'sslyze':
         with open(recon_file, 'r') as sslyze:
             content = pp_json(sslyze.read())

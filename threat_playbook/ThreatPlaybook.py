@@ -2,7 +2,7 @@ import os
 from robot.api import logger
 import yaml
 import json
-from base64 import b64encode
+from base64 import b64decode
 from models import *
 from mongoengine import *
 from sys import exit
@@ -651,24 +651,22 @@ class ThreatPlaybook(object):
 
                 mdfile.write("### Evidences\n")
                 if vul.evidences:
-                    mdfile.write("| URL | Parameter | other info & attack |\n")
-                    mdfile.write("|----------|:----------:|:--------:|\n")
                     for single_evidence in vul.evidences:
-                        if single_evidence.other_info:
-                            other_info = single_evidence.other_info
-                        else:
-                            other_info = ""
-                        if single_evidence.attack:
-                            attack = single_evidence.attack
-                        else:
-                            attack = ""
-
+                        if single_evidence.url:
+                            mdfile.write("#### URL/File/Ref: {}".format(single_evidence.url))
                         if single_evidence.param:
-                            param = single_evidence.param
-                        else:
-                            param = ""
-
-                        mdfile.write("| {0} | {1} | {2}, {3} |\n".format(single_evidence.url, param, other_info, attack))
+                            mdfile.write("#### Param/Path: {}".format(single_evidence.param))
+                        if single_evidence.other_info:
+                            mdfile.write("#### Other Info: {}".format(single_evidence.other_info))
+                        if single_evidence.attack:
+                            mdfile.write("#### Attack: {}".format(single_evidence.attack))
+                        if single_evidence.log:
+                            mdfile.write("#### Raw Input".format(single_evidence.attack))
+                            mdfile.write("```\n")
+                            mdfile.write("\n")
+                            mdfile.write(b64decode(single_evidence.log))
+                            mdfile.write("\n")
+                            mdfile.write("```\n")
 
             # Recon
             # if write_recon == True:
