@@ -671,7 +671,7 @@ class ThreatPlaybook(object):
 
                     mdfile.write("#### Target: {0}\n".format(single_recon.target.name))
                     mdfile.write("\n")
-                    if single_recon.result and single_recon.tool == 'nmap':
+                    if single_recon.result:
                         recon_text_string = manage_recon_results(single_recon.result,single_recon.tool)
                         mdfile.write("```\n")
                         mdfile.write("\n")
