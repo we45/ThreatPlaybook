@@ -547,7 +547,7 @@ def manage_npm_audit_file(json_file, target, session):
                 vul_evid = VulnerabilityEvidence()
                 vul_evid.url = single_evidence.get('url', "")
                 vul_evid.name = single_evidence.get('name', "")
-                vul_evid.log = b64encode(single_evidence.get("log", ""))
+                # vul_evid.log = b64encode(single_evidence.get("log", ""))
                 vul_evidences.append(vul_evid)
 
         vul_dict.session = session
