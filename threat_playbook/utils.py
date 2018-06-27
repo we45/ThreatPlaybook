@@ -323,6 +323,8 @@ def manage_nodejsscan_results(nfile, target, session):
                 vul_evid.log = b64encode(single_evidence.get("log", ""))
                 vul_evidences.append(vul_evid)
 
+        vul_dict.evidences = vul_evidences
+
         vul_dict.session = session
         vul_dict.save()
 
@@ -367,6 +369,7 @@ def manage_bandit_results(json_file, target, session):
                 vul_evid.log = b64encode(single_evidence.get("log", ""))
                 vul_evidences.append(vul_evid)
 
+        vul_dict.evidences = vul_evidences
         vul_dict.session = session
         vul_dict.save()
 
@@ -422,6 +425,7 @@ def manage_brakeman_results(json_file, target, session):
                     vul_evid.log = b64encode(single_evidence.get("log", ""))
                     vul_evidences.append(vul_evid)
 
+            vul_dict.evidences = vul_evidences
             vul_dict.session = session
             vul_dict.save()
 
