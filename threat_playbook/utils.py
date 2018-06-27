@@ -512,3 +512,43 @@ def manage_burp_xml_file(xml_file, target, session):
         vul.name = re.sub('<[^<]+?>', '', vul_name)
         vul.tool = "Burp"
         vul.severity = severity
+
+
+def manage_npm_audit_file(json_file, target, session):
+    results = json.load(open(json_file, 'r'))
+    all_advisories = results.get('advisories')
+    severity_dict = {'moderate': 2, 'low': 1, 'critical': 3}
+    default_dict = {}
+    for advisory in all_advisories:
+        default_dict[all_advisories.get(advisory).get('title')] = {'description': None, 'evidences': [], 'cwe': None, 'remediation': None, 'severity': 2}
+        for finding in all_advisories.get(advisory).get('findings'):
+            for path in finding.get('paths'):
+                evidence = {'url': all_advisories.get(advisory).get('module_name'), 'name': 'File: {0}'.format(path)}
+                default_dict[all_advisories.get(advisory).get('title')]['evidences'].append(evidence)
+                default_dict[all_advisories.get(advisory).get('title')]['description'] = all_advisories.get(advisory).get('overview')
+                default_dict[all_advisories.get(advisory).get('title')]['cwe'] = int(all_advisories.get(advisory).get('cwe').split('-')[-1])
+                default_dict[all_advisories.get(advisory).get('title')]['remediation'] = all_advisories.get(advisory).get('recommendation')
+                default_dict[all_advisories.get(advisory).get('title')]['severity'] = severity_dict.get(all_advisories.get(advisory).get('severity'), "moderate")
+
+    for individual_vul_title, individual_vul_detail in default_dict.items():
+        vul_dict = Vulnerability()
+        vul_dict.name = individual_vul_title
+        vul_dict.tool = 'Npm Audit'
+        vul_dict.severity = individual_vul_detail.get('severity', 2)
+        vul_dict.target = target
+        if individual_vul_detail.get('cwe'):
+            vul_dict.cwe = individual_vul_detail.get('cwe')
+        vul_dict.description = individual_vul_detail.get('description', '')
+        vul_dict.remediation = individual_vul_detail.get('remediation', '')
+        all_evidences = individual_vul_detail.get('evidences', [])
+        vul_evidences = []
+        if len(all_evidences) > 0:
+            for single_evidence in all_evidences:
+                vul_evid = VulnerabilityEvidence()
+                vul_evid.url = single_evidence.get('url', "")
+                vul_evid.name = single_evidence.get('name', "")
+                vul_evid.log = b64encode(single_evidence.get("log", ""))
+                vul_evidences.append(vul_evid)
+
+        vul_dict.session = session
+        vul_dict.save()
