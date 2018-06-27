@@ -347,7 +347,7 @@ class ThreatPlaybook(object):
         recon.save()
 
 
-    def parse_zap_json(self, zap_file, target_name):
+    def parse_zap_json(self, zap_file, target_name, target_uri):
         '''
         will parse a ZAP JSON file and load  into the DB as vulnerabilities. The Vulnerabilities link with the Threat Models by CWE
         :param zap_file:
@@ -359,8 +359,7 @@ class ThreatPlaybook(object):
         if not target_name:
             raise Exception("No target name specified. Exiting...")
         target = Target.objects.get(name = target_name)
-        print(target)
-        parse_zap_json_file(zap_file, target=target, session = self.session)
+        parse_zap_json_file(zap_file, target=target, session = self.session, uri = target_uri)
 
 
     def parse_nodejsscan_result(self, json_file, target_name):
