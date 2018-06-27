@@ -9,7 +9,7 @@ from sys import exit
 from glob import glob
 from pathlib import Path
 from utils import parse_zap_json_file, manage_recon_results, vul_schema, \
-    manage_nodejsscan_results, manage_bandit_results, manage_brakeman_results
+    manage_nodejsscan_results, manage_bandit_results, manage_brakeman_results, manage_npm_audit_file
 from subprocess import call
 import textwrap
 from uuid import uuid4
@@ -412,6 +412,21 @@ class ThreatPlaybook(object):
             raise Exception("No target name specified. Exiting...")
         target = Target.objects.get(name = target_name)
         manage_brakeman_results(json_file, target=target, session=self.session)
+
+    def parse_npmaudit_scan_result(self, json_file, target_name):
+        '''
+        will parse a NPM Audit JSON file and load  into the DB as vulnerabilities.
+        :param json_file for NPM Audit Scan:
+        :param target_name:
+
+        | parse npmaudit scan result  | json_file  | target_name  |
+        '''
+
+        if not target_name:
+            raise Exception("No target name specified. Exiting...")
+        target = Target.objects.get(name=target_name)
+        manage_npm_audit_file(json_file, target=target, session=self.session)
+
 
     def generate_mermaid_diagram(self):
         '''
