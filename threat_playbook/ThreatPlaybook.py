@@ -163,11 +163,6 @@ class ThreatPlaybook(object):
 
 
 
-
-
-
-
-
     def find_or_load_cases_from_directory(self, link_tests = False, case_path = None, test_path = None):
        '''
        Loads cases from the default cases directory and runs through each file of type yml to load user stories, abuser stories, threat models and linked cases

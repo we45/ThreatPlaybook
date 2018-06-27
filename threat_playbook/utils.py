@@ -276,6 +276,9 @@ def parse_zap_json_file(zap_file, target, session):
                 raise Exception("Unable to parse alerts in report.")
 
 
+def pp_json(file_content):
+    return json.dumps(json.loads(file_content), indent=4, sort_keys=True)
+
 
 
 def manage_recon_results(recon_file, tool):
@@ -285,10 +288,14 @@ def manage_recon_results(recon_file, tool):
             content = nmapfile.read()
     elif tool == "wfuzz":
         with open(recon_file, 'r') as wfuzzfile:
-            wfuzz_dict = json.loads(wfuzzfile.read())
-        if isinstance(wfuzz_dict, list):
-            for single in wfuzz_dict:
-                content += "{0} - {1}\n".format(single['code'], single['url'])
+            content = pp_json(wfuzzfile.read())
+    elif tool == 'sslyze':
+        with open(recon_file, 'r') as sslyze:
+            content = pp_json(sslyze.read())
+    elif tool == 'shodan':
+        with open(recon_file, 'r') as shodan:
+            content = pp_json(shodan.read())
+
 
     return content
 
