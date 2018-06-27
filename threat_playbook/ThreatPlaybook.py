@@ -633,7 +633,7 @@ class ThreatPlaybook(object):
                     severity = "Low"
                 else:
                     severity = "Info"
-                mdfile.write("CWE: {0}, Severity: {1}\n".format(vul.cwe, severity))
+                mdfile.write("CWE: {0}, Severity: {1}, Tool: {2}\n".format(vul.cwe, severity, vul.tool))
                 mdfile.write("\n")
                 if gen_threat_model:
                     if vul.models:
@@ -650,18 +650,19 @@ class ThreatPlaybook(object):
 
 
                 mdfile.write("### Evidences\n")
+                mdfile.write('\n')
                 if vul.evidences:
                     for single_evidence in vul.evidences:
                         if single_evidence.url:
-                            mdfile.write("#### URL/File/Ref: {}".format(single_evidence.url))
+                            mdfile.write("#### URL/File/Ref: {}\n".format(single_evidence.url))
                         if single_evidence.param:
-                            mdfile.write("#### Param/Path: {}".format(single_evidence.param))
+                            mdfile.write("#### Param/Path: {}\n".format(single_evidence.param))
                         if single_evidence.other_info:
-                            mdfile.write("#### Other Info: {}".format(single_evidence.other_info))
+                            mdfile.write("#### Other Info: {}\n".format(single_evidence.other_info))
                         if single_evidence.attack:
-                            mdfile.write("#### Attack: {}".format(single_evidence.attack))
+                            mdfile.write("#### Attack: {}\n".format(single_evidence.attack))
                         if single_evidence.log:
-                            mdfile.write("#### Raw Input".format(single_evidence.attack))
+                            mdfile.write("#### Raw Input\n".format(single_evidence.attack))
                             mdfile.write("```\n")
                             mdfile.write("\n")
                             mdfile.write(b64decode(single_evidence.log))
