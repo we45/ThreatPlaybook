@@ -1,4 +1,5 @@
 login_user:
+  entity: login # entity definition
   description: |
     As an employee of the organization,
     I would like to login to the Expense Management application to submit and upload expense information

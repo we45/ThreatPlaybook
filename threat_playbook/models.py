@@ -10,7 +10,7 @@ class Session(Document):
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class Entity(Document):
-    name = StringField(max_length=50)
+    # name = StringField(max_length=50)
     short = StringField(max_length=50, unique = True)
     shape = StringField(max_length=50)
     description = StringField()

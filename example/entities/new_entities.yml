@@ -1,0 +1,41 @@
+entities:
+  user:
+    description: Public End-User accesses over the Browser
+    caption: User with Browser
+    connections:
+      - login: username&password/token
+
+  login:
+    description: End-User authenticates to Front-end with username and password
+    caption: Login with Username/Password or Token
+    connections:
+      - manage_expenses: expense info
+      - profile: User PII/Credit Card Info
+
+
+  manage_expenses:
+    description: User can upload and view expenses uploaded by him/her
+    caption: View/Create/Upload Expense Information
+
+  profile:
+    description: View user profile and saved card information
+    caption: User Profile + credit card attached
+    name: profile
+
+#  logout:
+#    description: Logout from System
+#    caption: Logout
+#    name: logout
+
+  s3:
+    description: location for storage of all uploaded documents
+    caption: s3_bucket_expenses
+    name: s3
+
+#connections:
+#  - [user,login, username&password/token, Authentication credentials]
+#  - [login, manage_expenses, expense info, Cut the Funds App]
+#  - [manage_expenses, s3, expense files, Amazon S3]
+#  - [login, profile, User PII/Credit card info, Cut the Funds App]
+#  - [login, logout, Logout, Cut the Funds App]
+

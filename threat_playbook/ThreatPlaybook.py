@@ -57,6 +57,7 @@ class ThreatPlaybook(object):
         new_session.name = str(uuid4())
         new_session.save()
         self.session = new_session
+        self.entity_info = None
 
 
     def load_entity_file(self, filepath = None):
@@ -84,9 +85,12 @@ class ThreatPlaybook(object):
 
         | find or create entities  |
         '''
+
+        # reserved_special_chars = (')', '(', '-', '>', '[', ']')
         if isinstance(self.entity_info, dict):
             for short, deets in self.entity_info['entities'].iteritems():
-                new_entity = Entity.objects(short = short).update_one(name = deets['name'], description = deets['description'], short = short, caption=deets['caption'], project = self.project, upsert=True)
+                new_entity = Entity.objects(short = short).update_one(description = deets['description'], short = short, caption=deets['caption'], project = self.project, upsert=True)
+
 
 
     def find_or_connect_entities(self):
@@ -95,13 +99,17 @@ class ThreatPlaybook(object):
         | find or connect entities |
 
         '''
-        for econn in self.entity_info['connections']:
-            st = Entity.objects.get(short = econn[0])
-            end = Entity.objects.get(short = econn[1])
-            if len(econn) == 3:
-                EntityMapping.objects(start = st.id, end = end.id, link_text = econn[2], project = self.project).update_one(start = st, end = end, link_text = econn[2], project = self.project, upsert=True)
-            elif len(econn) == 4:
-                EntityMapping.objects(start=st.id, end=end.id, link_text=econn[2], subgraph = econn[3], project=self.project).update_one(start=st,end=end,link_text=econn[2],subgraph = econn[3], project=self.project, upsert=True)
+        for short, deets in self.entity_info['entities'].iteritems():
+            if 'connections' in deets:
+                for connection in deets['connections']:
+                    if isinstance(connection, dict):
+                        end_var, transmission = connection.items()[0]
+                        st = Entity.objects.get(short = short)
+                        end = Entity.objects.get(short = end_var)
+                        EntityMapping.objects(start=st.id, end=end.id, link_text=transmission,
+                                              project=self.project).update_one(start=st, end=end, link_text=transmission,
+                                                                               project=self.project, upsert=True)
+
 
 
     def process_test_cases(self, test_path = None):
@@ -438,11 +446,11 @@ class ThreatPlaybook(object):
             mmd.write("graph LR\n")
             all_mappings = EntityMapping.objects(project = self.project)
             for single in all_mappings:
-                mmd.write("\t{0}({1})-->|{2}|{3}({4})\n".format(single.start.short, single.start.caption, single.link_text, single.end.short, single.end.caption))
+                mmd.write("\t{0}({1})-->|{2}|{3}({4})\n".format(single.start.short, single.start.short, single.link_text, single.end.short, single.end.short))
 
         diagram_file = result_path + "diagram.svg"
 
-        call("mmdc -i {0} -o {1} -b transparent -w 1024 -H 768".format(result_path + 'process_diagram.mmd', diagram_file), shell=True)
+        call("mmdc -i {0} -o {1} -b transparent -w 1280 -H 780".format(result_path + 'process_diagram.mmd', diagram_file), shell=True)
         return diagram_file
 
 
