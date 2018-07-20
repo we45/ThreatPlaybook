@@ -540,11 +540,21 @@ class ThreatPlaybook(object):
 
 
 
-    def write_markdown_report(self, gen_diagram = False, gen_threat_model = False):
+    def write_markdown_report(self, gen_diagram ="True", gen_threat_model = "True"):
         '''
         Writes a Markdown Report in the results directory of CWD by default
         :return:
         '''
+
+        if(gen_diagram == "True"):
+            gen_diagram = True
+        else:
+            gen_diagram = False
+        if(gen_threat_model == "True"):
+            gen_threat_model = True
+        else:
+            gen_threat_model = False
+
         filename = os.path.join(os.getcwd(), "results/")
         with open(filename + "Report.md", 'w') as mdfile:
             print("in file write loop")
