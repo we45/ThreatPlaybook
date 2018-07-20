@@ -8,7 +8,7 @@ from mongoengine import *
 from sys import exit
 from glob import glob
 from pathlib import Path
-from utils import parse_zap_json_file, manage_recon_results, vul_schema, \
+from utils import parse_zap_json_file, manage_burp_xml_file, manage_recon_results, vul_schema, \
     manage_nodejsscan_results, manage_bandit_results, manage_brakeman_results, manage_npm_audit_file
 from subprocess import call
 import textwrap
@@ -370,6 +370,20 @@ class ThreatPlaybook(object):
         parse_zap_json_file(zap_file, target=target, session = self.session, uri = target_uri)
 
 
+    def parse_burp_xml(self, burp_file, target_name, target_uri):
+        '''
+        will parse a Burp XML file and load  into the DB as vulnerabilities. The Vulnerabilities link with the Threat Models by CWE
+        :param burp_file:
+        :param target_name:
+
+        | parse burp xml  | burp_file  | target_name  |
+
+        '''
+        if not target_name:
+            raise Exception("No target name specified. Exiting...")
+        target = Target.objects.get(name = target_name)
+        manage_burp_xml_file(burp_file, target=target, session = self.session, uri = target_uri)
+
     def parse_nodejsscan_result(self, json_file, target_name):
         '''
                 will parse a NodeJSScan JSON file and load  into the DB as vulnerabilities.
@@ -526,11 +540,21 @@ class ThreatPlaybook(object):
 
 
 
-    def write_markdown_report(self, gen_diagram = True, gen_threat_model = True):
+    def write_markdown_report(self, gen_diagram ="True", gen_threat_model = "True"):
         '''
         Writes a Markdown Report in the results directory of CWD by default
         :return:
         '''
+
+        if(gen_diagram == "True"):
+            gen_diagram = True
+        else:
+            gen_diagram = False
+        if(gen_threat_model == "True"):
+            gen_threat_model = True
+        else:
+            gen_threat_model = False
+
         filename = os.path.join(os.getcwd(), "results/")
         with open(filename + "Report.md", 'w') as mdfile:
             print("in file write loop")
