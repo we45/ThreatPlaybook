@@ -289,22 +289,108 @@ def pp_json(file_content):
 
 
 
+def manage_nikto_xml_file(xml_file):
+    try:
+        nreport = xml.parse(xml_file)   
+    except (xml.XMLSyntaxError,xml.ParserError):
+        raise Exception("Unable to parse XML")
+    root_elem = nreport.getroot()				
+    scans = root_elem.findall('niktoscan/scandetails')
+    for scan in scans:
+    
+        targetinfo = "Target IP: " + scan.get('targetip','') + '\n' \
+                "Taget Hostname: " + scan.get('targethostname','') + '\n' \
+                "Target Port: " + scan.get('targetport',default='') + '\n' \
+                "HTTP Server: " + scan.get('targetbanner',default='') + '\n' \
+                "Start Time: " + scan.get('starttime',default='') + '\n' \
+                "Site Link(name): " + scan.get('sitename',default='') + '\n' \
+                "Site Link (IP): " + scan.get('siteip',default='') + '\n\n' 
+        issue = ''
+        for i in scan.findall('item'):
+
+            issue+= "URI: " + i.findtext('uri',default='') + '\n' \
+                    "HTTP Method: " + i.get('method',default='')  +  '\n' \
+                    "Description: " + i.findtext('description',default='') + '\n' \
+                    "Test Link:   " + i.findtext('namelink',default='') + '\n\t\t\t ' + i.findtext('iplink',default='') + '\n' \
+                    "OSVDB Link:  " + i.get('osvdblink',default='') + '\n\n'
+            
+        report_content = targetinfo + issue
+        print('Nikto XML parsing completed')
+    return report_content
+
+def manage_testssl_json_file(json_file):
+    try:
+	    with open('/home/umar/Desktop/ThreadPlayBook-Dev/wecare/results/testssl_result.json','r') as testssl_json:
+		 testssl_report = json.loads(testssl_json.read())
+    except:
+	    print("Unable to prase JSON")
+
+
+    header = ''
+
+    req_key = ['Invocation','at','version','openssl','startTime','scanTime']
+    for key in req_key:
+        header+= key.capitalize() + ': ' +str(testssl_report[key]) + '\n'
+    header+= '\n\n'
+
+
+
+    scan_results = ''
+    scanresult = testssl_report['scanResult']
+    for target in scanresult:
+        report_content = 'Target Info: ' + '\n\n'
+        report_content+='Target Host: ' + target['target host'] + '\n'
+        report_content+='IP: ' + target['ip'] + '\n'
+        report_content+='Port: ' + target['port'] + '\n'
+        report_content+='Service: '+ target['service'] + '\n\n'
+
+
+        key_data = ['protocols','grease','ciphers','pfs','serverPreferences','serverDefaults','headerResponse','cipherTests','browserSimulations']
+        for key in key_data:
+            results = target[key]
+            if(len(results) != 0):
+                report_content+= key.capitalize() + ': ' + '\n\n' 
+                for result in results:
+                    result_key = result.keys()
+                    if "cwe" in result_key:
+                        cwe = True
+                    else:
+                        cwe = False
+
+                    if "cve" in  result_key:
+                        cve = True
+                    else:
+                        cve = False
+                    report_content+= 'ID: ' + result['id'] + '\n'
+                    report_content+= 'Serverity: ' + result['severity'] + '\n'
+                    report_content+= 'CVE: ' + result['cve'] + '\n' if cve == True else ''
+                    report_content+= 'CWE: ' + result['cwe'] + '\n' if cwe == True else ''
+                    report_content+= 'Finding: '+ result['finding'] + '\n\n'
+                report_content+='\n\n'
+
+        scan_results+= report_content
+
+    final_content = header + scan_results
+    return final_content
+
 def manage_recon_results(recon_file, tool):
     content = ""
     if tool == 'nmap':
         with open(recon_file, 'r') as nmapfile:
             content = nmapfile.read()
-    # elif tool == "wfuzz":
-    #     with open(recon_file, 'r') as wfuzzfile:
-    #         content = pp_json(wfuzzfile.read())
+    elif tool == "wfuzz":
+        with open(recon_file, 'r') as wfuzzfile:
+            content = wfuzzfile.read()
     elif tool == 'sslyze':
         with open(recon_file, 'r') as sslyze:
             content = pp_json(sslyze.read())
     elif tool == 'shodan':
         with open(recon_file, 'r') as shodan:
             content = pp_json(shodan.read())
-
-
+    elif tool == 'nikto':
+        content = manage_nikto_xml_file(recon_file)
+    elif tool == 'testssl':
+        content= manage_testssl_json_file(recon_file)
     return content
 
 
@@ -445,7 +531,7 @@ def manage_brakeman_results(json_file, target, session):
             vul_dict.save()
 
 
-def manage_burp_xml_file(xml_file, target, session):
+def manage_burp_xml_file(xml_file,  target, session, uri):
     try:
         nreport = xml.parse(xml_file)
     except (xml.XMLSyntaxError, xml.ParserError):
@@ -468,7 +554,8 @@ def manage_burp_xml_file(xml_file, target, session):
     }
     for v in vuls:
         obj = root_elem.xpath(p, name=v)
-        url_param_list = []
+        # url_param_list = []
+        all_evidences = []
         for u in obj:
             parent_obj = u.getparent()
             req = parent_obj.find('requestresponse/request')
@@ -477,23 +564,25 @@ def manage_burp_xml_file(xml_file, target, session):
             if req is not None:
                 is_base64_encoded = True if req.get('base64') == 'true' else False
                 if is_base64_encoded:
-                    request = req.text
+                    request = req.text.decode('base64')
                 else:
-                    request = b64encode(req.text)
+                    request = req.text
+                method = req.get('method')
+
             if res is not None:
                 is_base64_encoded = True if res.get('base64') == 'true' else False
                 if is_base64_encoded:
-                    response = res.text
+                    response = res.text.decode('base64')
                 else:
-                    response = b64encode(res.text)
-            url = 'http:/%s' % (parent_obj.findtext('path', default=''))
-            url_param_list.append({
-                'url': parent_obj.findtext('location', default=''),
-                # 'name':parent_obj.findtext('path',default=''),
-                'attack': parent_obj.findtext('issueDetailItems/issueDetailItem', default=''),
-                'name': parent_obj.findtext('issueDetailItems/issueDetailItem', default=''),
-                'request': request,
-                'response': response,
+                    response = res.text
+            log = b64encode(request +'\n\n\n' + response.split('\r\n\r\n')[0] + '\n\n')
+            url = '%s%s' % (parent_obj.findtext('host',default=target),parent_obj.findtext('path', default=''))
+            all_evidences.append({
+                'url': url,
+                'log': log,
+                'param': parent_obj.findtext('location', default=''),
+                'attack':  parent_obj.findtext('issueDetail', default=''),
+                'evidence': request + '\n\n\n' + response.split('\r\n\r\n')[0]    
             })
         vul_name = parent_obj.findtext('name', default='')
         severity = parent_obj.findtext('severity', '')
@@ -506,21 +595,39 @@ def manage_burp_xml_file(xml_file, target, session):
             cwe = cwe_present[0]
         desc = parent_obj.findtext('issueBackground', default='')
         solution = parent_obj.findtext('remediationBackground', default='')
-        observation = parent_obj.find('issueDetail')
+        observation = ''
         confidence = parent_obj.findtext('confidence', default='')
         if confidence:
             confidence = burp_confidence_dict.get(confidence)
         if observation is not None:
             s = '''You should manually examine the application behavior and attempt to identify any unusual input validation or other obstacles that may be in place.'''
-            obs = observation.text.replace(s, '')
+            obs = observation.replace(s, '')
         else:
             obs = ''
 
-        vul = Vulnerability()
-        vul.name = re.sub('<[^<]+?>', '', vul_name)
-        vul.tool = "Burp"
-        vul.severity = severity
+        vul_dict = Vulnerability()
+        vul_dict.name = re.sub('<[^<]+?>', '', vul_name)
+        vul_dict.tool = "Burp"
+        vul_dict.severity = severity
+        vul_dict.description = re.sub('<[^<]+?>', '', desc)
+        vul_dict.observation = obs
+        vul_dict.remediation = re.sub('<[^<]+?>', '', solution)
+        vul_dict.target = target
+        vul_evidences = []
+        for single_evidence in all_evidences:
+            vul_evid = VulnerabilityEvidence()
+            vul_evid.url = single_evidence.get('url', '')
+            vul_evid.log=  single_evidence.get('log','')
+            vul_evid.param = single_evidence.get('param','')
+            vul_evid.attack = single_evidence.get('attack','')
+            vul_evid.evidence = single_evidence.get('evidence','')
+            print(vul_evid)
+            vul_evidences.append(vul_evid)
+        vul_dict.evidences = vul_evidences
+        vul_dict.session = session
+        vul_dict.save()
 
+    
 
 def manage_npm_audit_file(json_file, target, session):
     results = json.load(open(json_file, 'r'))
