@@ -218,7 +218,7 @@ def parse_zap_json_file(zap_file, target, session, uri):
                             evidence.evidence = item.get('Evidence', None)
                             evidence.log = b64encode(
                                 "{0}{1} {2}{3}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
-                                                       item.get('ResponseHeader', None), item.get('ResponseBody', None)))
+                                                       item.get('ResponseHeader', None).encode('UTF-8'), item.get('ResponseBody', None).encode('UTF-8')))
                             evidence.other_info = item.get('OtherInfo', None)
                             vul.evidences.append(evidence)
 
