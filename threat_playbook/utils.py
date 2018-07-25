@@ -5,6 +5,7 @@ from schema import Schema, And, Use, Optional
 import lxml.etree as xml
 import os
 import re
+import sys
 
 # script_dir = os.path.dirname(__file__)
 # file_path = os.path.join(script_dir, 'burp_db.json')
@@ -216,9 +217,12 @@ def parse_zap_json_file(zap_file, target, session, uri):
                             evidence.param = item.get('Param', None)
                             evidence.attack = item.get('Attack', None)
                             evidence.evidence = item.get('Evidence', None)
+                            # evidence.log = b64encode(
+                                # "{0}{1} {2}{3}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
+                                                    #    item.get('ResponseHeader', None).encode('UTF-8'), item.get('ResponseBody', None).encode('UTF-8')))
                             evidence.log = b64encode(
-                                "{0}{1} {2}{3}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
-                                                       item.get('ResponseHeader', None).encode('UTF-8'), item.get('ResponseBody', None).encode('UTF-8')))
+                                "{0} \n{1} \n\n{2}".format(item.get('RequestHeader', None), item.get('RequestBody', None),
+                                                       item.get('ResponseHeader', None).encode('UTF-8')))                           
                             evidence.other_info = item.get('OtherInfo', None)
                             vul.evidences.append(evidence)
 
@@ -292,86 +296,81 @@ def pp_json(file_content):
 def manage_nikto_xml_file(xml_file):
     try:
         nreport = xml.parse(xml_file)   
-    except (xml.XMLSyntaxError,xml.ParserError):
-        raise Exception("Unable to parse XML")
-    root_elem = nreport.getroot()				
-    scans = root_elem.findall('niktoscan/scandetails')
-    for scan in scans:
-    
-        targetinfo = "Target IP: " + scan.get('targetip','') + '\n' \
-                "Taget Hostname: " + scan.get('targethostname','') + '\n' \
-                "Target Port: " + scan.get('targetport',default='') + '\n' \
-                "HTTP Server: " + scan.get('targetbanner',default='') + '\n' \
-                "Start Time: " + scan.get('starttime',default='') + '\n' \
-                "Site Link(name): " + scan.get('sitename',default='') + '\n' \
-                "Site Link (IP): " + scan.get('siteip',default='') + '\n\n' 
-        issue = ''
-        for i in scan.findall('item'):
+        root_elem = nreport.getroot()				
+        scans = root_elem.findall('niktoscan/scandetails')
+        report_content = ''
+        for scan in scans:
+        
+            targetinfo = "Target IP: " + scan.get('targetip','') + '\n' \
+                    "Taget Hostname: " + scan.get('targethostname','') + '\n' \
+                    "Target Port: " + scan.get('targetport',default='') + '\n' \
+                    "HTTP Server: " + scan.get('targetbanner',default='') + '\n' \
+                    "Start Time: " + scan.get('starttime',default='') + '\n' \
+                    "Site Link(name): " + scan.get('sitename',default='') + '\n' \
+                    "Site Link (IP): " + scan.get('siteip',default='') + '\n\n' 
+            issue = ''
+            for i in scan.findall('item'):
 
-            issue+= "URI: " + i.findtext('uri',default='') + '\n' \
-                    "HTTP Method: " + i.get('method',default='')  +  '\n' \
-                    "Description: " + i.findtext('description',default='') + '\n' \
-                    "Test Link:   " + i.findtext('namelink',default='') + '\n\t\t\t ' + i.findtext('iplink',default='') + '\n' \
-                    "OSVDB Link:  " + i.get('osvdblink',default='') + '\n\n'
-            
-        report_content = targetinfo + issue
-        print('Nikto XML parsing completed')
-    return report_content
+                issue+= "URI: " + i.findtext('uri',default='') + '\n' \
+                        "HTTP Method: " + i.get('method',default='')  +  '\n' \
+                        "Description: " + i.findtext('description',default='') + '\n' \
+                        "Test Link:   " + i.findtext('namelink',default='') + '\n\t\t\t ' + i.findtext('iplink',default='') + '\n' \
+                        "OSVDB Link:  " + i.get('osvdblink',default='') + '\n\n'
+                
+            report_content = targetinfo + issue
+        return report_content
+
+    except BaseException as e:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print('Error: {0} {1}'.format(e, exc_traceback.tb_lineno))
 
 def manage_testssl_json_file(json_file):
     try:
-	    with open('/home/umar/Desktop/ThreadPlayBook-Dev/wecare/results/testssl_result.json','r') as testssl_json:
-		 testssl_report = json.loads(testssl_json.read())
-    except:
-	    print("Unable to prase JSON")
+	    with open(json_file,'r') as testssl_json:
+		    testssl_report = json.loads(testssl_json.read())
+            header = ''
+            req_key = ['Invocation','at','version','openssl','startTime','scanTime']
+            for key in req_key:
+                header+= key.capitalize() + ': ' +str(testssl_report[key]) + '\n'
+            header+= '\n\n'
 
-
-    header = ''
-
-    req_key = ['Invocation','at','version','openssl','startTime','scanTime']
-    for key in req_key:
-        header+= key.capitalize() + ': ' +str(testssl_report[key]) + '\n'
-    header+= '\n\n'
-
-
-
-    scan_results = ''
-    scanresult = testssl_report['scanResult']
-    for target in scanresult:
-        report_content = 'Target Info: ' + '\n\n'
-        report_content+='Target Host: ' + target['target host'] + '\n'
-        report_content+='IP: ' + target['ip'] + '\n'
-        report_content+='Port: ' + target['port'] + '\n'
-        report_content+='Service: '+ target['service'] + '\n\n'
-
-
-        key_data = ['protocols','grease','ciphers','pfs','serverPreferences','serverDefaults','headerResponse','cipherTests','browserSimulations']
-        for key in key_data:
-            results = target[key]
-            if(len(results) != 0):
-                report_content+= key.capitalize() + ': ' + '\n\n' 
-                for result in results:
-                    result_key = result.keys()
-                    if "cwe" in result_key:
-                        cwe = True
-                    else:
-                        cwe = False
-
-                    if "cve" in  result_key:
-                        cve = True
-                    else:
-                        cve = False
-                    report_content+= 'ID: ' + result['id'] + '\n'
-                    report_content+= 'Serverity: ' + result['severity'] + '\n'
-                    report_content+= 'CVE: ' + result['cve'] + '\n' if cve == True else ''
-                    report_content+= 'CWE: ' + result['cwe'] + '\n' if cwe == True else ''
-                    report_content+= 'Finding: '+ result['finding'] + '\n\n'
-                report_content+='\n\n'
-
-        scan_results+= report_content
-
-    final_content = header + scan_results
-    return final_content
+            scan_results = ''
+            scanresult = testssl_report['scanResult']
+            for target in scanresult:
+                report_content = 'Target Info: ' + '\n\n'
+                report_content+='Target Host: ' + target['target host'] + '\n'
+                report_content+='IP: ' + target['ip'] + '\n'
+                report_content+='Port: ' + target['port'] + '\n'
+                report_content+='Service: '+ target['service'] + '\n\n'
+                key_data = ['protocols','grease','ciphers','pfs','serverPreferences','serverDefaults','headerResponse','cipherTests','browserSimulations']
+                for key in key_data:
+                    results = target[key]
+                    if(len(results) != 0):
+                        report_content+= key.capitalize() + ': ' + '\n\n' 
+                        for result in results:
+                            result_key = result.keys()
+                            if "cwe" in result_key:
+                                cwe = True
+                            else:
+                                cwe = False
+                            if "cve" in  result_key:
+                                cve = True
+                            else:
+                                cve = False
+                            report_content+= 'ID: ' + result['id'] + '\n'
+                            report_content+= 'Serverity: ' + result['severity'] + '\n'
+                            report_content+= 'CVE: ' + result['cve'] + '\n' if cve == True else ''
+                            report_content+= 'CWE: ' + result['cwe'] + '\n' if cwe == True else ''
+                            report_content+= 'Finding: '+ result['finding'] + '\n\n'
+                        report_content+='\n\n'
+                scan_results+= report_content
+            final_content = header + scan_results
+            return final_content
+ 
+    except BaseException as e:
+        print('Unable to prase JSON File')
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print('Error: {0} {1}'.format(e, exc_traceback.tb_lineno))
 
 def manage_recon_results(recon_file, tool):
     content = ""
@@ -534,99 +533,101 @@ def manage_brakeman_results(json_file, target, session):
 def manage_burp_xml_file(xml_file,  target, session, uri):
     try:
         nreport = xml.parse(xml_file)
-    except (xml.XMLSyntaxError, xml.ParserError):
-        raise Exception("Unable to parse XML")
-    root_elem = nreport.getroot()
-    reg_path = r'issue/name'
-    uniq_objs = root_elem.xpath(reg_path)
-    vuls = set([i.text for i in uniq_objs])
-    p = '{0}[text() = $name]'.format(reg_path)
-    severity_dict = {
-        'Information': 0,
-        'Low': 1,
-        'Medium': 2,
-        'High': 3
-    }
-    burp_confidence_dict = {
-        "Certain": 3,
-        "Firm": 2,
-        "Tentative": 1,
-    }
-    for v in vuls:
-        obj = root_elem.xpath(p, name=v)
-        # url_param_list = []
-        all_evidences = []
-        for u in obj:
-            parent_obj = u.getparent()
-            req = parent_obj.find('requestresponse/request')
-            res = parent_obj.find('requestresponse/response')
-            request = response = b64encode('')
-            if req is not None:
-                is_base64_encoded = True if req.get('base64') == 'true' else False
-                if is_base64_encoded:
-                    request = req.text.decode('base64')
-                else:
-                    request = req.text
-                method = req.get('method')
+        root_elem = nreport.getroot()
+        reg_path = r'issue/name'
+        uniq_objs = root_elem.xpath(reg_path)
+        vuls = set([i.text for i in uniq_objs])
+        p = '{0}[text() = $name]'.format(reg_path)
+        severity_dict = {
+            'Information': 0,
+            'Low': 1,
+            'Medium': 2,
+            'High': 3
+        }
+        burp_confidence_dict = {
+            "Certain": 3,
+            "Firm": 2,
+            "Tentative": 1,
+        }
+        for v in vuls:
+            obj = root_elem.xpath(p, name=v)
+            # url_param_list = []
+            all_evidences = []
+            for u in obj:
+                parent_obj = u.getparent()
+                req = parent_obj.find('requestresponse/request')
+                res = parent_obj.find('requestresponse/response')
+                request = response = b64encode('')
+                if req is not None:
+                    is_base64_encoded = True if req.get('base64') == 'true' else False
+                    if is_base64_encoded:
+                        request = req.text.decode('base64')
+                    else:
+                        request = req.text
+                    method = req.get('method')
 
-            if res is not None:
-                is_base64_encoded = True if res.get('base64') == 'true' else False
-                if is_base64_encoded:
-                    response = res.text.decode('base64')
-                else:
-                    response = res.text
-            log = b64encode(request +'\n\n\n' + response.split('\r\n\r\n')[0] + '\n\n')
-            url = '%s%s' % (parent_obj.findtext('host',default=target),parent_obj.findtext('path', default=''))
-            all_evidences.append({
-                'url': url,
-                'log': log,
-                'param': parent_obj.findtext('location', default=''),
-                'attack':  parent_obj.findtext('issueDetail', default=''),
-                'evidence': request + '\n\n\n' + response.split('\r\n\r\n')[0]    
-            })
-        vul_name = parent_obj.findtext('name', default='')
-        severity = parent_obj.findtext('severity', '')
-        issue_type = parent_obj.findtext('type', '8389632')
-        if severity:
-            severity = severity_dict.get(severity)
-        cwe_present = cwe_dict.get(issue_type, [])
-        cwe = 0
-        if cwe_present:
-            cwe = cwe_present[0]
-        desc = parent_obj.findtext('issueBackground', default='')
-        solution = parent_obj.findtext('remediationBackground', default='')
-        observation = ''
-        confidence = parent_obj.findtext('confidence', default='')
-        if confidence:
-            confidence = burp_confidence_dict.get(confidence)
-        if observation is not None:
-            s = '''You should manually examine the application behavior and attempt to identify any unusual input validation or other obstacles that may be in place.'''
-            obs = observation.replace(s, '')
-        else:
-            obs = ''
+                if res is not None:
+                    is_base64_encoded = True if res.get('base64') == 'true' else False
+                    if is_base64_encoded:
+                        response = res.text.decode('base64')
+                    else:
+                        response = res.text
+                log = b64encode(request +'\n\n\n' + response.split('\r\n\r\n')[0] + '\n\n')
+                url = '%s%s' % (parent_obj.findtext('host',default=target),parent_obj.findtext('path', default=''))
+                all_evidences.append({
+                    'url': url,
+                    'log': log,
+                    'param': parent_obj.findtext('location', default=''),
+                    'attack':  parent_obj.findtext('issueDetail', default=''),
+                    'evidence': request + '\n\n\n' + response.split('\r\n\r\n')[0]    
+                })
+            vul_name = parent_obj.findtext('name', default='')
+            severity = parent_obj.findtext('severity', '')
+            issue_type = parent_obj.findtext('type', '8389632')
+            if severity:
+                severity = severity_dict.get(severity)
+            cwe_present = cwe_dict.get(issue_type, [])
+            cwe = 0
+            if cwe_present:
+                cwe = cwe_present[0]
+            desc = parent_obj.findtext('issueBackground', default='')
+            solution = parent_obj.findtext('remediationBackground', default='')
+            observation = ''
+            confidence = parent_obj.findtext('confidence', default='')
+            if confidence:
+                confidence = burp_confidence_dict.get(confidence)
+            if observation is not None:
+                s = '''You should manually examine the application behavior and attempt to identify any unusual input validation or other obstacles that may be in place.'''
+                obs = observation.replace(s, '')
+            else:
+                obs = ''
 
-        vul_dict = Vulnerability()
-        vul_dict.name = re.sub('<[^<]+?>', '', vul_name)
-        vul_dict.tool = "Burp"
-        vul_dict.severity = severity
-        vul_dict.description = re.sub('<[^<]+?>', '', desc)
-        vul_dict.observation = obs
-        vul_dict.remediation = re.sub('<[^<]+?>', '', solution)
-        vul_dict.target = target
-        vul_evidences = []
-        for single_evidence in all_evidences:
-            vul_evid = VulnerabilityEvidence()
-            vul_evid.url = single_evidence.get('url', '')
-            vul_evid.log=  single_evidence.get('log','')
-            vul_evid.param = single_evidence.get('param','')
-            vul_evid.attack = single_evidence.get('attack','')
-            vul_evid.evidence = single_evidence.get('evidence','')
-            print(vul_evid)
-            vul_evidences.append(vul_evid)
-        vul_dict.evidences = vul_evidences
-        vul_dict.session = session
-        vul_dict.save()
+            vul_dict = Vulnerability()
+            vul_dict.name = re.sub('<[^<]+?>', '', vul_name)
+            vul_dict.tool = "Burp"
+            vul_dict.severity = severity
+            vul_dict.description = re.sub('<[^<]+?>', '', desc)
+            vul_dict.observation = obs
+            vul_dict.remediation = re.sub('<[^<]+?>', '', solution)
+            vul_dict.target = target
+            vul_evidences = []
+            for single_evidence in all_evidences:
+                vul_evid = VulnerabilityEvidence()
+                vul_evid.url = single_evidence.get('url', '')
+                vul_evid.log=  single_evidence.get('log','')
+                vul_evid.param = single_evidence.get('param','')
+                vul_evid.attack = single_evidence.get('attack','')
+                vul_evid.evidence = single_evidence.get('evidence','')
+                print(vul_evid)
+                vul_evidences.append(vul_evid)
+            vul_dict.evidences = vul_evidences
+            vul_dict.session = session
+            vul_dict.save()
 
+    except BaseException as e:
+        print('Unable to prase XML File')
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print('Error: {0} {1}'.format(e, exc_traceback.tb_lineno))
     
 
 def manage_npm_audit_file(json_file, target, session):
