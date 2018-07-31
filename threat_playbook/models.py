@@ -73,7 +73,7 @@ class VulnerabilityEvidence(EmbeddedDocument):
     name = StringField(max_length=100)
     log = StringField()
     data = StringField()
-    url = StringField(max_length=100)
+    url = StringField()
     param = StringField(max_length=100)
     attack = StringField()
     evidence = StringField()
