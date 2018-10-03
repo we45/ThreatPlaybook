@@ -1,0 +1,69 @@
+name: SQL Injection
+cwe: 89
+description: The software constructs all or part of an SQL command using externally-influenced
+  input from an upstream component, but it does not neutralize or incorrectly neutralizes
+  special elements that could modify the intended SQL command when it is sent to a
+  downstream component.
+mitigations:
+- description: Consider using ORMs (Object to Relation Mappers) to protect against SQL Injection.
+    Nearly all of them perform Parameterized Queries and Query Encoding.
+  phase: Architecture and Design
+  strategy: Libraries or Frameworks
+- description: Process SQL queries using prepared statements, parameterized queries.
+    Do not dynamically construct and execute query strings within these features using "exec" or similar functionality,
+    since this may re-introduce the possibility of SQL injection.
+  phase: Implementation
+- description: Specifically, follow the principle of least privilege when creating
+    user accounts to a SQL database. The database users should only have the minimum
+    privileges necessary to use their account.
+  phase: Architecture and Design
+- description: In the context of SQL Injection, error messages revealing the structure
+    of a SQL query can help attackers tailor successful attack strings.
+  phase: Implementation
+- description: Use an application firewall that can detect attacks against this weakness.
+    It can be beneficial in cases in which the code cannot be fixed,as an emergency prevention measure while
+    more comprehensive software assurance measures are applied, or to provide defense in depth.
+  phase: Operation
+risk:
+- consequence: Since SQL databases generally hold sensitive data, loss of confidentiality
+    is a frequent problem with SQL injection vulnerabilities.
+  type: Confidentiality
+- consequence: If poor SQL commands are used to check user names and passwords, it
+    may be possible to connect to a system as another user with no previous knowledge
+    of the password.
+  type: Access_Control
+- consequence: If authorization information is held in a SQL database, it may be possible
+    to change this information through the successful exploitation of a SQL injection
+    vulnerability.
+  type: Access_Control
+- consequence: Just as it may be possible to read sensitive information, it is also
+    possible to make changes or even delete this information with a SQL injection
+    attack.
+  type: Integrity
+categories: [app_vulns,owasp]
+variants:
+- Blind SQL Injection
+- Time-Based SQL Injection
+- Union-Based SQL Injection
+- Error-Based SQL Injection
+- Second-Order SQL Injection
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools and its Injection payloads against the application
+  tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+  type: discovery
+- name: manual
+  test: test for SQL Injection variants manually with pentesters, bug-bounty
+  type: manual
+- name: exploit
+  test: Run exploit tools to identify and exploit SQL Injections in the application
+  type: exploit
+  tools: [sqlmap,netsparker,jsqli]
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of SQL Injection
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of dynamic queries or stored procedures that are vulnerable to SQL Injection
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast

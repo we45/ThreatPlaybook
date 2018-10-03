@@ -1,0 +1,49 @@
+name: Insecure Direct Object Reference - Primary Key
+cwe: 639
+description: The system's authorization functionality does not prevent one user from
+  gaining access to another user's data or record by modifying the key value identifying
+  the data.
+mitigations:
+- description: For each and every data access, ensure that the user has sufficient
+    privilege to access the record that is being requested.
+  phase: Architecture and Design
+- description: Make sure that the key that is used in the lookup of a specific user's
+    record is not controllable externally by the user or that any tampering can be
+    detected.
+  phase: Architecture and Design
+- description: Use encryption in order to make it more difficult to guess other legitimate
+    values of the key or associate a digital signature with the key so that the server
+    can verify that there has been no tampering.
+  phase: Architecture and Design
+risk:
+- consequence: Access control checks for specific user data or functionality can be
+    bypassed.
+  type: Access_Control
+- consequence: Horizontal escalation of privilege is possible (one user can view/modify
+    information of another user).
+  type: Access_Control
+- consequence: Vertical escalation of privilege is possible if the user-controlled
+    key is actually a flag that indicates administrator status, allowing the attacker
+    to gain administrative access.
+  type: Access_Control
+categories: [app_vulns]
+test-cases:
+- name: manual
+  test: test for Insecure Direct Object References variants manually with pentesters, bug-bounty
+  type: manual
+- name: fuzzing
+  test: test for IDORs with Fuzzing with Automated tools
+  tools: [burpsuite,owasp-zap,wfuzz,mitmproxy]
+  type: automated
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of improper input validation and output encoding for Insecure Deserialization
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of Insecure Deserialization
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+related_cwes:
+- 284
+- 285
+

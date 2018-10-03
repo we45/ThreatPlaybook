@@ -6,7 +6,8 @@ class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
 
 class Session(Document):
-    name = StringField()
+    # name = StringField()
+    created_on = DateTimeField(default=datetime.datetime.utcnow)
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class Entity(Document):
@@ -24,23 +25,32 @@ class EntityMapping(Document):
     subgraph = StringField(max_length=30)
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
-class TestCase(Document):
-    TEST_TYPES = (('M', "Manual"), ("A", "Automated"), ('R', "Recon"))
-    short_name = StringField(unique=True)
-    description = StringField()
+class TestCase(EmbeddedDocument):
+    # TEST_TYPES = (('M', "Manual"), ("A", "Automated"), ('R', "Recon"))
+    name = StringField(unique=True)
+    test = StringField()
     executed = BooleanField(default = False)
-    case_type = StringField(max_length=10, choices = TEST_TYPES)
+    tools = ListField()
+    type = StringField(max_length=20)
     tags = ListField()
 
+class Risk(EmbeddedDocument):
+    consequence = StringField()
+    risk_type = StringField()
 
 class ThreatModel(Document):
     name = StringField(max_length=200, required=True, unique = True)
+    vul_name = StringField()
     description = StringField(required = True)
     #dread = ListField()
     severity = IntField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
-    cases = ListField(ReferenceField(TestCase))
-    cwe = ListField()
+    cases = EmbeddedDocumentListField(TestCase)
+    cwe = IntField()
+    related_cwes = ListField(IntField(), null=True)
+    categories = ListField(StringField(max_length=30))
+    mitigations = ListField()
+    risks = EmbeddedDocumentListField(Risk)
 
 class AbuseCase(Document):
     short_name = StringField(max_length=100, unique=True)
@@ -65,7 +75,7 @@ class Recon(Document):
     options = StringField(max_length=100)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     result = StringField()
-    cases = ListField(ReferenceField(TestCase))
+    # cases = EmbeddedDocumentListField(TestCase)
     session = ReferenceField(Session)
     target = ReferenceField(Target)
 
@@ -79,6 +89,10 @@ class VulnerabilityEvidence(EmbeddedDocument):
     evidence = StringField()
     other_info = StringField()
 
+# class VulnerabilityMitigation(EmbeddedDocument):
+#     description = StringField()
+#     phase = StringField(max_length=100)
+
 class Vulnerability(Document):
     severity_choices = ((3, "High"), (2, "Medium"), (1, "Low"), (0, "Info"))
     tool = StringField(max_length=100)
@@ -90,7 +104,7 @@ class Vulnerability(Document):
     remediation = StringField()
     evidences = EmbeddedDocumentListField(VulnerabilityEvidence)
     models = ListField(ReferenceField(ThreatModel))
-    cases = ListField(ReferenceField(TestCase))
+    # cases = EmbeddedDocumentListField(TestCase)
     session = ReferenceField(Session)
     target = ReferenceField(Target)
 
