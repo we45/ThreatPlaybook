@@ -1,5 +1,31 @@
+'''
+ThreatPlaybook v 1.2
+
+Usage:
+  threat-playbook new-project <projectname>
+  threat-playbook set-project <projectname>
+  threat-playbook show-vulns [--session=<session>] [--filter-severity=<severity>] [--format=<vul_format>]
+  threat-playbook get [--entity=<entity_type> [--format=<get_format>]
+  threat-playbook set [--directory=<directory_path>]
+  threat-playbook report [--path=<report_path>] [--format=<report_format>]
+
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --session=<session>   Session that has the vulnerabilities. Defaults to latest session
+  --filter-severity=<severity>  Filters severity by high,medium,low. Defaults to all.
+  --format=<vul_format> response in format of choice between json and yaml or cmdline table. Defaults to table
+  --format=<get_format> response in format of choice between json and yaml or cmdline table. Defaults to table
+  --entity=<entity_type>    Options for entities are: user stories, abuser stories, (threat) scenarios, security test cases
+  --directory=<directory_path>  loads threat models from directory (absolute path), etc without having to be linked to automation. defaults to cwd
+  --path=<report_path>  generates reports at a given path (absolute path), else generates markdown/HTML report in the same path
+  --format=<report_format>  generates report in given format. Choices are `md` for markdown, or `html` for HTML. MD is default
+'''
+
 import os
 import sys
+from docopt import docopt
 
 
 class CreateThreatModelPlaybook:

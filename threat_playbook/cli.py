@@ -1,32 +1,8 @@
 #TODO: Add load() event for loading canned threats
 #TODO: add lookup for loading existing threats
 
-'''
-ThreatPlaybook v 1.2
-
-Usage:
-  threat-playbook new-project <projectname>
-  threat-playbook show-vulns [--session=<session>] [--filter-severity=<severity>] [--format=<vul_format>]
-  threat-playbook get [--entity=<entity_type> [--format=<get_format>]
-  threat-playbook set [--directory=<directory_path>]
-  threat-playbook report [--path=<report_path>] [--format=<report_format>]
-
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-  --session=<session>   Session that has the vulnerabilities. Defaults to latest session
-  --filter-severity=<severity>  Filters severity by high,medium,low. Defaults to all.
-  --format=<vul_format> response in format of choice between json and yaml or cmdline table. Defaults to table
-  --format=<get_format> response in format of choice between json and yaml or cmdline table. Defaults to table
-  --entity=<entity_type>    Options for entities are: user stories, abuser stories, (threat) scenarios, security test cases
-  --directory=<directory_path>  loads threat models from directory (absolute path), etc without having to be linked to automation. defaults to cwd
-  --path=<report_path>  generates reports at a given path (absolute path), else generates markdown/HTML report in the same path
-  --format=<report_format>  generates report in given format. Choices are `md` for markdown, or `html` for HTML. MD is default
-'''
-
 
 from models import *
-from docopt import docopt
 from ThreatPlaybook import ThreatPlaybook
 import json
 import yaml
@@ -36,9 +12,18 @@ from pprint import pprint
 import shelve
 from glob import glob
 import ntpath
+from huepy import *
 
 connect('threat_playbook')
 rdb = shelve.open('repo')
+
+# def set_project(project_name):
+#     focus_project = Project.objects.get(name = project_name)
+#     if focus_project:
+#         os.environ['TP_PROJECT_NAME'] = focus_project.name
+#         os.environ['TP_PROJECT_ID'] = focus_project.id
+#     else:
+
 
 def create_new_project(proj_name):
     list_of_directories = ['results', 'cases', 'entities', 'security_tests']
@@ -83,6 +68,8 @@ def print_vul_table(vuls):
 
 
 def get_vulnerabilities(session = None, filter = None, format = 'table'):
+    if not os.environ['TP_PROJECT_NAME'] or os.environ['TP_PROJECT_ID']:
+        print(bad("You need to set the project first by using `threat-playbook set-project <projectname>"))
     if session and filter:
         all_vuls = Vulnerability.objects(session = session, severity = filter).exclude('_id', 'models', 'cases')
     elif session and filter == None:

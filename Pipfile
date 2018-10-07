@@ -18,6 +18,7 @@ PyYAML = "==3.12"
 schema = "==0.6.8"
 docopt = "*"
 texttable = "*"
+huepy = "*"
 
 [requires]
 python_version = "2.7"

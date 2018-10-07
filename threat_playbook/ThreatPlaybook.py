@@ -53,6 +53,15 @@ class ThreatPlaybook(object):
             logger.error("Unable to connect to DB. Disconnecting")
             exit(1)
 
+        if ' ' in project_name:
+            logger.warn('You have whitespaces in your project name, it will be substituted with '
+                        '`_` values and lower cased')
+            project_name = project_name.replace(' ', '_').lower()
+        else:
+            logger.warn(
+                'Your project name will be lower cased')
+            project_name = project_name.lower()
+
         Project.objects(name = project_name).update_one(name = project_name, upsert = True)
         self.project = Project.objects.get(name = project_name)
         shelve_path = os.path.join(self.ROOT_DIR, 'repo')
@@ -117,33 +126,6 @@ class ThreatPlaybook(object):
 
 
 
-    # def process_test_cases(self, test_path = None):
-    #     '''
-    #     Processes all test cases in default security_tests directory. If you want to specify a custom location,
-    #     you need to provide a absolute path to yaml files with security_tests
-    #
-    #     :param test_path: optional
-    #
-    #     | process test cases | test_path (optional |
-    #
-    #     '''
-    #     if test_path == None:
-    #         test_path = os.path.join(os.getcwd(), "security_tests/")
-    #
-    #     with open(test_path + "security_tests.yml", 'r') as testfile:
-    #             testval = testfile.read()
-    #
-    #     content = yaml.load(testval)
-    #     if isinstance(content, dict):
-    #         for case, deets in content.items():
-    #             if 'tags' in deets:
-    #                 tags = deets['tags'].split(',')
-    #             else:
-    #                 tags = []
-    #
-    #             TestCase.objects(short_name = case).update_one(short_name = case, description = deets['description'], case_type = deets['type'], tags = tags, upsert = True)
-
-
     def create_vulnerability(self, vul_obj):
         '''
         | create vulnerability  | vul_obj (dictionary with required & optional fields) |
@@ -182,9 +164,7 @@ class ThreatPlaybook(object):
                 if mdeets['type'] == 'repo':
                     if 'reference' in mdeets:
                         vul_name = mdeets['reference']['name']
-                        print("Pre Processed VulName:", vul_name)
                         if vul_name in self.rdb.keys():
-                            print("Post Processed VulName:", vul_name)
                             risks = []
                             vul_cases = []
                             if 'mitigations' in self.rdb[vul_name]:
@@ -221,7 +201,6 @@ class ThreatPlaybook(object):
                                         risks.append(Risk(consequence = single_risk['consequence'],risk_type = single_risk['type']))
 
                             if 'severity' in mdeets['reference']:
-                                print("severity_repo", mdeets['reference']['severity'])
                                 if isinstance(mdeets['reference']['severity'],int):
                                     if int(mdeets['reference']['severity']) < 4:
                                         severity = mdeets['reference']['severity']
@@ -335,7 +314,7 @@ class ThreatPlaybook(object):
         # my_target = Target.objects.get(name = name)
 
 
-    def create_and_link_recon(self, tool, target_name, file_name = None, tags = None):
+    def create_and_link_recon(self, tool, target_name, file_name = None):
         '''
         Links recon with the following params
         :param tool: tool name => zap, burp, nmap, etc
@@ -354,19 +333,15 @@ class ThreatPlaybook(object):
             logger.warn("there's no file. There will be no results stored from your recon results")
 
         relevant_tests = []
-        if tags:
-            tags = tags.split(',')
-            for single in tags:
-                all_tests_for_single = TestCase.objects(tags = single)
-                for one in all_tests_for_single:
-                    relevant_tests.append(one)
 
+        try:
+            all_tests_for_single = ThreatModel.objects(cases__tools = tool)
+            for one in all_tests_for_single:
+                relevant_tests.append(one.id)
+        except Exception as e:
+            logger.error(e)
 
-            test_ids = [test.id for test in relevant_tests]
-
-            recon.cases = test_ids
-
-
+        recon.models = relevant_tests
         get_target = Target.objects.get(name = target_name)
         if get_target:
             recon.target = get_target
@@ -548,31 +523,6 @@ class ThreatPlaybook(object):
                                                 "\t{0}[{1}]-->{2}[{3}]\n".format(model_name, model_desc,
                                                                                  test_name, "-"))
 
-
-
-                # if not use.abuses and use.models:
-                #     for use_model in use.models:
-                #         umodel_name = use_model.name.replace(" ", "_")
-                #         if use_model.description:
-                #             umodel_desc = textwrap.fill(use_model.description, 30)
-                #             umodel_desc = umodel_desc.replace("\n", "<br />")
-                #         else:
-                #             umodel_desc = "-"
-                #         mdfile.write("\t{0}[{1}]-->{2}[{3}]\n".format(use_name, break_use_description,
-                #                                                       umodel_name, umodel_desc))
-                #         if use_model.cases:
-                #             for u_test_case in use_model.cases:
-                #                 u_test_name = u_test_case.name.replace(" ", "_")
-                #                 if u_test_case.test:
-                #                     utest_desc = textwrap.fill(u_test_case.test, 30)
-                #                     u_test_case = utest_desc.replace("\n", "<br />")
-                #                     mdfile.write(
-                #                         "\t{0}[{1}]-->{2}[{3}]\n".format(use_model.name, umodel_desc
-                #                                                          ,u_test_name,u_test_case))
-                #                 else:
-                #                     mdfile.write(
-                #                         "\t{0}[{1}]-->{2}[{3}]\n".format(use_model.name,umodel_desc,u_test_name,"-"))
-
             user_story_diagram = "{0}.png".format(use.short_name.replace(" ", ""))
             diagram_file = map_file_path + user_story_diagram
 
@@ -597,7 +547,6 @@ class ThreatPlaybook(object):
 
         filename = os.path.join(os.getcwd(), "results/")
         with open(filename + "Report.md", 'w') as mdfile:
-            print("in file write loop")
             mdfile.write("# {0}\n".format(self.project.name))
             mdfile.write('## Threat Model for: {0}\n'.format(self.project.name))
             if gen_diagram:
@@ -611,18 +560,15 @@ class ThreatPlaybook(object):
                 mdfile.write("## Threat Models\n")
                 all_uses = UseCase.objects(project=self.project)
                 for use in all_uses:
-                    print(use.short_name)
                     mdfile.write("### Functionality: {0}\n".format(use.short_name))
                     mdfile.write(use.description + "\n")
                     if use.abuses:
                         mdfile.write("#### Abuse Cases\n")
                         mdfile.write("\n")
                         for single_abuse in use.abuses:
-                            print("\t{}".format(single_abuse.short_name))
                             mdfile.write("##### " + single_abuse.description + "\n")
                             if single_abuse.models:
                                 for model in single_abuse.models:
-                                    print("\t\t{}".format(model.name))
                                     if model.severity:
                                         if model.severity == 3:
                                             str_severity = "High"
@@ -709,11 +655,11 @@ class ThreatPlaybook(object):
                 if all_recons:
                     for single_recon in all_recons:
                         mdfile.write("### Reconnaissance Tool: {0}\n".format(single_recon.tool))
-                        if single_recon.cases:
-                            mdfile.write("#### Linked Test Cases\n")
-                            for single_case in single_recon.cases:
-                                mdfile.write("* {0} - {1}\n".format(single_case.short_name, single_case.description))
-                            mdfile.write("\n")
+                        # if single_recon.models:
+                        #     mdfile.write("#### Linked Test Cases\n")
+                        #     for single_case in single_recon.cases:
+                        #         mdfile.write("* {0} - {1}\n".format(single_case.short_name, single_case.description))
+                        #     mdfile.write("\n")
 
                         mdfile.write("#### Target: {0}\n".format(single_recon.target.name))
                         mdfile.write("\n")

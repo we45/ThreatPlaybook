@@ -226,12 +226,18 @@ def parse_zap_json_file(zap_file, target, session, uri):
                             evidence.other_info = item.get('OtherInfo', None)
                             vul.evidences.append(evidence)
 
-                    all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
+                    all_linked_models = ThreatModel.objects(cwe=alerts['CWEID'])
+                    second_link_models = ThreatModel.objects(related_cwes=alerts['CWEID'])
                     if len(all_linked_models) > 0:
                         rel_models = []
                         [rel_models.append(one) for one in all_linked_models]
                         model_ids = [model.id for model in rel_models]
-                        vul.models = model_ids
+                        vul.models.append(model_ids)
+                    if len(second_link_models) > 0:
+                        slink_models = []
+                        [slink_models.append(one) for one in second_link_models]
+                        s_model_ids = [model.id for model in slink_models]
+                        vul.models.append(s_model_ids)
 
                     vul.session = session
                     vul.target = target
@@ -275,11 +281,17 @@ def parse_zap_json_file(zap_file, target, session, uri):
                         vul.evidences.append(evidence)
 
                 all_linked_models = ThreatModel.objects(cwe=alerts['CWEID'])
+                second_link_models = ThreatModel.objects(related_cwes = alerts['CWEID'])
                 if len(all_linked_models) > 0:
                     rel_models = []
                     [rel_models.append(one) for one in all_linked_models]
                     model_ids = [model.id for model in rel_models]
-                    vul.models = model_ids
+                    vul.models.append(model_ids)
+                if len(second_link_models) > 0:
+                    slink_models = []
+                    [slink_models.append(one) for one in second_link_models]
+                    s_model_ids = [model.id for model in slink_models]
+                    vul.models.append(s_model_ids)
 
                 vul.session = session
                 vul.target = target
@@ -668,3 +680,17 @@ def manage_npm_audit_file(json_file, target, session):
 
         vul_dict.session = session
         vul_dict.save()
+        saved_vul = Vulnerability.objects.get(id = vul_dict.id)
+        all_linked_models = ThreatModel.objects(cwe=individual_vul_detail.get('cwe'))
+        second_link_models = ThreatModel.objects(related_cwes=individual_vul_detail.get('cwe'))
+        if len(all_linked_models) > 0:
+            rel_models = []
+            [rel_models.append(one) for one in all_linked_models]
+            model_ids = [model.id for model in rel_models]
+            saved_vul.models.append(model_ids)
+        if len(second_link_models) > 0:
+            slink_models = []
+            [slink_models.append(one) for one in second_link_models]
+            s_model_ids = [model.id for model in slink_models]
+            saved_vul.models.append(s_model_ids)
+        saved_vul.save()

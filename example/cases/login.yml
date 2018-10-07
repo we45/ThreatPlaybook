@@ -16,7 +16,6 @@ login_user:
           type: repo
           description: External attacker compromises a user password, using a weak password
           reference: {name: weak-default-password, severity: 2}
-
         end user default password:
           type: inline
           vul_name: Default Passwords

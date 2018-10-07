@@ -75,7 +75,7 @@ class Recon(Document):
     options = StringField(max_length=100)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     result = StringField()
-    # cases = EmbeddedDocumentListField(TestCase)
+    models = ListField(ReferenceField(ThreatModel))
     session = ReferenceField(Session)
     target = ReferenceField(Target)
 
