@@ -3,7 +3,7 @@ ThreatPlaybook v 1.2
 
 Usage:
   threat-playbook new-project <projectname>
-  threat-playbook set-project <projectname>
+  threat-playbook set-project <project_name>
   threat-playbook show-vulns [--filter-severity=<severity>] [--format=<vul_format>]
   threat-playbook show-repo [--repoformat=<repo_format>]
   threat-playbook reload-repo
@@ -25,7 +25,7 @@ from docopt import docopt
 from texttable import Texttable
 from huepy import *
 from models import *
-from ThreatPlaybook import ThreatPlaybook
+import threat_playbook.ThreatPlaybook
 import shelve
 from glob import glob
 import json
@@ -35,13 +35,14 @@ import ntpath
 
 
 connect('threat_playbook')
-rdb = shelve.open('repo')
+module_path = os.path.dirname(threat_playbook.__file__)
+rdb = shelve.open(os.path.join(module_path, "repo"))
 
 def set_project(project_name):
     focus_project = Project.objects.get(name = project_name)
     if focus_project:
         os.environ['TP_PROJECT_NAME'] = focus_project.name
-        os.environ['TP_PROJECT_ID'] = focus_project.id
+        os.environ['TP_PROJECT_ID'] = str(focus_project.id)
     else:
         print(bad("There's no project by that name. Please try again"))
 
@@ -76,6 +77,8 @@ def get_repo_item(format = 'table'):
         print(table.draw())
     elif format == 'json':
         print json.dumps(dict(rdb))
+    elif format == 'yaml':
+        print yaml.dump(dict(rdb))
     else:
         print bad('Unrecognized Input. Bye!')
 
@@ -118,7 +121,7 @@ def get_vulnerabilities(filter = None, format = 'table'):
 
 
 def load_reload_repo_db():
-    repo_path = os.path.join(os.getcwd(), "repo/")
+    repo_path = os.path.join(module_path, "repo/")
     for single in glob(repo_path + "*.yaml"):
         single_name = ntpath.basename(single).split('.')[0]
         with open(single,'r') as rfile:
@@ -128,7 +131,7 @@ def load_reload_repo_db():
         if not rdb.has_key(single_name):
             rdb[single_name] = rcon
 
-if __name__ == '__main__':
+def main():
     arguments = docopt(__doc__, version = 'ThreatPlaybook CLI for v 1.2')
     if arguments['new-project']:
         if arguments['<projectname>']:
@@ -142,10 +145,10 @@ if __name__ == '__main__':
                 print(bad(e))
                 exit(1)
     if arguments['set-project']:
-        if arguments['<projectname>']:
+        if arguments['<project_name>']:
             try:
-                set_project(arguments['<projectname>'])
-                print(good("Successfully set Project to {}".format(arguments['<projectname>'])))
+                set_project(arguments['<project_name>'])
+                print(good("Successfully set Project to {}".format(arguments['<project_name>'])))
             except Exception as e:
                 print(bad(e))
                 exit(1)
@@ -169,7 +172,7 @@ if __name__ == '__main__':
                 print(bad(e))
                 exit(1)
         try:
-            get_repo_item(arguments['--repoformat'])
+            get_repo_item()
         except Exception as e:
             print(bad(e))
             exit(1)
