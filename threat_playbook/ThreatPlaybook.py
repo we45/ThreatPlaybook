@@ -151,10 +151,26 @@ class ThreatPlaybook(object):
             raise Exception("Target not Found. Please provide the name for a valid target")
 
         validated.pop('target_name')
+
+
         vul = Vulnerability(**validated)
+        if 'cwe' in validated:
+            linked_tms = ThreatModel.objects(cwe = validated['cwe'])
+            rel_tms = ThreatModel.objects(cwe = validated['cwe'])
+            if len(linked_tms) > 0:
+                rel_models = []
+                [rel_models.append(one) for one in linked_tms]
+                model_ids = [model.id for model in rel_models]
+                vul.models.extend(model_ids)
+            if len(rel_tms) > 0:
+                slink_models = []
+                [slink_models.append(one) for one in rel_tms]
+                s_model_ids = [model.id for model in slink_models]
+                vul.models.extend(s_model_ids)
         vul.session = self.session
         vul.target = target
         vul.save()
+
 
 
     def load_threat_scenarios(self, all_threat_models):

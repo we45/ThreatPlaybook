@@ -201,6 +201,7 @@ def parse_zap_json_file(zap_file, target, session, uri):
                         vul.severity = 0
                     vul.description = alert['Desc']
                     vul.cwe = alert['CWEID']
+                    print("CWE: {}".format(alert['CWEID']))
                     vul.remediation = alert['Solution']
 
                     evidence = VulnerabilityEvidence()
@@ -226,19 +227,18 @@ def parse_zap_json_file(zap_file, target, session, uri):
                             evidence.other_info = item.get('OtherInfo', None)
                             vul.evidences.append(evidence)
 
-                    all_linked_models = ThreatModel.objects(cwe=alerts['CWEID'])
-                    second_link_models = ThreatModel.objects(related_cwes=alerts['CWEID'])
+                    all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
+                    second_link_models = ThreatModel.objects(related_cwes=alert['CWEID'])
                     if len(all_linked_models) > 0:
                         rel_models = []
                         [rel_models.append(one) for one in all_linked_models]
                         model_ids = [model.id for model in rel_models]
-                        vul.models.append(model_ids)
+                        vul.models.extend(model_ids)
                     if len(second_link_models) > 0:
                         slink_models = []
                         [slink_models.append(one) for one in second_link_models]
                         s_model_ids = [model.id for model in slink_models]
-                        vul.models.append(s_model_ids)
-
+                        vul.models.extend(s_model_ids)
                     vul.session = session
                     vul.target = target
                     vul.save()
@@ -280,18 +280,18 @@ def parse_zap_json_file(zap_file, target, session, uri):
                         evidence.other_info = item.get('OtherInfo', None)
                         vul.evidences.append(evidence)
 
-                all_linked_models = ThreatModel.objects(cwe=alerts['CWEID'])
-                second_link_models = ThreatModel.objects(related_cwes = alerts['CWEID'])
-                if len(all_linked_models) > 0:
-                    rel_models = []
-                    [rel_models.append(one) for one in all_linked_models]
-                    model_ids = [model.id for model in rel_models]
-                    vul.models.append(model_ids)
-                if len(second_link_models) > 0:
-                    slink_models = []
-                    [slink_models.append(one) for one in second_link_models]
-                    s_model_ids = [model.id for model in slink_models]
-                    vul.models.append(s_model_ids)
+                alm = ThreatModel.objects(cwe=alerts['CWEID'])
+                slm = ThreatModel.objects(related_cwes = alerts['CWEID'])
+                if len(alm) > 0:
+                    rel_dict_models = []
+                    [rel_dict_models.append(one) for one in alm]
+                    dict_model_ids = [model.id for model in rel_dict_models]
+                    vul.models.extend(dict_model_ids)
+                if len(slm) > 0:
+                    slink_dict_models = []
+                    [slink_dict_models.append(one) for one in slm]
+                    dict_s_model_ids = [model.id for model in slink_dict_models]
+                    vul.models.extend(dict_s_model_ids)
 
                 vul.session = session
                 vul.target = target
@@ -687,10 +687,10 @@ def manage_npm_audit_file(json_file, target, session):
             rel_models = []
             [rel_models.append(one) for one in all_linked_models]
             model_ids = [model.id for model in rel_models]
-            saved_vul.models.append(model_ids)
+            saved_vul.models.extend(model_ids)
         if len(second_link_models) > 0:
             slink_models = []
             [slink_models.append(one) for one in second_link_models]
             s_model_ids = [model.id for model in slink_models]
-            saved_vul.models.append(s_model_ids)
+            saved_vul.models.extend(s_model_ids)
         saved_vul.save()

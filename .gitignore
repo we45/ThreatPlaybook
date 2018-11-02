@@ -17,3 +17,5 @@ threat_playbook/ThreatPlaybook.egg-info/SOURCES.txt
 threat_playbook/ThreatPlaybook.egg-info/top_level.txt
 venv3/*
 threat_playbook/*.bak
+threat_playbook/test/scan_files/ctf.json
+threat_playbook/test/scan_files/ctf.json

@@ -1,17 +1,14 @@
 from mongoengine import *
 import datetime
-import uuid
 
 class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
 
 class Session(Document):
-    # name = StringField()
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class Entity(Document):
-    # name = StringField(max_length=50)
     short = StringField(max_length=50, unique = True)
     shape = StringField(max_length=50)
     description = StringField()
@@ -26,7 +23,6 @@ class EntityMapping(Document):
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class TestCase(EmbeddedDocument):
-    # TEST_TYPES = (('M', "Manual"), ("A", "Automated"), ('R', "Recon"))
     name = StringField(unique=True)
     test = StringField()
     executed = BooleanField(default = False)
@@ -42,7 +38,6 @@ class ThreatModel(Document):
     name = StringField(max_length=200, required=True, unique = True)
     vul_name = StringField()
     description = StringField(required = True)
-    #dread = ListField()
     severity = IntField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     cases = EmbeddedDocumentListField(TestCase)
@@ -89,10 +84,6 @@ class VulnerabilityEvidence(EmbeddedDocument):
     evidence = StringField()
     other_info = StringField()
 
-# class VulnerabilityMitigation(EmbeddedDocument):
-#     description = StringField()
-#     phase = StringField(max_length=100)
-
 class Vulnerability(Document):
     severity_choices = ((3, "High"), (2, "Medium"), (1, "Low"), (0, "Info"))
     tool = StringField(max_length=100)
@@ -104,7 +95,6 @@ class Vulnerability(Document):
     remediation = StringField()
     evidences = EmbeddedDocumentListField(VulnerabilityEvidence)
     models = ListField(ReferenceField(ThreatModel))
-    # cases = EmbeddedDocumentListField(TestCase)
     session = ReferenceField(Session)
     target = ReferenceField(Target)
 
