@@ -11,7 +11,7 @@ login_user:
           type: repo
           description: External Attacker may be able to gain access to user accounts by successfully performing SQL Injection Attacks
             against some of the unauthenticated pages in the application
-          reference: {name: sql-injection, severity: 3}
+          reference: {name: sql_injection, severity: 3}
         end user weak password:
           type: repo
           description: External attacker compromises a user password, using a weak password
@@ -27,10 +27,9 @@ login_user:
             test: run automated vulnerability discovery tools and bruteforce against the application
             tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
             type: discovery
-
         auth token hijacking mitm:
           type: repo
           description: Attacker attempts to compromise auth token by gaining access to the end user's auth token by performing Man in the Middle Attacks
-          reference: {name: }
+          reference: {name: plaintext-transmission, severity: 3}
 
 
