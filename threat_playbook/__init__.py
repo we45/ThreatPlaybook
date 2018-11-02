@@ -54,16 +54,15 @@ def create_new_project(proj_name):
         directory = '{0}/{1}'.format(proj_name, directory)
         if not os.path.exists(directory):
             os.makedirs(directory)
-    try:
-        file = open(file_name, 'r')
-    except IOError:
-        file = open(file_name, 'w')
+    if not os.path.isfile(file_name):
+        file(file_name, 'w').close()
 
     entities_dir = os.path.join(os.getcwd(), "{0}/entities".format(proj_name))
-    try:
-        entities_file = open(entities_dir + "/entities_connections.yml", 'r')
-    except IOError:
-        entities_file = open(entities_dir + "/entities_connections.yml", 'w')
+    if not os.path.isfile(entities_dir + "/entities_connections.yml"):
+        file(entities_dir + "/entities_connections.yml", 'w').close()
+
+    if not os.path.isfile('.env'):
+        file('.env', 'w').close()
 
 
 def get_repo_item(format = 'table'):
@@ -171,11 +170,12 @@ def main():
             except Exception as e:
                 print(bad(e))
                 exit(1)
-        try:
-            get_repo_item()
-        except Exception as e:
-            print(bad(e))
-            exit(1)
+        else:
+            try:
+                get_repo_item()
+            except Exception as e:
+                print(bad(e))
+                exit(1)
 
     if arguments['reload-repo']:
         try:
