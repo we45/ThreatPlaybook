@@ -1,0 +1,40 @@
+name: XML External Entities
+cwe: 611
+description: The software processes an XML document that can contain XML entities
+  with URIs that resolve to documents outside of the intended sphere of control, causing
+  the product to embed incorrect documents into its output.
+categories: [app_vulns,owasp]
+mitigations:
+- description: XML parsers and validators must be configured to disable external
+    entity expansion, general entities and parameter entity resolution
+  phase: Implementation
+risk:
+- consequence: If the attacker is able to include a crafted DTD and a default entity
+    resolver is enabled, the attacker may be able to access arbitrary files on the
+    system.
+  type: Confidentiality
+- consequence: The DTD may include arbitrary HTTP requests that the server may execute.
+    This could lead to other attacks leveraging the server's trust relationship with
+    other entities.
+  type: Integrity
+- consequence: The software could consume excessive CPU cycles or memory using a URI
+    that points to a large file, or a device that always returns data such as /dev/random.
+    Alternately, the URI could reference a file that contains many nested or recursive
+    entity references to further slow down parsing.
+  type: Availability
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools and its XXE payloads against the application
+  tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+  type: discovery
+- name: manual
+  test: test for XXE variants manually with pentesters, bug-bounty
+  type: manual
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of XXE
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of dynamic queries or stored procedures that are vulnerable to XXE
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast

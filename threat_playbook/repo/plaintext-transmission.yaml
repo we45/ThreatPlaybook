@@ -1,0 +1,39 @@
+name: Plaintext transmission of sensitive data
+cwe: 319
+categories: [app_vulns,owasp]
+description: The software transmits sensitive or security-critical data in cleartext
+  in a communication channel that can be sniffed by unauthorized actors.
+mitigations:
+- description: Encrypt the data with a reliable encryption scheme before transmitting.
+  phase: Architecture and Design
+- description: When using web applications with SSL, use SSL for the entire session
+    from login to logout, not just for the initial login page.
+  phase: Implementation
+- description: Use tools and techniques that require manual (human) analysis, such
+    as penetration testing, threat modeling, and interactive tools that allow the
+    tester to record and modify an active session. These may be more effective than
+    strictly automated techniques. This is especially the case with weaknesses that
+    are related to design and business rules.
+  phase: Testing
+- description: Configure servers to use encrypted channels for communication, which
+    may include SSL or other secure protocols.
+  phase: Operation
+risk:
+- consequence: Anyone can read the information by gaining access to the channel being
+    used for communication.
+  type: Confidentiality
+test-cases:
+- name: ssl-test
+  test: Check for SSL/TLS implementation with automated tools
+  tools: [ssllabs.com,testssl.sh,sslyze,sslscan,nmap]
+  type: discovery
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of misconfigured SSL/TLS Implementation or Plaintext Data Transmission
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances that relate to misconfigured SSL/TLS Implementation or Plaintext Data Transmission
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast
+related_cwes:
+- 311

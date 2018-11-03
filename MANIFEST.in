@@ -1,0 +1,3 @@
+include docs/*.html
+include threat_playbook/repo.db
+include threat_playbook/repo/*.yaml
