@@ -1,0 +1,11 @@
+language: python
+python:
+  - 2.7
+
+#command to install deps
+install:
+  - "pip install pipenv --upgrade-strategy=only-if-needed"
+  - "pipenv install --dev"
+
+script:
+  - "pytest"

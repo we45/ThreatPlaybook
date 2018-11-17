@@ -50,9 +50,8 @@ def parse_zap_json_file(zap_file, target, session, uri):
                     }.get(alert['RiskDesc'], 0)
                     vul.description = alert['Desc']
                     vul.cwe = alert['CWEID']
-                    print("CWE: {}".format(alert['CWEID']))
                     vul.remediation = alert['Solution']
-                    vul.evidences += _map_alert_to_evidence(alert['Item'])
+                    vul.evidences += _map_alert_to_evidence(alert)
 
                     all_linked_models = ThreatModel.objects(cwe=alert['CWEID'])
                     second_link_models = ThreatModel.objects(related_cwes=alert['CWEID'])
