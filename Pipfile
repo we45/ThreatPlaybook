@@ -6,6 +6,7 @@ name = "pypi"
 [dev-packages]
 twine = "*"
 pytest = "*"
+tinydb = "*"
 
 [packages]
 lxml = "==4.2.1"
@@ -19,6 +20,7 @@ schema = "==0.6.8"
 docopt = "*"
 texttable = "*"
 huepy = "*"
+tinydb = "*"
 
 [requires]
 python_version = "2.7"

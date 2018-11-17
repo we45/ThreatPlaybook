@@ -13,7 +13,7 @@ from utils import parse_zap_json_file, manage_burp_xml_file, manage_recon_result
 from subprocess import call
 import textwrap
 from uuid import uuid4
-import shelve
+from tinydb import TinyDB, Query
 
 class ThreatPlaybook(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -64,9 +64,9 @@ class ThreatPlaybook(object):
 
         Project.objects(name = project_name).update_one(name = project_name, upsert = True)
         self.project = Project.objects.get(name = project_name)
-        shelve_path = os.path.join(self.ROOT_DIR, 'repo')
-        self.rdb = shelve.open(shelve_path)
-
+        shelve_path = os.path.join(self.ROOT_DIR, 'repo.json')
+        self.rdb = TinyDB(shelve_path)
+        self.Repo = Query()
         new_session = Session(project = self.project)
         new_session.name = str(uuid4())
         new_session.save()
@@ -180,20 +180,21 @@ class ThreatPlaybook(object):
                 if mdeets['type'] == 'repo':
                     if 'reference' in mdeets:
                         vul_name = mdeets['reference']['name']
-                        if vul_name in self.rdb.keys():
+                        vul_find = self.rdb.get(self.Repo.repo_id == vul_name)
+                        if vul_find:
                             risks = []
                             vul_cases = []
-                            if 'mitigations' in self.rdb[vul_name]:
-                                mitigations = self.rdb[vul_name]['mitigations']
+                            if 'mitigations' in vul_find:
+                                mitigations = vul_find['mitigations']
                             else:
                                 mitigations = None
-                            if 'related_cwes' in self.rdb[vul_name]:
-                                related_cwes = self.rdb[vul_name]['related_cwes']
+                            if 'related_cwes' in vul_find:
+                                related_cwes = vul_find['related_cwes']
                             else:
                                 related_cwes = None
-                            if 'test-cases' in self.rdb[vul_name]:
-                                if isinstance(self.rdb[vul_name]['test-cases'], list):
-                                    for single in self.rdb[vul_name]['test-cases']:
+                            if 'test-cases' in vul_find:
+                                if isinstance(vul_find['test-cases'], list):
+                                    for single in vul_find['test-cases']:
                                         case = TestCase()
                                         case.name = single['name']
                                         case.test = single['test']
@@ -205,15 +206,15 @@ class ThreatPlaybook(object):
                             else:
                                 vul_cases = None
 
-                            if 'categories' in self.rdb[vul_name]:
-                                if isinstance(self.rdb[vul_name]['categories'], list):
-                                    categories = self.rdb[vul_name]['categories']
+                            if 'categories' in vul_find:
+                                if isinstance(vul_find['categories'], list):
+                                    categories = vul_find['categories']
                             else:
                                 categories = None
 
-                            if 'risks' in self.rdb[vul_name]:
-                                if isinstance(self.rdb[vul_name]['risks'], list):
-                                    for single_risk in self.rdb[vul_name]['risks']:
+                            if 'risks' in vul_find:
+                                if isinstance(vul_find['risks'], list):
+                                    for single_risk in vul_find['risks']:
                                         risks.append(Risk(consequence = single_risk['consequence'],risk_type = single_risk['type']))
 
                             if 'severity' in mdeets['reference']:
@@ -224,9 +225,9 @@ class ThreatPlaybook(object):
                                 severity = None
 
                             ThreatModel.objects(name = model).update_one(name = model, vul_name = vul_name,
-                                                                         description = self.rdb[vul_name]['description'],
+                                                                         description = vul_find['description'],
                                                                          mitigations = mitigations,
-                                                                         cwe = self.rdb[vul_name]['cwe'],
+                                                                         cwe = vul_find['cwe'],
                                                                          related_cwes = related_cwes, severity = severity,
                                                                          project = self.project, cases = vul_cases,
                                                                          categories = categories, upsert=True)

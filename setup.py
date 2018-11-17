@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='1.2',
+    version='1.2.1',
     packages=['threat_playbook'],
     entry_points={
         'console_scripts': [
@@ -29,7 +29,8 @@ setup(
         'lxml==4.2.1',
         'docopt',
         'texttable',
-        'huepy'
+        'huepy',
+        'tinydb'
     ],
     description='Threat-Models-as Code, An Action-Oriented Threat Modeling and Automation Framework',
     long_description = long_description,

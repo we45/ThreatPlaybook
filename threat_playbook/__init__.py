@@ -26,17 +26,18 @@ from texttable import Texttable
 from huepy import *
 from models import *
 import threat_playbook.ThreatPlaybook
-import shelve
 from glob import glob
 import json
 from pprint import pprint
 import yaml
 import ntpath
+from tinydb import TinyDB, Query
 
 
 connect('threat_playbook')
 module_path = os.path.dirname(threat_playbook.__file__)
-rdb = shelve.open(os.path.join(module_path, "repo"))
+rdb = TinyDB(os.path.join(module_path, "repo.json"))
+Repo = Query()
 
 def set_project(project_name):
     focus_project = Project.objects.get(name = project_name)
@@ -71,13 +72,14 @@ def get_repo_item(format = 'table'):
         table.set_cols_align(["l", "c", "c"])
         table.set_cols_valign(["m", "m", "m"])
         table.add_row(['Name', 'CWE', 'Mitigations'])
-        for one in rdb.iterkeys():
-            table.add_row([rdb[one]['name'], rdb[one]['cwe'], len(rdb[one]['mitigations'])])
+        all_vuls = rdb.all()
+        for one in all_vuls:
+            table.add_row(one['name'], one['cwe'], len(one['mitigations']))
         print(table.draw())
     elif format == 'json':
-        print json.dumps(dict(rdb))
+        print json.dumps(all_vuls)
     elif format == 'yaml':
-        print yaml.dump(dict(rdb))
+        print yaml.dump(all_vuls)
     else:
         print bad('Unrecognized Input. Bye!')
 
@@ -127,8 +129,13 @@ def load_reload_repo_db():
             rval = rfile.read()
 
         rcon = yaml.safe_load(rval)
-        if not rdb.has_key(single_name):
-            rdb[single_name] = rcon
+        has_value = rdb.get(Repo.repo_id == single_name)
+        if not has_value:
+            x = {}
+            x['repo_id'] = single_name
+            x.update(rcon)
+            rdb.insert(x)
+
 
 def main():
     arguments = docopt(__doc__, version = 'ThreatPlaybook CLI for v 1.2')
