@@ -1,0 +1,48 @@
+create_expense:
+  description: As a user, I am able to upload expenses within project limit that have been incurred by me for processing/payment by my manager, so I can get reimbursed
+  abuse_cases:
+    manipulate expense information:
+      description: As a malicious user, I will manipulate expense management process to get larger or bogus expenses into the system.
+      threat_scenarios:
+        sql injection expense limit bypass:
+          type: repo
+          description: Perform SQL Injection to compromise the Database, and raise project budget limits or bypass expense controls
+          reference: {name: sql_injection, severity: 3}
+        compromise manager password:
+          type: repo
+          description: Compromise my manager's password and increase budgets to create expenses with larger amounts
+          reference: {name: weak-default-password, severity: 2}
+        compromise manager auth token:
+          type: repo
+          description: Attempt to steal manager's authentication token through XSS to elevate privileges to manager's account and increase project expense budgets
+          reference: {name: xss, severity: 3}
+    manipulate expense approval:
+      description: As a malicious user, I will manipulate the expense approval process so I can get bogus expense approved
+      threat_scenarios:
+        sql injection expense limit bypass:
+            type: repo
+            description: Perform SQL Injection to compromise the Database, and raise project budget limits or bypass expense controls
+            reference: {name: sql_injection, severity: 3}
+        compromise manager password:
+          type: repo
+          description: Compromise my manager's password and increase budgets to approve expenses
+          reference: {name: weak-default-password, severity: 2}
+        compromise manager auth token:
+          type: repo
+          description: Attempt to steal manager's authentication token through XSS to elevate privileges to manager's account and approve expenses
+          reference: {name: xss, severity: 3}
+        csrf manager:
+          type: inline
+          vul_name: Cross-Site Request Forgery
+          description: Attempt to perform a CSRF Social Engineering attack against the manager to force the manager to generate an approval request on your expense
+          cwe: 352
+          severity: 2
+          test-cases:
+          - name: automated-vulnerability-scanning
+            test: run automated vulnerability discovery tools to identify CSRF against the application
+            tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+            type: discovery
+        authorization bypass:
+          type: repo
+          reference: {name: idor_pk, severity: 3}
+          description: Perform Authorization Bypass through IDOR or Mass Assignment style vulnerabilities to get unauthorized expenses approved
