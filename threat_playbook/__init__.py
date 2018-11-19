@@ -67,14 +67,14 @@ def create_new_project(proj_name):
 
 
 def get_repo_item(format = 'table'):
+    all_vuls = rdb.all()
     if format == 'table':
         table = Texttable()
         table.set_cols_align(["l", "c", "c"])
         table.set_cols_valign(["m", "m", "m"])
         table.add_row(['Name', 'CWE', 'Mitigations'])
-        all_vuls = rdb.all()
         for one in all_vuls:
-            table.add_row(one['name'], one['cwe'], len(one['mitigations']))
+            table.add_row([one['name'], one['cwe'], len(one['mitigations'])])
         print(table.draw())
     elif format == 'json':
         print json.dumps(all_vuls)
