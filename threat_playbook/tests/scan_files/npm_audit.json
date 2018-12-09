@@ -1,0 +1,373 @@
+{
+  "actions": [
+    {
+      "action": "install",
+      "module": "express",
+      "target": "4.16.4",
+      "isMajor": false,
+      "resolves": [
+        {
+          "id": 535,
+          "path": "express>send>mime",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 535,
+          "path": "express>serve-static>send>mime",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "install",
+      "module": "morgan",
+      "target": "1.9.1",
+      "isMajor": false,
+      "resolves": [
+        {
+          "id": 736,
+          "path": "morgan",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "module": "jws",
+      "resolves": [
+        {
+          "id": 658,
+          "path": "jsonwebtoken>jws>jwa>base64url",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 658,
+          "path": "jsonwebtoken>jws>base64url",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 658,
+          "path": "jsonwebtoken>jws>jwa>ecdsa-sig-formatter>base64url",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "target": "3.1.5",
+      "action": "update",
+      "depth": 2
+    },
+    {
+      "action": "review",
+      "module": "node-serialize",
+      "resolves": [
+        {
+          "id": 311,
+          "path": "node-serialize",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "uglify-js",
+      "resolves": [
+        {
+          "id": 39,
+          "path": "jade>transformers>uglify-js",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 48,
+          "path": "jade>transformers>uglify-js",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "39": {
+      "findings": [
+        {
+          "version": "2.2.5",
+          "paths": [
+            "jade>transformers>uglify-js"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 39,
+      "created": "2015-10-17T19:41:46.382Z",
+      "updated": "2018-02-24T00:13:52.640Z",
+      "deleted": null,
+      "title": "Incorrect Handling of Non-Boolean Comparisons During Minification",
+      "found_by": {
+        "name": "Tom MacWright"
+      },
+      "reported_by": {
+        "name": "Tom MacWright"
+      },
+      "module_name": "uglify-js",
+      "cves": [
+        "CVE-2015-8857"
+      ],
+      "vulnerable_versions": "<= 2.4.23",
+      "patched_versions": ">= 2.4.24",
+      "overview": "Versions of `uglify-js` prior to 2.4.24 are affected by a vulnerability which may cause crafted JavaScript to have altered functionality after minification.\n\n",
+      "recommendation": "Upgrade UglifyJS to version >= 2.4.24.",
+      "references": "[Backdooring JS - Yan Zhu(@bcrypt)](https://zyan.scripts.mit.edu[Backdooring JS - Yan Zhu(@bcrypt)]/blog/backdooring-js/)\n[Issue #751](https://github.com/mishoo/UglifyJS2/issues/751)",
+      "access": "public",
+      "severity": "low",
+      "cwe": "CWE-95",
+      "metadata": {
+        "module_type": "Multi.Compiler",
+        "exploitability": 2,
+        "affected_components": ""
+      },
+      "url": "https://npmjs.com/advisories/39"
+    },
+    "48": {
+      "findings": [
+        {
+          "version": "2.2.5",
+          "paths": [
+            "jade>transformers>uglify-js"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 48,
+      "created": "2015-10-24T17:58:34.232Z",
+      "updated": "2018-02-24T00:59:58.129Z",
+      "deleted": null,
+      "title": "Regular Expression Denial of Service",
+      "found_by": {
+        "name": "Adam Baldwin"
+      },
+      "reported_by": {
+        "name": "Adam Baldwin"
+      },
+      "module_name": "uglify-js",
+      "cves": [
+        "CVE-2015-8858"
+      ],
+      "vulnerable_versions": "<2.6.0",
+      "patched_versions": ">=2.6.0",
+      "overview": "Versions of `uglify-js` prior to 2.6.0 are affected by a regular expression denial of service vulnerability when malicious inputs are passed into the `parse()` method.\n\n\n### Proof of Concept\n\n```\nvar u = require('uglify-js');\nvar genstr = function (len, chr) {\n    var result = \"\";\n    for (i=0; i<=len; i++) {\n        result = result + chr;\n    }\n\n    return result;\n}\n\nu.parse(\"var a = \" + genstr(process.argv[2], \"1\") + \".1ee7;\");\n```\n\n### Results\n```\n$ time node test.js 10000\nreal\t0m1.091s\nuser\t0m1.047s\nsys\t0m0.039s\n\n$ time node test.js 80000\nreal\t0m6.486s\nuser\t0m6.229s\nsys\t0m0.094s\n```",
+      "recommendation": "Update to version 2.6.0 or later.",
+      "references": "",
+      "access": "public",
+      "severity": "low",
+      "cwe": "CWE-400",
+      "metadata": {
+        "module_type": "CLI.Compiler",
+        "exploitability": 3,
+        "affected_components": "Internal::Code::Method::parse([*])"
+      },
+      "url": "https://npmjs.com/advisories/48"
+    },
+    "311": {
+      "findings": [
+        {
+          "version": "0.0.4",
+          "paths": [
+            "node-serialize"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 311,
+      "created": "2017-02-09T16:30:45.000Z",
+      "updated": "2018-03-21T20:03:53.370Z",
+      "deleted": null,
+      "title": "Code Execution through IIFE",
+      "found_by": {
+        "name": "Ajin Abraham"
+      },
+      "reported_by": {
+        "name": "Ajin Abraham"
+      },
+      "module_name": "node-serialize",
+      "cves": [
+        "CVE-2017-16004"
+      ],
+      "vulnerable_versions": "<=99.999.99999",
+      "patched_versions": "<0.0.0",
+      "overview": "Affected versions of `node-serialize` can be abused to execute arbitrary code via an [immediately invoked function expression](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) (IIFE) if untrusted user input is passed into `unserialize()`.",
+      "recommendation": "There is no direct patch for this issue. The package author has reviewed this advisory, and provided the following recommendation:\r\n\r\n```\r\nTo avoid the security issues, at least one of the following methods should be taken:\r\n\r\n1. Make sure to send serialized strings internally, isolating them from potential hackers. For example, only sending the strings from backend to fronend and always using HTTPS instead of HTTP.\r\n\r\n2. Introduce public-key cryptosystems (e.g. RSA) to ensure the strings not being tampered with.\r\n```",
+      "references": "* https://opsecx.com/index.php/2017/02/08/exploiting-node-js-deserialization-bug-for-remote-code-execution/\n[Issue #4](https://github.com/luin/serialize/issues/4)",
+      "access": "public",
+      "severity": "critical",
+      "cwe": "CWE-502",
+      "metadata": {
+        "module_type": "Multi.Library",
+        "exploitability": 7,
+        "affected_components": "Internal::Code::Method::unserialize([*])"
+      },
+      "url": "https://npmjs.com/advisories/311"
+    },
+    "535": {
+      "findings": [
+        {
+          "version": "1.3.4",
+          "paths": [
+            "express>send>mime",
+            "express>serve-static>send>mime"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 535,
+      "created": "2017-09-25T19:02:28.152Z",
+      "updated": "2018-04-09T00:38:22.785Z",
+      "deleted": null,
+      "title": "Regular Expression Denial of Service",
+      "found_by": {
+        "name": "Cristian-Alexandru Staicu"
+      },
+      "reported_by": {
+        "name": "Cristian-Alexandru Staicu"
+      },
+      "module_name": "mime",
+      "cves": [
+        "CVE-2017-16138"
+      ],
+      "vulnerable_versions": "< 1.4.1 || > 2.0.0 < 2.0.3",
+      "patched_versions": ">= 1.4.1 < 2.0.0 || >= 2.0.3",
+      "overview": "Affected versions of `mime` are vulnerable to regular expression denial of service when a mime lookup is performed on untrusted user input.",
+      "recommendation": "Update to version 2.0.3 or later.",
+      "references": "[Issue #167](https://github.com/broofa/node-mime/issues/167)",
+      "access": "public",
+      "severity": "moderate",
+      "cwe": "CWE-400",
+      "metadata": {
+        "module_type": "Multi.Library",
+        "exploitability": 4,
+        "affected_components": ""
+      },
+      "url": "https://npmjs.com/advisories/535"
+    },
+    "658": {
+      "findings": [
+        {
+          "version": "2.0.0",
+          "paths": [
+            "jsonwebtoken>jws>base64url",
+            "jsonwebtoken>jws>jwa>base64url",
+            "jsonwebtoken>jws>jwa>ecdsa-sig-formatter>base64url"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 658,
+      "created": "2018-05-16T19:16:37.120Z",
+      "updated": "2018-05-16T19:17:38.115Z",
+      "deleted": null,
+      "title": "Out-of-bounds Read",
+      "found_by": {
+        "name": "Сковорода Никита Андреевич"
+      },
+      "reported_by": {
+        "name": "Сковорода Никита Андреевич"
+      },
+      "module_name": "base64url",
+      "cves": [],
+      "vulnerable_versions": "<3.0.0",
+      "patched_versions": ">=3.0.0",
+      "overview": "Versions of `base64url` before 3.0.0 are vulnerable to to out-of-bounds reads as it allocates uninitialized Buffers when number is passed in input on Node.js 4.x and below.",
+      "recommendation": "Update to version 3.0.0 or later.",
+      "references": "- [HackerOne Report](https://hackerone.com/reports/321687)\n- [PR #25](https://github.com/brianloveswords/base64url/pull/25\")",
+      "access": "public",
+      "severity": "moderate",
+      "cwe": "CWE-125",
+      "metadata": {
+        "module_type": "",
+        "exploitability": 2,
+        "affected_components": ""
+      },
+      "url": "https://npmjs.com/advisories/658"
+    },
+    "736": {
+      "findings": [
+        {
+          "version": "1.9.0",
+          "paths": [
+            "morgan"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 736,
+      "created": "2018-11-09T19:08:17.215Z",
+      "updated": "2018-11-09T19:08:31.825Z",
+      "deleted": null,
+      "title": "Code Injection",
+      "found_by": {
+        "link": "https://semmle.com/security",
+        "name": "Cristian-Alexandru Staicu"
+      },
+      "reported_by": {
+        "link": "https://semmle.com/security",
+        "name": "Cristian-Alexandru Staicu"
+      },
+      "module_name": "morgan",
+      "cves": [],
+      "vulnerable_versions": "<=1.9.0",
+      "patched_versions": ">=1.9.1",
+      "overview": "Verisons of `morgan` before 1.9.1 are vulnerable to code injection when user input is allowed into the filter or combined with a prototype pollution attack.",
+      "recommendation": "Update to version 1.9.1 or later.",
+      "references": "- [HackerOne Report](https://hackerone.com/reports/390881)\n- [Node.js security-wg](https://github.com/nodejs/security-wg/blob/master/vuln/npm/473.json)",
+      "access": "public",
+      "severity": "moderate",
+      "cwe": "CWE-94",
+      "metadata": {
+        "module_type": "",
+        "exploitability": 5,
+        "affected_components": ""
+      },
+      "url": "https://npmjs.com/advisories/736"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 2,
+      "moderate": 6,
+      "high": 0,
+      "critical": 1
+    },
+    "dependencies": 394,
+    "devDependencies": 0,
+    "optionalDependencies": 23,
+    "totalDependencies": 417
+  },
+  "runId": "7075a8bf-b14c-42f0-b976-b9d07fa6eb0f"
+}
