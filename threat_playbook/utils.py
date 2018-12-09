@@ -360,33 +360,34 @@ def manage_burp_xml_file(xml_file,  target, session, uri):
 
 def manage_npm_audit_file(json_file, target, session):
     results = json.load(open(json_file, 'r'))
-    all_advisories = results.get('advisories', [])
+    all_advisories = results.get('advisories')
     severity_dict = {
         'moderate': 2,
         'low': 1,
         'critical': 3
     }
     default_dict = {}
-    for advisory in all_advisories:
-        title = all_advisories.get(advisory).get('title')
+    for key, advisory in all_advisories.items():
+        title = advisory.get('title')
         default_dict[title] = {
             'description': '',
             'evidences': [],
             'remediation': '',
             'severity': 2
         }
-        for finding in all_advisories.get(advisory).get('findings'):
+        evidences = []
+        for finding in advisory.get('findings'):
             for path in finding.get('paths'):
-                advisory = all_advisories.get(advisory, {})
                 evidence = {
-                    'url': all_advisories.get(advisory).get('module_name'),
+                    'url': advisory.get('module_name'),
                     'name': 'File: {0}'.format(path)
                 }
-                default_dict[title]['evidences'] = [evidence]
-                default_dict[title]['description'] = advisory.get('overview')
-                default_dict[title]['cwe'] = int(advisory.get('cwe', '').split('-')[-1])
-                default_dict[title]['remediation'] = advisory.get('recommendation')
-                default_dict[title]['severity'] = severity_dict.get(advisory.get('severity'), 2)
+                evidences.append(evidence)
+        default_dict[title]['evidences'] = evidences
+        default_dict[title]['description'] = advisory.get('overview')
+        default_dict[title]['cwe'] = int(advisory.get('cwe', '').split('-')[-1])
+        default_dict[title]['remediation'] = advisory.get('recommendation')
+        default_dict[title]['severity'] = severity_dict.get(advisory.get('severity'), 2)
 
     for individual_vul_title, individual_vul_detail in default_dict.items():
         vul_dict = Vulnerability()

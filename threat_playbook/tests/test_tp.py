@@ -7,6 +7,7 @@ cur_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe(
 
 TEST_FILE_PATH = os.path.join(cur_path, "artefacts")
 ZAP_FILE = os.path.join(cur_path, 'scan_files/ctf.json')
+NPM_FILE = os.path.join(cur_path, 'scan_files/npm_audit.json')
 
 tp = ThreatPlaybook('test_threatplaybook', db_name = 'test_tp')
 
@@ -28,3 +29,6 @@ def test_create_and_link_recon():
 
 def test_load_zap_results_to_db():
     tp.parse_zap_json(ZAP_FILE, 'test_target', 'http://www.target.t')
+
+def test_load_npm_results_to_db():
+    tp.parse_npmaudit_scan_result(NPM_FILE, 'test_target')
