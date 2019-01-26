@@ -16,3 +16,9 @@ threat_playbook/ThreatPlaybook.egg-info/requires.txt
 threat_playbook/ThreatPlaybook.egg-info/SOURCES.txt
 threat_playbook/ThreatPlaybook.egg-info/top_level.txt
 venv3/*
+v1/ThreatPlaybook.egg-info/top_level.txt
+v1/ThreatPlaybook.egg-info/SOURCES.txt
+v1/ThreatPlaybook.egg-info/requires.txt
+v1/ThreatPlaybook.egg-info/PKG-INFO
+v1/ThreatPlaybook.egg-info/entry_points.txt
+v1/ThreatPlaybook.egg-info/dependency_links.txt
