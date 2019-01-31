@@ -22,3 +22,6 @@ v1/ThreatPlaybook.egg-info/requires.txt
 v1/ThreatPlaybook.egg-info/PKG-INFO
 v1/ThreatPlaybook.egg-info/entry_points.txt
 v1/ThreatPlaybook.egg-info/dependency_links.txt
+v3/cli/.cred
+v3/cli/schematest.json
+v3/cli/schema.schema

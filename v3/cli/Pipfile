@@ -1,25 +1,17 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [dev-packages]
-
-
+ipython = "*"
 
 [packages]
-
-responder = "*"
-mongoengine = "*"
-graphene = "*"
-graphene-mongo = "*"
-schema = "*"
-"argon2-cffi" = "*"
-pyjwt = "*"
-
+docopt = "*"
+requests = "*"
+huepy = "*"
+pickledb = "*"
+jsonschema = "*"
 
 [requires]
-
 python_version = "3.6"

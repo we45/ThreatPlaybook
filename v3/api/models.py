@@ -5,10 +5,9 @@ import datetime
 class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
 
-
-class Session(Document):
-    created_on = DateTimeField(default=datetime.datetime.utcnow)
-    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
+# class Session(Document):
+#     created_on = DateTimeField(default=datetime.datetime.utcnow)
+#     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 
 class Entity(Document):
@@ -65,8 +64,6 @@ class UseCase(Document):
     description = StringField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     abuses = ListField(ReferenceField(AbuseCase))
-    models = ListField(ReferenceField(ThreatModel))
-
 
 class Target(Document):
     name = StringField(unique=True)
@@ -80,7 +77,6 @@ class Recon(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     result = StringField()
     models = ListField(ReferenceField(ThreatModel))
-    session = ReferenceField(Session)
     target = ReferenceField(Target)
 
 
@@ -106,7 +102,7 @@ class Vulnerability(Document):
     remediation = StringField()
     evidences = EmbeddedDocumentListField(VulnerabilityEvidence)
     models = ListField(ReferenceField(ThreatModel))
-    session = ReferenceField(Session)
+    project = ReferenceField(Project)
     target = ReferenceField(Target)
 
 class User(Document):
