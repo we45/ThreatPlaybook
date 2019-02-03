@@ -1,0 +1,78 @@
+name: Code Injection
+description: The software constructs all or part of a code segment using externally-influenced
+  input from an upstream component, but it does not neutralize or incorrectly neutralizes
+  special elements that could modify the syntax or behavior of the intended code segment.
+categories: [app_vulns,owasp]
+cwe: 94
+mitigations:
+- description: Refactor your program so that you do not have to dynamically generate
+    code.
+  phase: Architecture and Design
+- description: To reduce the likelihood of code injection, use stringent whitelists
+    that limit which constructs are allowed. If you are dynamically constructing code
+    that invokes a function, then verifying that the input is alphanumeric might be
+    insufficient. An attacker might still be able to reference a dangerous function
+    that you did not intend to allow, such as system(), exec(), or exit().
+  phase: Implementation
+- description: Use automated static analysis tools that target this type of weakness.
+    Many modern techniques use data flow analysis to minimize the number of false
+    positives. This is not a perfect solution, since 100% accuracy and coverage are
+    not feasible.
+  phase: Testing
+- description: Use dynamic tools and techniques that interact with the software using
+    large test suites with many diverse inputs, such as fuzz testing (fuzzing), robustness
+    testing, and fault injection. The software's operation may slow down, but it should
+    not become unstable, crash, or generate incorrect results.
+  phase: Testing
+- description: Run the code in an environment that performs automatic taint propagation
+    and prevents any command execution that uses tainted variables, such as Perl's
+    "-T" switch. This will force the program to perform validation steps that remove
+    the taint, although you must be careful to correctly validate your inputs so that
+    you do not accidentally mark dangerous inputs as untainted (see CWE-183 and CWE-184).
+  phase: Operation
+- description: Identify vulnerabilities in underlying libraries with Source Composition Scanning
+  phase: Testing
+- description: Consider using low-logic templating systems, if you are using Templating Frameworks. Low-Logic
+    Templating Systems like Mustache cannot expand objects and data-structures, thereby ensuring that remote code
+    execution through Template Variables, does not happen
+  phase: Implementation
+risk:
+- consequence: In some cases, injectable code controls authentication; this may lead
+    to a remote vulnerability.
+  type: Access_Control
+- consequence: Injected code can access resources that the attacker is directly prevented
+    from accessing.
+  type: Access_Control
+- consequence: Code injection attacks can lead to loss of data integrity in nearly
+    all cases as the control-plane data injected is always incidental to data recall
+    or writing. Additionally, code injection can often result in the execution of
+    arbitrary code.
+  type: Integrity
+- consequence: Often the actions performed by injected control code are unlogged.
+  type: Non-Repudiation
+variants:
+- Server-Side Eval Injection
+- Server-Side Template Injection
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools and its Injection payloads against the application
+  tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+  type: discovery
+- name: manual
+  test: test for Code Injection variants manually with pentesters, bug-bounty
+  type: manual
+- name: exploit
+  test: Run exploit tools to identify and exploit Code Injections in the application
+  type: exploit
+  tools: [sqlmap,netsparker,jsqli]
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of Code Injection
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of dynamic queries or stored procedures that are vulnerable to Code Injection
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast
+related_cwes:
+- 95
+- 96

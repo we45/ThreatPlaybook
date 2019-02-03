@@ -12,6 +12,9 @@ requests = "*"
 huepy = "*"
 pickledb = "*"
 jsonschema = "*"
+pyyaml = "*"
+pyjq = "*"
+"jinja2" = "*"
 
 [requires]
 python_version = "3.6"
