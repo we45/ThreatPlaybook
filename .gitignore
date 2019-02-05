@@ -27,3 +27,4 @@ v3/cli/schematest.json
 v3/cli/schema.schema
 v3/cli/threat_model_example.json
 v3/cli/case_example.json
+v3/cli/repo_gql.json

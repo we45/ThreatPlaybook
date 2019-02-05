@@ -70,7 +70,6 @@ class NewThreatModel(graphene.ObjectType):
     description = graphene.String()
     severity = graphene.Int()
     cwe = graphene.Int()
-    tests = graphene.List(NewTestCase)
 
 class NewTarget(graphene.ObjectType):
     name = graphene.String()
@@ -109,13 +108,13 @@ class VulnerabilityInput(graphene.InputObjectType):
     project = graphene.String()
     evidences = graphene.InputField(graphene.List(VulnerabilityEvidenceInput))
 
-class TestCaseInput(graphene.InputObjectType):
-    name = graphene.String()
-    test_case = graphene.String()
-    executed = graphene.Boolean()
-    tools = graphene.List(graphene.String)
-    type = graphene.String()
-    tags = graphene.List(graphene.String)
+# class TestCaseInput(graphene.InputObjectType):
+#     name = graphene.String()
+#     test_case = graphene.String()
+#     executed = graphene.Boolean()
+#     tools = graphene.List(graphene.String)
+#     type = graphene.String()
+#     tags = graphene.List(graphene.String)
 
 class IndividualTestCaseInput(graphene.InputObjectType):
     name = graphene.String()
@@ -133,9 +132,10 @@ class ThreatModelInput(graphene.InputObjectType):
     description = graphene.String()
     severity = graphene.Int()
     cwe = graphene.Int()
-    tests = graphene.InputField(graphene.List(TestCaseInput))
     abuser_stories = graphene.List(graphene.String)
     user_story = graphene.String()
+    mitigations = graphene.List(graphene.JSONString)
+    categories = graphene.List(graphene.String)
 
 class NewVulnerability(graphene.ObjectType):
     tool = graphene.String()
@@ -179,9 +179,10 @@ class CreateOrUpdateUserStory(graphene.Mutation):
             my_proj = Proj.objects.get(name = project)
             try:
                 UseCase.objects.get(short_name = short_name)
-                new_user_story = UseCase.objects(short_name=short_name).update_one(short_name=short_name,
+                UseCase.objects(short_name=short_name).update_one(short_name=short_name,
                                                                 description=description,
                                                                 project=my_proj, upsert=True)
+                new_user_story = UseCase.objects.get(short_name = short_name)
                 created = False
                 updated = True
             except DoesNotExist:
@@ -219,9 +220,11 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
 
         try:
             AbuseCase.objects.get(short_name = short_name)
-            new_abuse_case = AbuseCase.objects(short_name=short_name).update_one(short_name=short_name,
+            AbuseCase.objects(short_name=short_name).update_one(short_name=short_name,
                                                          description=description,
                                                          project=ref_proj, upsert=True)
+            new_abuse_case = AbuseCase.objects.get(short_name = short_name)
+
             ref_user_story.update(add_to_set__abuses=[new_abuse_case.id])
             updated = True
             created = False
@@ -262,6 +265,8 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                             description = model_attribs.get('description'),
                             tests = test_cases,upsert=True
                         )
+                        new_threat_model = ThreatModel.objects.get(name = model_attribs.get('name'))
+
                     except DoesNotExist:
                         new_threat_model = ThreatModel(name=model_attribs.get('name'),
                                                        vul_name=model_attribs.get('vul_name'),
@@ -378,22 +383,23 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                 tool_list = case_attrs.get('tools', [])
                 tag_list = case_attrs.get('tags', [])
                 executed = case_attrs.get('executed', False)
-                test_type = case_attrs.get('type', 'discovery')
+                test_type = case_attrs.get('test_type', 'discovery')
 
                 try:
                     ref_case = Test.objects.get(name = case_attrs['name'])
                     if ref_case:
-                        new_test_case = Test.objects(name = case_attrs['name']).update_one(
+                        Test.objects(name = case_attrs['name']).update_one(
                             name = case_attrs['name'], test_case = case_attrs['test_case'], executed = executed,
-                            type = test_type, upsert=True)
+                            test_type = test_type, upsert=True)
+                        new_test_case = Test.objects.get(name = case_attrs['name'])
                 except DoesNotExist:
                     new_test_case = Test(
                         name=case_attrs['name'], test_case=case_attrs['test_case'],
-                        tags=tag_list, tools=tool_list, executed=executed, type=test_type
+                        tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
                     ).save()
                     try:
                         ref_model = ThreatModel.objects.get(name = case_attrs['threat_model'])
-                        ref_model.update(add_to_set__tests=ref_model)
+                        ref_model.update(add_to_set__tests=new_test_case)
                     except DoesNotExist:
                         pass
         return CreateOrUpdateTestCase(case = new_test_case)

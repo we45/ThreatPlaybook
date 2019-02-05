@@ -30,7 +30,7 @@ class Test(Document):
     test_case = StringField()
     executed = BooleanField(default = False)
     tools = ListField(StringField())
-    type = StringField(max_length=20)
+    test_type = StringField()
     tags = ListField(StringField())
 
 class RepoTestCase(Document):
@@ -74,7 +74,7 @@ class ThreatModel(Document):
     cwe = IntField()
     related_cwes = ListField(IntField(), null=True)
     categories = ListField(StringField(max_length=30))
-    mitigations = ListField(StringField())
+    mitigations = ListField(DictField())
     # risks = EmbeddedDocumentListField(Risk)
 
 

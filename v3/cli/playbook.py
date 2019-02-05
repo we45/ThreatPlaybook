@@ -146,6 +146,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                         if not 'name' in single['reference'] and not 'severity' in single['reference']:
                             raise Exception("Mandatory fields `name` and `severity` missing from Threat Model")
                         else:
+
                             repo_gql_query = """
                             query {
                               repoByName(shortName: "%s") {
@@ -159,29 +160,136 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                   name
                                   tools
                                   type
+                                  testCase
+                                  tags
                                 }
                               }
                             }
                             """ % single['reference']['name']
                             res = _make_request(repo_gql_query)
                             if validations.validate_repo_query(res):
-                                cwe = int(pyjq.first('.data.repoByName.cwe',res), 0)
-                                vul_name = str(pyjq.first('.data.repoByName.name',res), "Unknown Vulnerability")
-                                related_cwes = list(pyjq.first('.data.repoByName.related_cwes',res))
+                                cwe = pyjq.first('.data.repoByName.cwe',res) or 0
+                                vul_name = pyjq.first('.data.repoByName.name',res) or "Unknown Vulnerability"
                                 mitigations = list(pyjq.first('.data.repoByName.mitigations',res))
                                 categories = list(pyjq.first('.data.repoByName.categories',res))
+
                                 mutation_vars = {
                                     "name": {"name": name, "type": "string"},
                                     "cwe": {"name": cwe, "type": "integer"},
-                                    "mitigations": {"name": mitigations, "type": "list"},
-                                    "categories": {"name": categories, "type": "list"},
                                     "description": {"name": description, "type": "string"},
-                                    "vul_name": {"name": vul_name, "type": "string"},
-                                    "related_cwes": {"name": related_cwes, "type": "list"}
+                                    "vulName": {"name": vul_name, "type": "string"}
                                 }
+
+                                if mitigations:
+                                    mutation_vars["mitigations"] = {"name": mitigations, "type": "list"}
+
+                                if len(categories) > 0:
+                                    mutation_vars["categories"] = {"name": categories, "type": "list"}
+
+                                if len(abuser_story) > 0:
+                                    mutation_vars['abuserStories'] = {'name': [abuser_story], "type": "list"}
+
+                                if user_story:
+                                    mutation_vars['userStory'] = {'name': user_story, "type": "string"}
+
                                 final_query = validations.template_threat_model_mutation().render(mutation_vars = mutation_vars)
-                                res = _make_request(final_query)
-                                # if res:
+                                tm_res = _make_request(final_query)
+                                if tm_res:
+                                    cleaned_data = validations.validate_threat_model_query(tm_res)
+                                    if cleaned_data:
+                                        print(good("Threat Scenario: {} successfully created/updated".format(name)))
+                                        if 'tests' in res['data']['repoByName']:
+                                            all_tests = res['data']['repoByName']['tests']
+                                            if all_tests:
+                                                for one_test in all_tests:
+                                                    test_name = one_test.get('name', 'Unknown Test Case')
+                                                    test_case = one_test.get('testCase', 'Unknown Test Case Description')
+                                                    test_type = one_test.get('type', 'discovery')
+                                                    tools = list(one_test.get('tools'))
+
+                                                    t_mutation_vars = {
+                                                        "test_name": {"name": test_name, "type": "string"},
+                                                        "testCase": {"name": test_case, "type": "string"},
+                                                        "threatModel": {"name": name, "type": "string"}
+                                                    }
+
+                                                    if len(tools) > 0:
+                                                        t_mutation_vars['tools'] = {"name": tools, "type": "list"}
+
+                                                    final_mutation = validations.template_test_case_mutation().\
+                                                        render(mutation_vars = t_mutation_vars)
+                                                    test_case_res = _make_request(final_mutation)
+                                                    if test_case_res:
+                                                        if validations.validate_test_case_query(test_case_res):
+                                                            print("\t",good(
+                                                                "Test Case: {} successfully created/updated".format(
+                                                                    test_name)))
+                                                        else:
+                                                            print("\t", bad(test_case_res))
+                                    else:
+                                        print(bad(tm_res))
+                                else:
+                                    print(bad("Unable to load Threat Model Request"))
+
+                            else:
+                                print(bad(res))
+
+                elif type == 'inline':
+                    inline_vul_name = single.get('vul_name', 'Unkown Vulnerability Name')
+                    inline_description = single.get('description', "Unknown Vulnerability Description")
+                    inline_cwe = int(single.get('cwe', 0))
+                    inline_severity = int(single.get('severity', 1))
+                    inline_test_cases = single.get('test_cases', [])
+                    inline_mutation_vars = {
+                        "name": {"name": name, "type": "string"},
+                        "cwe": {"name": inline_cwe, "type": "integer"},
+                        "description": {"name": inline_description, "type": "string"},
+                        "vul_name": {"name": inline_vul_name, "type": "string"},
+                        "severity": {"name": inline_severity, "type": "integer"},
+
+                    }
+
+                    if abuser_story:
+                        inline_mutation_vars['abuserStories'] = {'name': [abuser_story], type: "list"}
+
+                    if user_story:
+                        inline_mutation_vars['userStory'] = {'name': user_story, type: "string"}
+
+                    inline_final_query = validations.template_threat_model_mutation().render(mutation_vars=
+                                                                                             inline_mutation_vars)
+
+                    inline_res = _make_request(inline_final_query)
+                    if inline_res:
+                        inline_cleaned_data = validations.validate_threat_model_query(inline_res)
+                        for one_test in inline_test_cases:
+                            test_name = one_test.get('name', 'Unknown Test Case')
+                            test_case = one_test.get('testCase', 'Unknown Test Case Description')
+                            test_type = one_test.get('type', 'discovery')
+                            tools = list(one_test.get('tools'))
+                            tags = list(one_test.get('tags'))
+                            final_mutation = validations.template_test_case_mutation().render(
+                                test_name=test_name,
+                                test_tools=tools,
+                                test_case_description=test_case,
+                                test_type=test_type,
+                                tags=tags,
+                                threat_model_name=name
+                            )
+                            test_case_res = _make_request(final_mutation)
+                            if test_case_res:
+                                if validations.validate_test_case_query(test_case_res):
+                                    print("\t", good(
+                                        "Test Case: {} successfully created/updated".format(
+                                            test_name)))
+                                else:
+                                    print("\t", bad(test_case_res))
+                    else:
+                        print(bad("Request for Loading Threat Scenario: {} failed".format(name)))
+
+                else:
+                    print(bad("Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either."))
+                    pass
+
 
 
 
@@ -237,7 +345,7 @@ def parse_spec_file(fileval):
                             user_story_short_name = cleaned_response
                             print(good("Added Feature: `{}` to ThreatPlaybook".format(user_story_short_name)))
                         else:
-                            print(bad(res.json()))
+                            print(bad(res))
                     else:
                         print(bad("Error in making request to ThreatPlaybook server"))
 
@@ -264,10 +372,14 @@ def parse_spec_file(fileval):
                                 if res:
                                     cleaned_abuser_response = validations.validate_abuser_story(res)
                                     if cleaned_abuser_response:
-                                        abuser_story_short_name = cleaned_abuser_response
-                                        if 'threat_scenarios' in case_content['abuse_cases']:
-                                            parse_threat_models(case_content['abuse_cases']['threat_scenarios'], user_story_short_name,
-                                                                abuser_story = abuser_story_short_name)
+                                        print(good("Added Abuser Story: {}".format(single['name'])))
+
+                                        if 'threat_scenarios' in single:
+                                            print(type(single['threat_scenarios']))
+                                            parse_threat_models(single['threat_scenarios'], user_story_short_name,
+                                                                abuser_story = single['name'])
+                                    else:
+                                        print(bad(res))
                     if 'threat_scenarios' in case_content:
                         parse_threat_models(case_content['threat_scenarios'], user_story_short_name)
 
