@@ -208,7 +208,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                                     tools = list(one_test.get('tools'))
 
                                                     t_mutation_vars = {
-                                                        "test_name": {"name": test_name, "type": "string"},
+                                                        "name": {"name": test_name, "type": "string"},
                                                         "testCase": {"name": test_case, "type": "string"},
                                                         "threatModel": {"name": name, "type": "string"}
                                                     }
@@ -375,7 +375,6 @@ def parse_spec_file(fileval):
                                         print(good("Added Abuser Story: {}".format(single['name'])))
 
                                         if 'threat_scenarios' in single:
-                                            print(type(single['threat_scenarios']))
                                             parse_threat_models(single['threat_scenarios'], user_story_short_name,
                                                                 abuser_story = single['name'])
                                     else:
