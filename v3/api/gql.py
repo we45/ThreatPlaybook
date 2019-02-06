@@ -293,7 +293,7 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                     try:
                         features = model_attribs.get('user_story')
                         ref_use = UseCase.objects.get(short_name=features)
-                        ref_use.update(add_to_set__scenarios=ref_use)
+                        ref_use.update(add_to_set__scenarios=new_threat_model)
                     except DoesNotExist:
                         raise Exception("Feature/User Story mentioned does not exist")
 

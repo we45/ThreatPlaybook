@@ -5,7 +5,7 @@ Usage:
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
-    playbook get (feature|abuser_story|model|test_case) --fields=<fieldlist> [--json | --table]
+    playbook get (feature|abuser_story|model|test_case) [--name=<name>] [--json | --table] [--fields=<fieldlist>]
     playbook delete (feature|abuser_story|model|test_case) --attrib=<delete_kv>
     playbook report <project_name>
     playbook configure
@@ -22,6 +22,7 @@ Options:
     --table     Show information in asciitable view
     --fields=<fieldlist>    query specific fields in the CLI with comma separated list value. Only works with JSON
     --attrib=<delete_kv>    Delete by attribute based on key-value pair with field. Typically, name or short_name
+    --name=<name>   This refers to a specific name or shortName of that particular object.
 """
 
 from docopt import docopt
@@ -31,9 +32,11 @@ import json
 import pickledb
 import requests
 from sys import exit
-import validations
+import utils
 import yaml
 import pyjq
+from glob import glob
+from tabulate import tabulate
 
 def verify_host_port():
     db = pickledb.load('.cred', False)
@@ -112,7 +115,7 @@ def create_project(project_name):
 
                 res = _make_request(create_project_query)
                 try:
-                    cleaned_response = validations.validate_project_response(res)
+                    cleaned_response = utils.validate_project_response(res)
                     if cleaned_response:
                         db.set('project', project_name)
                         db.dump()
@@ -164,7 +167,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                             }
                             """ % single['reference']['name']
                             res = _make_request(repo_gql_query)
-                            if validations.validate_repo_query(res):
+                            if utils.validate_repo_query(res):
                                 cwe = pyjq.first('.data.repoByName.cwe',res) or 0
                                 vul_name = pyjq.first('.data.repoByName.name',res) or "Unknown Vulnerability"
                                 mitigations = list(pyjq.first('.data.repoByName.mitigations',res))
@@ -189,10 +192,10 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                 if user_story:
                                     mutation_vars['userStory'] = {'name': user_story, "type": "string"}
 
-                                final_query = validations.template_threat_model_mutation().render(mutation_vars = mutation_vars)
+                                final_query = utils.template_threat_model_mutation().render(mutation_vars = mutation_vars)
                                 tm_res = _make_request(final_query)
                                 if tm_res:
-                                    cleaned_data = validations.validate_threat_model_query(tm_res)
+                                    cleaned_data = utils.validate_threat_model_query(tm_res)
                                     if cleaned_data:
                                         print(good("Created/Updated Threat Scenario:`{}`".format(name)))
                                         if 'tests' in res['data']['repoByName']:
@@ -214,11 +217,11 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                                     if len(tools) > 0:
                                                         t_mutation_vars['tools'] = {"name": tools, "type": "list"}
 
-                                                    final_mutation = validations.template_test_case_mutation().\
+                                                    final_mutation = utils.template_test_case_mutation().\
                                                         render(mutation_vars = t_mutation_vars)
                                                     test_case_res = _make_request(final_mutation)
                                                     if test_case_res:
-                                                        if validations.validate_test_case_query(test_case_res):
+                                                        if utils.validate_test_case_query(test_case_res):
                                                             print("\t",good(
                                                                 "Created/Updated Test Case:`{}`".format(
                                                                     test_name)))
@@ -253,13 +256,13 @@ def parse_threat_models(content, user_story, abuser_story = None):
                     if user_story:
                         inline_mutation_vars['userStory'] = {'name': user_story, "type": "string"}
 
-                    inline_final_query = validations.template_threat_model_mutation().render(mutation_vars=
+                    inline_final_query = utils.template_threat_model_mutation().render(mutation_vars=
                                                                                              inline_mutation_vars)
 
 
                     inline_res = _make_request(inline_final_query)
                     if inline_res:
-                        inline_cleaned_data = validations.validate_threat_model_query(inline_res)
+                        inline_cleaned_data = utils.validate_threat_model_query(inline_res)
                         if inline_cleaned_data:
                             print(good("Created/Updated Threat Scenario: `{}`".format(name)))
                             for one_test in inline_test_cases:
@@ -276,11 +279,11 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                 if len(tools) > 0:
                                     final_test_mutation['tools'] = {"name": tools, "type": "list"}
 
-                                final_test_mute = validations.template_test_case_mutation().render(
+                                final_test_mute = utils.template_test_case_mutation().render(
                                     mutation_vars = final_test_mutation)
                                 test_case_res = _make_request(final_test_mute)
                                 if test_case_res:
-                                    if validations.validate_test_case_query(test_case_res):
+                                    if utils.validate_test_case_query(test_case_res):
                                         print("\t", good(
                                             "Created/Updated Security Test Case:`{}`".format(
                                                 test_name)))
@@ -338,7 +341,7 @@ def parse_spec_file(fileval):
 
                     res = _make_request(user_story_mutation)
                     if res:
-                        cleaned_response = validations.validate_user_story(res)
+                        cleaned_response = utils.validate_user_story(res)
                         if cleaned_response:
                             user_story_short_name = cleaned_response
                             print(good("Created/Updated Feature/UserStory: `{}`".format(user_story_short_name)))
@@ -368,7 +371,7 @@ def parse_spec_file(fileval):
                                 """ % (single['name'], single['description'], user_story_short_name, db.get('project'))
                                 res = _make_request(abuser_mutation_query)
                                 if res:
-                                    cleaned_abuser_response = validations.validate_abuser_story(res)
+                                    cleaned_abuser_response = utils.validate_abuser_story(res)
                                     if cleaned_abuser_response:
                                         print(good("Created/Updated Abuser Story: `{}`".format(single['name'])))
 
@@ -385,6 +388,41 @@ def parse_spec_file(fileval):
         else:
             print(bad("you dont have a project set. Please set/create project first"))
 
+def get_user_stories(nameval = None, table = False):
+    """
+    This function queries the single query or the joint query to find the feature/user story(stories).
+    * The function queries the GraphQL server for the details
+    * The function returns results in JSON or table (asciitable as required)
+    :param nameval:
+    :param table:
+    :return:
+    """
+    if nameval:
+        final_query = utils.template_user_story_query(nameval)
+        res = _make_request(final_query)
+        if res:
+            if utils.validate_user_story_name_select(res):
+                if not table:
+                    print(json.dumps(res))
+                else:
+                    return res
+            else:
+                print(bold(red(res)))
+        else:
+            print(bold(red("Unable to make request to fetch user stories")))
+    else:
+        full_query = utils.template_user_story_full()
+        full_res = _make_request(full_query)
+        if full_res:
+            if utils.validate_user_stories(full_res):
+                if not table:
+                    print(json.dumps(full_res))
+                else:
+                    return full_res
+            else:
+                print(bold(red(full_res)))
+        else:
+            print(bold(red("Unable to make request to fetch user stories")))
 
 
 if __name__ == '__main__':
@@ -403,6 +441,70 @@ if __name__ == '__main__':
                     full_path = path.abspath(arguments.get('--file'))
                     case_content = yaml.safe_load(open(full_path, 'r').read())
                     parse_spec_file(case_content)
+        elif arguments.get('--dir'):
+            if path.isdir(arguments.get('--dir')):
+                full_dir_path = path.abspath(arguments.get('--dir'))
+                for single in glob(full_dir_path + "*.yaml"):
+                    with open(single, 'r') as yfile:
+                        dir_case_content = yaml.safe_load(yfile.read())
+                        parse_spec_file(dir_case_content)
+        else:
+            print(bold(red("Unrecognized Option. Exiting...")))
+            exit(1)
+    if arguments.get('get'):
+        if arguments.get('--json'):
+            get_json_var = True
+        else:
+            get_json_var = False
+
+        name_val = None
+        if arguments.get('--name'):
+            name_val = arguments.get('--name')
+
+
+        if arguments.get('--table'):
+            table_var = True
+
+        if arguments.get('feature'):
+            if get_json_var and name_val:
+                get_user_stories(nameval=name_val)
+            elif get_json_var and not name_val and not table_var:
+                get_user_stories()
+            elif name_val and table_var:
+                table_dict = get_user_stories(nameval=name_val, table=True)
+                abuser_story_string = '\n'.join(pyjq.all('.data.userStoryByName.abuses[] | .shortName',table_dict))
+                threat_model_strings = '\n'.join(pyjq.all('.data.userStoryByName.abuses[].models[] | .name',table_dict))
+                feature_short_name = pyjq.first('.data.userStoryByName.shortName',table_dict)
+                print(tabulate([["Feature/User Story", "Abuser Story Names", "Threat Scenarios"], [feature_short_name,
+                                                                                                   abuser_story_string,
+                                                                                                   threat_model_strings]]
+                               ,headers="firstrow", tablefmt="fancy_grid"))
+            elif table_var and not get_json_var and not name_val:
+                all_table_dict = get_user_stories(table = True)
+                feature_list = []
+                abuser_story_list = []
+                threat_model_list = []
+                for single_table_item in all_table_dict['data']['userStories']:
+                    fshort = single_table_item['shortName']
+                    feature_list.append(fshort)
+                    abuser_story_string = '\n'.join(pyjq.all('.abuses[] | .shortName', single_table_item))
+                    abuser_story_list.append(abuser_story_string)
+                    threat_model_strings = '\n'.join(
+                        pyjq.all('.abuses[].models[] | .name', single_table_item))
+                    threat_model_list.append(threat_model_strings)
+
+                table_dict = {"Feature/User Story": feature_list, "Abuser Stories": abuser_story_list,
+                              "Threat Scenarios": threat_model_list}
+
+                print(tabulate(table_dict, headers="keys", tablefmt="fancy_grid"))
+
+
+
+
+
+
+
+
 
 
 

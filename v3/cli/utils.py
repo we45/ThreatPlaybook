@@ -19,6 +19,12 @@ def validate_threat_model_query(content):
 def validate_test_case_query(content):
     return pyjq.first('.data.createOrUpdateTestCase.case.name', content)
 
+def validate_user_story_name_select(content):
+    return pyjq.first('.data.userStoryByName', content)
+
+def validate_user_stories(content):
+    return pyjq.first('.data.userStories', content)
+
 def template_threat_model_mutation():
     mutation = """
     mutation {
@@ -66,3 +72,65 @@ def template_test_case_mutation():
     }
     """
     return Template(mutation)
+
+def template_user_story_query(query_string_value):
+    query = """
+    query {
+      userStoryByName(
+        shortName: "%s"
+      ) {
+        shortName
+        description
+        project {
+          id
+          name
+        }
+        abuses {
+          description
+          shortName
+          models {
+            cwe
+            name
+            name
+            severity
+            tests {
+              name
+              testCase
+              testType
+            }
+          }
+        }
+        
+    }
+    }
+    """ % query_string_value
+
+    return query
+
+def template_user_story_full():
+    query = """
+    query {
+      userStories {
+        description
+        shortName
+        abuses {
+          description
+          shortName
+          models {
+            cwe
+            description
+            mitigations
+            name
+            severity
+            tests {
+              name
+              testCase
+              testType
+              tools
+            }
+          }
+        }
+      }
+    }
+    """
+    return query
