@@ -5,7 +5,7 @@ Usage:
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
-    playbook get (feature|abuser_story|model|test_case) --a=<get_kv> --show-children [--tree | --table]
+    playbook get (feature|abuser_story|model|test_case) --fields=<fieldlist> [--json | --table]
     playbook delete (feature|abuser_story|model|test_case) --attrib=<delete_kv>
     playbook report <project_name>
     playbook configure
@@ -18,10 +18,9 @@ Options:
     --file=<tm_file>    YAML File to import information from
     --dir=<tm_dir>      Directory with YAML files to parse from
     --attribute=<get_kv>    attribute Key value pair based search. typically name or short_name
-    --show-children     Show all child objects under the parent object based on query scope
-    --tree      Show information in asciitree view
+    --json      Show information in json dump
     --table     Show information in asciitable view
-    --a=<get_kv>    Search by attribute based on key-value pair with field. Typically, name or short_name
+    --fields=<fieldlist>    query specific fields in the CLI with comma separated list value. Only works with JSON
     --attrib=<delete_kv>    Delete by attribute based on key-value pair with field. Typically, name or short_name
 """
 
@@ -111,8 +110,6 @@ def create_project(project_name):
                     }
                 """ % project_name
 
-                # baseUrl = "{}:{}/graph".format(db.get('host'), db.get('port'))
-                # r = requests.post(baseUrl, json = {"query": create_project_query})
                 res = _make_request(create_project_query)
                 try:
                     cleaned_response = validations.validate_project_response(res)
@@ -197,7 +194,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                 if tm_res:
                                     cleaned_data = validations.validate_threat_model_query(tm_res)
                                     if cleaned_data:
-                                        print(good("Threat Scenario: {} successfully created/updated".format(name)))
+                                        print(good("Created/Updated Threat Scenario:`{}`".format(name)))
                                         if 'tests' in res['data']['repoByName']:
                                             all_tests = res['data']['repoByName']['tests']
                                             if all_tests:
@@ -210,7 +207,8 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                                     t_mutation_vars = {
                                                         "name": {"name": test_name, "type": "string"},
                                                         "testCase": {"name": test_case, "type": "string"},
-                                                        "threatModel": {"name": name, "type": "string"}
+                                                        "threatModel": {"name": name, "type": "string"},
+                                                        "type": {"name": test_type, "type": "string"},
                                                     }
 
                                                     if len(tools) > 0:
@@ -222,7 +220,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                                     if test_case_res:
                                                         if validations.validate_test_case_query(test_case_res):
                                                             print("\t",good(
-                                                                "Test Case: {} successfully created/updated".format(
+                                                                "Created/Updated Test Case:`{}`".format(
                                                                     test_name)))
                                                         else:
                                                             print("\t", bad(test_case_res))
@@ -239,65 +237,65 @@ def parse_threat_models(content, user_story, abuser_story = None):
                     inline_description = single.get('description', "Unknown Vulnerability Description")
                     inline_cwe = int(single.get('cwe', 0))
                     inline_severity = int(single.get('severity', 1))
-                    inline_test_cases = single.get('test_cases', [])
+                    inline_test_cases = single.get('test-cases', [])
                     inline_mutation_vars = {
                         "name": {"name": name, "type": "string"},
                         "cwe": {"name": inline_cwe, "type": "integer"},
                         "description": {"name": inline_description, "type": "string"},
-                        "vul_name": {"name": inline_vul_name, "type": "string"},
+                        "vulName": {"name": inline_vul_name, "type": "string"},
                         "severity": {"name": inline_severity, "type": "integer"},
 
                     }
 
                     if abuser_story:
-                        inline_mutation_vars['abuserStories'] = {'name': [abuser_story], type: "list"}
+                        inline_mutation_vars['abuserStories'] = {'name': [abuser_story], "type": "list"}
 
                     if user_story:
-                        inline_mutation_vars['userStory'] = {'name': user_story, type: "string"}
+                        inline_mutation_vars['userStory'] = {'name': user_story, "type": "string"}
 
                     inline_final_query = validations.template_threat_model_mutation().render(mutation_vars=
                                                                                              inline_mutation_vars)
 
+
                     inline_res = _make_request(inline_final_query)
                     if inline_res:
                         inline_cleaned_data = validations.validate_threat_model_query(inline_res)
-                        for one_test in inline_test_cases:
-                            test_name = one_test.get('name', 'Unknown Test Case')
-                            test_case = one_test.get('testCase', 'Unknown Test Case Description')
-                            test_type = one_test.get('type', 'discovery')
-                            tools = list(one_test.get('tools'))
-                            tags = list(one_test.get('tags'))
-                            final_mutation = validations.template_test_case_mutation().render(
-                                test_name=test_name,
-                                test_tools=tools,
-                                test_case_description=test_case,
-                                test_type=test_type,
-                                tags=tags,
-                                threat_model_name=name
-                            )
-                            test_case_res = _make_request(final_mutation)
-                            if test_case_res:
-                                if validations.validate_test_case_query(test_case_res):
-                                    print("\t", good(
-                                        "Test Case: {} successfully created/updated".format(
-                                            test_name)))
+                        if inline_cleaned_data:
+                            print(good("Created/Updated Threat Scenario: `{}`".format(name)))
+                            for one_test in inline_test_cases:
+                                test_name = one_test.get('name', 'Unknown Test Case')
+                                test_case = one_test.get('testCase', 'Unknown Test Case Description')
+                                test_type = one_test.get('type', 'discovery')
+                                tools = list(one_test.get('tools'))
+                                final_test_mutation = {
+                                    "name": {"name": test_name, "type": "string"},
+                                    "testCase": {"name": test_case, "type": "string"},
+                                    "threatModel": {"name": name, "type": "string"},
+                                    "type": {"name": test_type, "type": "string"}
+                                }
+                                if len(tools) > 0:
+                                    final_test_mutation['tools'] = {"name": tools, "type": "list"}
+
+                                final_test_mute = validations.template_test_case_mutation().render(
+                                    mutation_vars = final_test_mutation)
+                                test_case_res = _make_request(final_test_mute)
+                                if test_case_res:
+                                    if validations.validate_test_case_query(test_case_res):
+                                        print("\t", good(
+                                            "Created/Updated Security Test Case:`{}`".format(
+                                                test_name)))
+                                    else:
+                                        print("\t", bold(red(test_case_res)))
                                 else:
-                                    print("\t", bad(test_case_res))
+                                    print(bold(red(test_case_res)))
+                        else:
+                            print(bold(red(inline_res)))
                     else:
-                        print(bad("Request for Loading Threat Scenario: {} failed".format(name)))
+                        print(bold(red("Request for Loading Threat Scenario: {} failed".format(name))))
 
                 else:
-                    print(bad("Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either."))
+                    print(bold(red("Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either.")))
                     pass
-
-
-
-
-
-
-
-
-
 
 def parse_spec_file(fileval):
     """
@@ -343,7 +341,7 @@ def parse_spec_file(fileval):
                         cleaned_response = validations.validate_user_story(res)
                         if cleaned_response:
                             user_story_short_name = cleaned_response
-                            print(good("Added Feature: `{}` to ThreatPlaybook".format(user_story_short_name)))
+                            print(good("Created/Updated Feature/UserStory: `{}`".format(user_story_short_name)))
                         else:
                             print(bad(res))
                     else:
@@ -372,7 +370,7 @@ def parse_spec_file(fileval):
                                 if res:
                                     cleaned_abuser_response = validations.validate_abuser_story(res)
                                     if cleaned_abuser_response:
-                                        print(good("Added Abuser Story: {}".format(single['name'])))
+                                        print(good("Created/Updated Abuser Story: `{}`".format(single['name'])))
 
                                         if 'threat_scenarios' in single:
                                             parse_threat_models(single['threat_scenarios'], user_story_short_name,
@@ -381,15 +379,6 @@ def parse_spec_file(fileval):
                                         print(bad(res))
                     if 'threat_scenarios' in case_content:
                         parse_threat_models(case_content['threat_scenarios'], user_story_short_name)
-
-
-
-
-
-
-
-
-
 
             else:
                 print(bad("objectType not defined or not a Feature objectType. objectType has to be set to feature, `objectType: Feature`"))
@@ -414,6 +403,7 @@ if __name__ == '__main__':
                     full_path = path.abspath(arguments.get('--file'))
                     case_content = yaml.safe_load(open(full_path, 'r').read())
                     parse_spec_file(case_content)
+
 
 
 

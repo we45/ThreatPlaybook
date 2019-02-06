@@ -397,11 +397,13 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                         name=case_attrs['name'], test_case=case_attrs['test_case'],
                         tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
                     ).save()
-                    try:
-                        ref_model = ThreatModel.objects.get(name = case_attrs['threat_model'])
-                        ref_model.update(add_to_set__tests=new_test_case)
-                    except DoesNotExist:
-                        pass
+                try:
+                    ref_model = ThreatModel.objects.get(name = case_attrs['threat_model'])
+                    ref_model.update(add_to_set__tests=new_test_case)
+                    print(ref_model)
+
+                except DoesNotExist:
+                    pass
         return CreateOrUpdateTestCase(case = new_test_case)
 
 
