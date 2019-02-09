@@ -1,0 +1,21 @@
+{
+  "name": "threatplaybook",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "buefy": "^0.7.2",
+    "highlight.js": "^9.14.2",
+    "vue": "^2.5.22",
+    "vue-highlight.js": "^3.0.1",
+    "vue-router": "^3.0.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "vue-template-compiler": "^2.5.21"
+  }
+}

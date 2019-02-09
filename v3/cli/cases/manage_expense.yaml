@@ -1,4 +1,4 @@
-objectType  : Feature
+objectType: Feature
 name: create_expense
 description: As a user, I am able to upload expenses within project limit that have been incurred by me for processing/payment by my manager, so I can get reimbursed
 abuse_cases:
@@ -55,3 +55,7 @@ abuse_cases:
       type: repo
       reference: {name: idor_pk, severity: 3}
       description: Perform Authorization Bypass through IDOR or Mass Assignment style vulnerabilities to get unauthorized expenses approved
+
+connections:
+- create_expense: https PUT
+- delete_expense: https delete

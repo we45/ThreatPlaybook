@@ -1,0 +1,41 @@
+objectType: Feature
+name: login_user
+description: As an employee of the organization, I would like to login to the Expense Management application to submit and upload expense information
+abuse_cases:
+
+    - name: external_attacker_account_takeover
+      description: As an external attacker, I would compromise a single/multiple user accounts to gain access to sensitive corporate information, like expenses
+      threat_scenarios:
+
+      - name: sql injection user account access
+        type: repo
+        description: External Attacker may be able to gain access to user accounts by successfully performing SQL Injection Attacks against some of the unauthenticated pages in the application
+        reference: {name: sql_injection, severity: 3}
+
+      - name: end user weak password
+        type: repo
+        description: External attacker compromises a user password, using a weak password
+        reference: {name: weak-default-password, severity: 2}
+
+      - name: end user default password
+        type: inline
+        vul_name: Default Passwords
+        description: External attacker may be able to bypass user authentication by compromising default passwords of users
+        severity: 2
+        cwe: 284
+        test-cases:
+        - name: automated-vulnerability-scanning
+          test: run automated vulnerability discovery tools and bruteforce against the application
+          tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+          type: discovery
+
+      - name: auth token hijacking mitm
+        type: repo
+        description: Attacker attempts to compromise auth token by gaining access to the end user's auth token by performing Man in the Middle Attacks
+        reference: {name: plaintext-transmission, severity: 3}
+
+#
+#connections:
+#- manage_expenses: https
+#- approve_expense: https
+#- view_user_profile: https

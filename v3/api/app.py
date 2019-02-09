@@ -4,18 +4,18 @@ import graphene
 from gql import Query, ThreatPlaybookMutations
 import json
 import logging
-from validations import validation_dictionary
+from utils import validation_dictionary, connect_db
 from schema import Schema, Regex, SchemaMissingKeyError
 from argon2 import PasswordHasher
 import jwt
+import os
 
-api = responder.API()
+api = responder.API(cors = True)
 ph = PasswordHasher()
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler('api.log')
 
-
-connect('threat_playbook')
+db = connect_db()
 
 # GraphQL Views
 schema = graphene.Schema(query=Query, mutation=ThreatPlaybookMutations)
@@ -77,26 +77,25 @@ async def login(req, resp):
     if req.method == 'post':
         login_data = await _load_valid_data(req.content)
         if login_data:
-            validated = await _validate(login_data, 'login')
-            if '__error' in validated:
-                resp.status_code = api.status_codes.HTTP_400
-                resp.media = {'error': validated['error']}
-                return resp
-            else:
-                try:
-                    user_present = User.objects.get(email=validated['email'])
-                    print(user_present)
-                    pass_verified = ph.verify(user_present.password, validated['password'])
-                    print(pass_verified)
-                    if pass_verified:
-                        token = jwt.encode({'email': user_present.email},key="super-secret", algorithm="HS256").decode()
-                        resp.media = {"success": "login", "token": token}
-                        return resp
+            # validated = await _validate(login_data, 'login')
+            # print(validated)
+            # if '__error' in validated:
+            #     resp.status_code = api.status_codes.HTTP_400
+            #     resp.media = {'error': validated['error']}
+            #     return resp
+            # else:
+            try:
+                user_present = User.objects.get(email=login_data['email'])
+                pass_verified = ph.verify(user_present.password, login_data['password'])
+                if pass_verified:
+                    token = jwt.encode({'email': user_present.email},key=os.environ['JWT_PASS'], algorithm="HS256").decode()
+                    resp.media = {"success": "login", "token": token}
+                    return resp
 
-                    else:
-                        return {"error": "Invalid credentials"}
-                except DoesNotExist as e:
+                else:
                     return {"error": "Invalid credentials"}
+            except DoesNotExist as e:
+                return {"error": "Invalid credentials"}
 
         else:
             resp.status_code = api.status_codes.HTTP_400

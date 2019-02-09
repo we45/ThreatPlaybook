@@ -6,6 +6,9 @@ from models import ThreatModel, Test, Repo, RepoTestCase
 from models import UseCase, AbuseCase
 from mongoengine import DoesNotExist
 from graphene.relay import Node
+from utils import connect_db, _validate_jwt
+
+connect_db()
 
 class Vuln(MongoengineObjectType):
     class Meta:
@@ -158,12 +161,15 @@ class CreateProject(graphene.Mutation):
     project = graphene.Field(lambda: NewProject)
 
     def mutate(self,info, name):
-        try:
-            new_project = Proj(name = name).save()
-            ok = True
-            return CreateProject(project = new_project)
-        except Exception as e:
-            raise Exception(str(e))
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                new_project = Proj(name = name).save()
+                ok = True
+                return CreateProject(project = new_project)
+            except Exception as e:
+                raise Exception(str(e))
+        else:
+            raise Exception("Unauthorized to perform action")
 
 class CreateOrUpdateUserStory(graphene.Mutation):
     class Arguments:
@@ -175,26 +181,29 @@ class CreateOrUpdateUserStory(graphene.Mutation):
     user_story = graphene.Field(lambda: NewUserStory)
 
     def mutate(self, info, short_name, description, project):
-        try:
-            my_proj = Proj.objects.get(name = project)
+        if _validate_jwt(info.context['request'].headers):
             try:
-                UseCase.objects.get(short_name = short_name)
-                UseCase.objects(short_name=short_name).update_one(short_name=short_name,
-                                                                description=description,
-                                                                project=my_proj, upsert=True)
-                new_user_story = UseCase.objects.get(short_name = short_name)
-                created = False
-                updated = True
-            except DoesNotExist:
-                new_user_story = UseCase(short_name = short_name, description = description, project = my_proj).save()
-                created = True
-                updated = False
+                my_proj = Proj.objects.get(name = project)
+                try:
+                    UseCase.objects.get(short_name = short_name)
+                    UseCase.objects(short_name=short_name).update_one(short_name=short_name,
+                                                                    description=description,
+                                                                    project=my_proj, upsert=True)
+                    new_user_story = UseCase.objects.get(short_name = short_name)
+                    created = False
+                    updated = True
+                except DoesNotExist:
+                    new_user_story = UseCase(short_name = short_name, description = description, project = my_proj).save()
+                    created = True
+                    updated = False
 
-            return CreateOrUpdateUserStory(user_story = new_user_story)
-        except DoesNotExist as de:
-            return de.args
-        except Exception as e:
-            return e.args
+                return CreateOrUpdateUserStory(user_story = new_user_story)
+            except DoesNotExist as de:
+                return de.args
+            except Exception as e:
+                return e.args
+        else:
+            raise Exception("Unauthorized to Perform Action")
 
 class CreateOrUpdateAbuserStory(graphene.Mutation):
     class Arguments:
@@ -208,33 +217,37 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
     abuser_story = graphene.Field(lambda: NewAbuserStory)
 
     def mutate(self, info, short_name, description, project, user_story):
-        try:
-            ref_proj = Proj.objects.get(name = project)
-        except DoesNotExist as de:
-            return de.args
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                ref_proj = Proj.objects.get(name = project)
+            except DoesNotExist as de:
+                return de.args
 
-        try:
-            ref_user_story = UseCase.objects.get(short_name = user_story)
-        except DoesNotExist as ude:
-            return ude.args
+            try:
+                ref_user_story = UseCase.objects.get(short_name = user_story)
+            except DoesNotExist as ude:
+                return ude.args
 
-        try:
-            AbuseCase.objects.get(short_name = short_name)
-            AbuseCase.objects(short_name=short_name).update_one(short_name=short_name,
-                                                         description=description,
-                                                         project=ref_proj, upsert=True)
-            new_abuse_case = AbuseCase.objects.get(short_name = short_name)
+            try:
+                AbuseCase.objects.get(short_name = short_name)
+                AbuseCase.objects(short_name=short_name).update_one(short_name=short_name,
+                                                             description=description,
+                                                             project=ref_proj, upsert=True)
+                new_abuse_case = AbuseCase.objects.get(short_name = short_name)
 
-            ref_user_story.update(add_to_set__abuses=[new_abuse_case.id])
-            updated = True
-            created = False
-        except DoesNotExist:
-            new_abuse_case = AbuseCase(short_name=short_name, description=description, project=ref_proj).save()
-            ref_user_story.update(add_to_set__abuses = [new_abuse_case.id])
-            updated = False
-            created = True
+                ref_user_story.update(add_to_set__abuses=[new_abuse_case.id])
+                updated = True
+                created = False
+            except DoesNotExist:
+                new_abuse_case = AbuseCase(short_name=short_name, description=description, project=ref_proj).save()
+                ref_user_story.update(add_to_set__abuses = [new_abuse_case.id])
+                updated = False
+                created = True
 
-        return CreateOrUpdateAbuserStory(abuser_story = new_abuse_case)
+            return CreateOrUpdateAbuserStory(abuser_story = new_abuse_case)
+        else:
+            raise Exception("Unauthorized to perform action")
+
 
 class CreateOrUpdateThreatModel(graphene.Mutation):
     class Arguments:
@@ -243,61 +256,64 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
     threat_model = graphene.Field(lambda: NewThreatModel)
 
     def mutate(self, info, **kwargs):
-        if 't_model' in kwargs:
-            model_attribs = kwargs['t_model']
-            if not all(k in model_attribs for k in ("name", "vul_name", "description")):
-                raise Exception("Mandatory parameters are not in the mutation")
-            else:
-                try:
-                    cwe_val = model_attribs.get('cwe', 0)
-                    related_cwes = model_attribs.get('related_cwes', [])
-                    mitigations = model_attribs.get('mitigations', [])
-                    severity = int(model_attribs.get('severity', 1))
-                    test_cases = model_attribs.get('tests', [])
+        if _validate_jwt(info.context['request'].headers):
+            if 't_model' in kwargs:
+                model_attribs = kwargs['t_model']
+                if not all(k in model_attribs for k in ("name", "vul_name", "description")):
+                    raise Exception("Mandatory parameters are not in the mutation")
+                else:
                     try:
-                        ThreatModel.objects.get(name = model_attribs.get('name'))
-                        new_threat_model = ThreatModel.objects(name=model_attribs.get('name')).update_one(
-                            name=model_attribs.get('name'),
-                            vul_name=model_attribs.get('vul_name'),
-                            cwe=cwe_val,severity=severity,
-                            related_cwes = related_cwes,
-                            mitigations = mitigations,
-                            description = model_attribs.get('description'),
-                            tests = test_cases,upsert=True
-                        )
-                        new_threat_model = ThreatModel.objects.get(name = model_attribs.get('name'))
-
-                    except DoesNotExist:
-                        new_threat_model = ThreatModel(name=model_attribs.get('name'),
-                                                       vul_name=model_attribs.get('vul_name'),
-                                                       cwe=cwe_val,severity=severity,
-                                                       related_cwes = related_cwes,
-                                                       mitigations = mitigations,
-                                                       description = model_attribs.get('description'),
-                                                       tests = test_cases
-                                                       ).save()
-                except Exception as e:
-                    return e.args
-
-                if 'abuser_stories' in model_attribs:
-                    abuses = model_attribs.get('abuser_stories')
-                    for single in abuses:
+                        cwe_val = model_attribs.get('cwe', 0)
+                        related_cwes = model_attribs.get('related_cwes', [])
+                        mitigations = model_attribs.get('mitigations', [])
+                        severity = int(model_attribs.get('severity', 1))
+                        test_cases = model_attribs.get('tests', [])
                         try:
-                            ref_abuse = AbuseCase.objects.get(short_name=single)
-                            linked_tm = ThreatModel.objects.get(name=model_attribs.get('name'))
-                            ref_abuse.update(add_to_set__models=[linked_tm.id])
+                            ThreatModel.objects.get(name = model_attribs.get('name'))
+                            new_threat_model = ThreatModel.objects(name=model_attribs.get('name')).update_one(
+                                name=model_attribs.get('name'),
+                                vul_name=model_attribs.get('vul_name'),
+                                cwe=cwe_val,severity=severity,
+                                related_cwes = related_cwes,
+                                mitigations = mitigations,
+                                description = model_attribs.get('description'),
+                                tests = test_cases,upsert=True
+                            )
+                            new_threat_model = ThreatModel.objects.get(name = model_attribs.get('name'))
+
                         except DoesNotExist:
-                            pass
+                            new_threat_model = ThreatModel(name=model_attribs.get('name'),
+                                                           vul_name=model_attribs.get('vul_name'),
+                                                           cwe=cwe_val,severity=severity,
+                                                           related_cwes = related_cwes,
+                                                           mitigations = mitigations,
+                                                           description = model_attribs.get('description'),
+                                                           tests = test_cases
+                                                           ).save()
+                    except Exception as e:
+                        return e.args
 
-                if 'user_story' in model_attribs:
-                    try:
-                        features = model_attribs.get('user_story')
-                        ref_use = UseCase.objects.get(short_name=features)
-                        ref_use.update(add_to_set__scenarios=new_threat_model)
-                    except DoesNotExist:
-                        raise Exception("Feature/User Story mentioned does not exist")
+                    if 'abuser_stories' in model_attribs:
+                        abuses = model_attribs.get('abuser_stories')
+                        for single in abuses:
+                            try:
+                                ref_abuse = AbuseCase.objects.get(short_name=single)
+                                linked_tm = ThreatModel.objects.get(name=model_attribs.get('name'))
+                                ref_abuse.update(add_to_set__models=[linked_tm.id])
+                            except DoesNotExist:
+                                pass
 
-        return CreateOrUpdateThreatModel(threat_model = new_threat_model)
+                    if 'user_story' in model_attribs:
+                        try:
+                            features = model_attribs.get('user_story')
+                            ref_use = UseCase.objects.get(short_name=features)
+                            ref_use.update(add_to_set__scenarios=new_threat_model)
+                        except DoesNotExist:
+                            raise Exception("Feature/User Story mentioned does not exist")
+
+            return CreateOrUpdateThreatModel(threat_model = new_threat_model)
+        else:
+            raise Exception("Unauthorized to perform action")
 
 class CreateOrUpdateTarget(graphene.Mutation):
     class Arguments:
@@ -310,26 +326,29 @@ class CreateOrUpdateTarget(graphene.Mutation):
     target = graphene.Field(lambda: NewTarget)
 
     def mutate(self, info, **kwargs):
-        if not all(k in kwargs for k in ("name", "url", "project")):
-            raise Exception("Mandatory fields of `name`, `url` and `project` not in mutation")
+        if _validate_jwt(info.context['request'].headers):
+            if not all(k in kwargs for k in ("name", "url", "project")):
+                raise Exception("Mandatory fields of `name`, `url` and `project` not in mutation")
 
+            else:
+                try:
+                    ref_project = Proj.objects.get(name = kwargs['project'])
+                except DoesNotExist:
+                    return "No Project specified"
+
+                try:
+                    Target.objects.get(name = kwargs['name'])
+                    new_target = Target.objects(name = kwargs['name']).update_one(name = kwargs['name'],
+                                                                                  url = kwargs['url'],
+                                                                                  project = ref_project)
+                    updated = True
+                except DoesNotExist:
+                    new_target = Target(name = kwargs['name'], url = kwargs['url'], project = ref_project).save()
+                    created = True
+
+                return CreateOrUpdateTarget(target = new_target)
         else:
-            try:
-                ref_project = Proj.objects.get(name = kwargs['project'])
-            except DoesNotExist:
-                return "No Project specified"
-
-            try:
-                Target.objects.get(name = kwargs['name'])
-                new_target = Target.objects(name = kwargs['name']).update_one(name = kwargs['name'],
-                                                                              url = kwargs['url'],
-                                                                              project = ref_project)
-                updated = True
-            except DoesNotExist:
-                new_target = Target(name = kwargs['name'], url = kwargs['url'], project = ref_project).save()
-                created = True
-
-            return CreateOrUpdateTarget(target = new_target)
+            raise Exception("Unauthorized to perform action")
 
 class CreateVulnerability(graphene.Mutation):
     class Arguments:
@@ -339,31 +358,34 @@ class CreateVulnerability(graphene.Mutation):
     vulnerability = graphene.Field(lambda: NewVulnerability)
 
     def mutate(self, info, **kwargs):
-        vuln_attributes = kwargs.get('vuln', {})
-        if not vuln_attributes:
-            raise Exception("You need to specify a vuln key")
-        else:
-            if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target")):
-                raise Exception("Mandatory fields not in Vulnerability Definition")
+        if _validate_jwt(info.context['request'].headers):
+            vuln_attributes = kwargs.get('vuln', {})
+            if not vuln_attributes:
+                raise Exception("You need to specify a vuln key")
             else:
-                evid_attribs = vuln_attributes.get('evidences', [])
-                try:
-                    ref_project = Proj.objects.get(name=vuln_attributes.get('project'))
-                    ref_target = Target.objects.get(name = vuln_attributes.get('target'))
-                    new_vuln = Vulnerability(name=vuln_attributes['name'], tool=vuln_attributes['tool'],
-                                             description=vuln_attributes['description'],
-                                             cwe=vuln_attributes.get('cwe', 0),
-                                             observation=vuln_attributes.get('observation', ''),
-                                             severity=vuln_attributes.get('severity', 1), project=ref_project,
-                                             target = ref_target,remediation=vuln_attributes.get('remediation', ''),
-                                             evidences=evid_attribs
-                                             ).save()
-                except DoesNotExist:
-                    return "Project OR Target not found"
-                except Exception as e:
-                    return e.args
+                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target")):
+                    raise Exception("Mandatory fields not in Vulnerability Definition")
+                else:
+                    evid_attribs = vuln_attributes.get('evidences', [])
+                    try:
+                        ref_project = Proj.objects.get(name=vuln_attributes.get('project'))
+                        ref_target = Target.objects.get(name = vuln_attributes.get('target'))
+                        new_vuln = Vulnerability(name=vuln_attributes['name'], tool=vuln_attributes['tool'],
+                                                 description=vuln_attributes['description'],
+                                                 cwe=vuln_attributes.get('cwe', 0),
+                                                 observation=vuln_attributes.get('observation', ''),
+                                                 severity=vuln_attributes.get('severity', 1), project=ref_project,
+                                                 target = ref_target,remediation=vuln_attributes.get('remediation', ''),
+                                                 evidences=evid_attribs
+                                                 ).save()
+                    except DoesNotExist:
+                        return "Project OR Target not found"
+                    except Exception as e:
+                        return e.args
 
-        return CreateVulnerability(vulnerability = new_vuln)
+            return CreateVulnerability(vulnerability = new_vuln)
+        else:
+            raise Exception("Unauthorized to perform action")
 
 class CreateOrUpdateTestCase(graphene.Mutation):
     class Arguments:
@@ -372,39 +394,42 @@ class CreateOrUpdateTestCase(graphene.Mutation):
     case = graphene.Field(lambda: NewTestCase)
 
     def mutate(self, info, **kwargs):
-        case_attrs = kwargs.get('single_case')
+        if _validate_jwt(info.context['request'].headers):
+            case_attrs = kwargs.get('single_case')
 
-        if not case_attrs:
-            raise Exception("No Case Attributes")
-        else:
-            if not all(k in case_attrs for k in ("name", "test_case", "threat_model")):
-                raise Exception("mandatory fields not in test case specification")
+            if not case_attrs:
+                raise Exception("No Case Attributes")
             else:
-                tool_list = case_attrs.get('tools', [])
-                tag_list = case_attrs.get('tags', [])
-                executed = case_attrs.get('executed', False)
-                test_type = case_attrs.get('test_type', 'discovery')
+                if not all(k in case_attrs for k in ("name", "test_case", "threat_model")):
+                    raise Exception("mandatory fields not in test case specification")
+                else:
+                    tool_list = case_attrs.get('tools', [])
+                    tag_list = case_attrs.get('tags', [])
+                    executed = case_attrs.get('executed', False)
+                    test_type = case_attrs.get('test_type', 'discovery')
 
-                try:
-                    ref_case = Test.objects.get(name = case_attrs['name'])
-                    if ref_case:
-                        Test.objects(name = case_attrs['name']).update_one(
-                            name = case_attrs['name'], test_case = case_attrs['test_case'], executed = executed,
-                            test_type = test_type, upsert=True)
-                        new_test_case = Test.objects.get(name = case_attrs['name'])
-                except DoesNotExist:
-                    new_test_case = Test(
-                        name=case_attrs['name'], test_case=case_attrs['test_case'],
-                        tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
-                    ).save()
-                try:
-                    ref_model = ThreatModel.objects.get(name = case_attrs['threat_model'])
-                    ref_model.update(add_to_set__tests=new_test_case)
-                    print(ref_model)
+                    try:
+                        ref_case = Test.objects.get(name = case_attrs['name'])
+                        if ref_case:
+                            Test.objects(name = case_attrs['name']).update_one(
+                                name = case_attrs['name'], test_case = case_attrs['test_case'], executed = executed,
+                                test_type = test_type, upsert=True)
+                            new_test_case = Test.objects.get(name = case_attrs['name'])
+                    except DoesNotExist:
+                        new_test_case = Test(
+                            name=case_attrs['name'], test_case=case_attrs['test_case'],
+                            tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
+                        ).save()
+                    try:
+                        ref_model = ThreatModel.objects.get(name = case_attrs['threat_model'])
+                        ref_model.update(add_to_set__tests=new_test_case)
+                        print(ref_model)
 
-                except DoesNotExist:
-                    pass
-        return CreateOrUpdateTestCase(case = new_test_case)
+                    except DoesNotExist:
+                        pass
+            return CreateOrUpdateTestCase(case = new_test_case)
+        else:
+            raise Exception("Unauthorized to perform action")
 
 
 # declarations of Mutations and Queries
@@ -431,51 +456,107 @@ class Query(graphene.ObjectType):
     abuser_story_by_name = graphene.Field(AbuserStory, short_name = graphene.String())
     search_threat_scenario = graphene.List(TModel, name = graphene.String(), cwe = graphene.Int(),
                                            severity = graphene.Int(), tests__name = graphene.String(),
-                                           tests__tools = graphene.String())
+                                           tests__tools = graphene.String(), project_name = graphene.String())
 
     repo_by_name = graphene.Field(Repository, short_name = graphene.String())
+    user_story_by_project = graphene.List(UserStory, project = graphene.String())
+    abuser_story_by_project = graphene.List(AbuserStory, project = graphene.String())
 
 
     def resolve_vulns(self, info):
-        return list(Vulnerability.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(Vulnerability.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_projects(self, info):
-        return list(Proj.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(Proj.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_user_stories(self, info):
-        return list(UseCase.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(UseCase.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_scenarios(self, info):
-        return list(ThreatModel.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(ThreatModel.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_abuser_stories(self, info):
-        return list(AbuseCase.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(AbuseCase.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_all_repos(self, info):
-        return list(Repo.objects.all())
+        if _validate_jwt(info.context['request'].headers):
+            return list(Repo.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_project_by_name(self, info, **kwargs):
         if 'name' in kwargs:
             return Proj.objects.get(name = kwargs['name'])
 
     def resolve_user_story_by_name(self, info, **kwargs):
-        if 'short_name' in kwargs:
-            return UseCase.objects.get(short_name=kwargs['short_name'])
+        if _validate_jwt(info.context['request'].headers):
+            if 'short_name' in kwargs:
+                return UseCase.objects.get(short_name=kwargs['short_name'])
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_user_story_by_project(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'project' in kwargs:
+                ref_project = Proj.objects.get(name=kwargs.get('project'))
+                print(ref_project)
+                return UseCase.objects(project=ref_project.id)
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_abuser_story_by_name(self, info, **kwargs):
-        if 'short_name' in kwargs:
-            return AbuseCase.objects.get(short_name = kwargs['short_name'])
+        if _validate_jwt(info.context['request'].headers):
+            if 'short_name' in kwargs:
+                return AbuseCase.objects.get(short_name = kwargs['short_name'])
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_abuser_story_by_project(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'project' in kwargs:
+                ref_project = Proj.objects.get(name=kwargs.get('project'))
+                return AbuseCase.objects(project = ref_project.id)
+        else:
+            raise Exception("Unauthorized to perform action")
 
     def resolve_search_threat_scenario(self,info,**kwargs):
-        for single in kwargs.keys():
-            if '__' in single:
-                val = kwargs[single]
-                kwargs.pop(single)
-                other_val = single.replace('__','.')
-                kwargs[other_val] = val
-        print(kwargs)
-        return ThreatModel.objects(__raw__ = kwargs)
+        if _validate_jwt(info.context['request'].headers):
+            if kwargs.get('project_name'):
+                try:
+                    ref_project = Proj.objects.get(name = kwargs.get('project_name'))
+                    return ThreatModel.objects(project = ref_project.id)
+                except DoesNotExist as de:
+                    return de
+            else:
+                for single in kwargs.keys():
+                    if '__' in single:
+                        val = kwargs[single]
+                        kwargs.pop(single)
+                        other_val = single.replace('__','.')
+                        kwargs[other_val] = val
+                print(kwargs)
+                return ThreatModel.objects(__raw__ = kwargs)
+        else:
+            raise Exception("Unauthorized to perform action")
 
 
     def resolve_repo_by_name(self, info, **kwargs):
-        return Repo.objects.get(short_name = kwargs.get('short_name'))
+        if _validate_jwt(info.context['request'].headers):
+            return Repo.objects.get(short_name = kwargs.get('short_name'))
+        else:
+            raise Exception("Unauthorized to perform action")

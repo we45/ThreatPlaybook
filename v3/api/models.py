@@ -131,8 +131,11 @@ class Vulnerability(Document):
     models = ListField(ReferenceField(ThreatModel))
     project = ReferenceField(Project)
     target = ReferenceField(Target)
+    created_on = DateTimeField(default=datetime.datetime.utcnow)
 
 class User(Document):
+    user_type_choices = (('super', "superuser"), ('user', "user"))
     email = StringField(max_length=100, unique=True)
     password = StringField(max_length=100)
+    user_type = StringField(choices=user_type_choices, max_length=6, default = "user")
 

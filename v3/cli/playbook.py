@@ -5,8 +5,7 @@ Usage:
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
-    playbook get (feature|abuser_story|model|test_case) [--name=<name>] [--json | --table] [--fields=<fieldlist>]
-    playbook delete (feature|abuser_story|model|test_case) --attrib=<delete_kv>
+    playbook get feature [--name=<name>] [--json | --table] [--fields=<fieldlist>]
     playbook report <project_name>
     playbook configure
     playbook (-h | --help)
@@ -21,7 +20,6 @@ Options:
     --json      Show information in json dump
     --table     Show information in asciitable view
     --fields=<fieldlist>    query specific fields in the CLI with comma separated list value. Only works with JSON
-    --attrib=<delete_kv>    Delete by attribute based on key-value pair with field. Typically, name or short_name
     --name=<name>   This refers to a specific name or shortName of that particular object.
 """
 
@@ -37,6 +35,7 @@ import yaml
 import pyjq
 from glob import glob
 from tabulate import tabulate
+import textwrap
 
 def verify_host_port():
     db = pickledb.load('.cred', False)
@@ -300,7 +299,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                     print(bold(red("Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either.")))
                     pass
 
-def parse_spec_file(fileval):
+def parse_spec_file(case_content):
     """
     This function loads a case file (Feature file) and performs the following operations:
     * create or update user story/feature information => GraphQL Mutation
@@ -424,7 +423,6 @@ def get_user_stories(nameval = None, table = False):
         else:
             print(bold(red("Unable to make request to fetch user stories")))
 
-
 if __name__ == '__main__':
     arguments = docopt(__doc__, version = "ThreatPlaybook Controller v 1.0.0")
     if arguments.get('configure'):
@@ -438,16 +436,21 @@ if __name__ == '__main__':
         if arguments.get('--file'):
             if path.isfile(arguments.get('--file')):
                 if path.splitext(arguments.get('--file'))[1] == '.yaml':
-                    full_path = path.abspath(arguments.get('--file'))
+                    full_path = arguments.get('--file')
+                    print(full_path)
                     case_content = yaml.safe_load(open(full_path, 'r').read())
                     parse_spec_file(case_content)
         elif arguments.get('--dir'):
             if path.isdir(arguments.get('--dir')):
-                full_dir_path = path.abspath(arguments.get('--dir'))
-                for single in glob(full_dir_path + "*.yaml"):
-                    with open(single, 'r') as yfile:
-                        dir_case_content = yaml.safe_load(yfile.read())
-                        parse_spec_file(dir_case_content)
+                full_dir_path = arguments.get('--dir')
+                file_list = glob(full_dir_path + "*.yaml")
+                if file_list:
+                    for single in file_list:
+                        with open(single, 'r') as yfile:
+                            dir_case_content = yaml.safe_load(yfile.read())
+                            parse_spec_file(dir_case_content)
+                else:
+                    print(bold(red("No files found in path")))
         else:
             print(bold(red("Unrecognized Option. Exiting...")))
             exit(1)
@@ -497,6 +500,20 @@ if __name__ == '__main__':
                               "Threat Scenarios": threat_model_list}
 
                 print(tabulate(table_dict, headers="keys", tablefmt="fancy_grid"))
+
+        else:
+            print(bold(red("Unknown Option")))
+            exit(1)
+
+
+
+
+
+
+
+
+
+
 
 
 
