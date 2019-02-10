@@ -7,11 +7,16 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "apollo-boost": "^0.1.27",
+    "axios": "^0.18.0",
     "buefy": "^0.7.2",
+    "graphql": "^14.1.1",
     "highlight.js": "^9.14.2",
     "vue": "^2.5.22",
+    "vue-apollo": "^3.0.0-beta.28",
     "vue-highlight.js": "^3.0.1",
-    "vue-router": "^3.0.2"
+    "vue-router": "^3.0.2",
+    "vue2vis": "0.0.16"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",

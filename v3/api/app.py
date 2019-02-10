@@ -10,7 +10,12 @@ from argon2 import PasswordHasher
 import jwt
 import os
 
-api = responder.API(cors = True)
+api = responder.API(cors = True, cors_params={
+    "allow_origins": ['*'],
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+    "allow_credentials": True
+})
 ph = PasswordHasher()
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler('api.log')
