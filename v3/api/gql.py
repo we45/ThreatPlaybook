@@ -3,7 +3,7 @@ from graphene_mongo import MongoengineObjectType
 from models import Vulnerability, Target
 from models import Project as Proj
 from models import ThreatModel, Test, Repo, RepoTestCase
-from models import UseCase, AbuseCase
+from models import UseCase, AbuseCase, VulnerabilityEvidence
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
@@ -13,7 +13,6 @@ connect_db()
 class Vuln(MongoengineObjectType):
     class Meta:
         model = Vulnerability
-        interfaces = (Node,)
 
 class Project(MongoengineObjectType):
     class Meta:
@@ -98,6 +97,7 @@ class VulnerabilityEvidenceInput(graphene.InputObjectType):
     attack = graphene.String()
     evidence = graphene.String()
     other_info = graphene.String()
+    vuln_id = graphene.String()
 
 class VulnerabilityInput(graphene.InputObjectType):
     tool = graphene.String()
@@ -366,7 +366,6 @@ class CreateVulnerability(graphene.Mutation):
                 if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target")):
                     raise Exception("Mandatory fields not in Vulnerability Definition")
                 else:
-                    evid_attribs = vuln_attributes.get('evidences', [])
                     try:
                         ref_project = Proj.objects.get(name=vuln_attributes.get('project'))
                         ref_target = Target.objects.get(name = vuln_attributes.get('target'))
@@ -375,8 +374,7 @@ class CreateVulnerability(graphene.Mutation):
                                                  cwe=vuln_attributes.get('cwe', 0),
                                                  observation=vuln_attributes.get('observation', ''),
                                                  severity=vuln_attributes.get('severity', 1), project=ref_project,
-                                                 target = ref_target,remediation=vuln_attributes.get('remediation', ''),
-                                                 evidences=evid_attribs
+                                                 target = ref_target,remediation=vuln_attributes.get('remediation', '')
                                                  ).save()
                     except DoesNotExist:
                         return "Project OR Target not found"
@@ -386,6 +384,44 @@ class CreateVulnerability(graphene.Mutation):
             return CreateVulnerability(vulnerability = new_vuln)
         else:
             raise Exception("Unauthorized to perform action")
+
+class CreateVulnerabilityEvidence(graphene.Mutation):
+    class Arguments:
+        evidence = VulnerabilityEvidenceInput(required = True)
+
+    vuln_evidence = graphene.Field(lambda: NewVulnerabilityEvidence)
+
+    def mutate(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            attributes = kwargs.get('evidence', {})
+            if not attributes:
+                raise Exception("Vulnerability Evidence doesn't have mandatory fields")
+            else:
+                if not all(k in attributes for k in ("name","url", "vuln_id")):
+                    raise Exception("Mandatory fields `name`, `url` or `vuln_id` missing")
+                else:
+                    ref_vuln = Vulnerability.objects.get(id = attributes.get('vuln_id'))
+                    new_evidence = VulnerabilityEvidence()
+                    new_evidence.name = attributes.get('name')
+                    new_evidence.url = attributes.get('url')
+                    if 'param' in attributes:
+                        new_evidence.param = attributes.get('param')
+                    if 'log' in attributes:
+                        new_evidence.log = attributes.get('log')
+                    if 'attack' in attributes:
+                        new_evidence.attack = attributes.get('attack')
+                    if 'other_info' in attributes:
+                        new_evidence.other_info = attributes.get('other_info')
+                    if 'evidence' in attributes:
+                        new_evidence.evidence = attributes.get('evidence')
+
+                    new_evidence.save()
+                    ref_vuln.update(add_to_set__evidences = new_evidence)
+
+            return CreateVulnerabilityEvidence(new_evidence)
+        else:
+            raise Exception("Unauthorized to perform action")
+
 
 class CreateOrUpdateTestCase(graphene.Mutation):
     class Arguments:
@@ -442,6 +478,8 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     create_vulnerability = CreateVulnerability.Field()
     create_target = CreateOrUpdateTarget.Field()
     create_or_update_test_case = CreateOrUpdateTestCase.Field()
+    create_vulnerability_evidence = CreateVulnerabilityEvidence.Field()
+
 
 class Query(graphene.ObjectType):
     vulns = graphene.List(Vuln)

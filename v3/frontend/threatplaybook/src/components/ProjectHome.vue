@@ -1,84 +1,49 @@
 <template>
   <div class="container">
     <nav-bar></nav-bar>
-    <h2>Project Home</h2>
+    <h1 class="title">Projects</h1>
     <template>
-      <b-table :data="data" :columns="columns"></b-table>
+      <div v-if="projectQuery">
+        <div class="tile">
+          <div class="tile is-parent is-vertical" v-for="item in projectQuery">
+            <article class="tile is-child notification is-primary">
+              <a href="#" @click="goToProject(item.name)" class="title">{{
+                item.name
+              }}</a>
+            </article>
+          </div>
+        </div>
+      </div>
     </template>
   </div>
 </template>
 <script>
 import Navbar from "./Navbar.vue";
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 export default {
   components: {
     "nav-bar": Navbar
   },
   data() {
-    return {
-      data: [
-        {
-          id: 1,
-          first_name: "Jesse",
-          last_name: "Simmons",
-          date: "2016-10-15 13:43:27",
-          gender: "Male"
-        },
-        {
-          id: 2,
-          first_name: "John",
-          last_name: "Jacobs",
-          date: "2016-12-15 06:00:53",
-          gender: "Male"
-        },
-        {
-          id: 3,
-          first_name: "Tina",
-          last_name: "Gilbert",
-          date: "2016-04-26 06:26:28",
-          gender: "Female"
-        },
-        {
-          id: 4,
-          first_name: "Clarence",
-          last_name: "Flores",
-          date: "2016-04-10 10:28:46",
-          gender: "Male"
-        },
-        {
-          id: 5,
-          first_name: "Anne",
-          last_name: "Lee",
-          date: "2016-12-06 14:38:38",
-          gender: "Female"
+    return {};
+  },
+  apollo: {
+    projectQuery: {
+      query: gql`
+        query {
+          projects {
+            id
+            name
+          }
         }
-      ],
-      columns: [
-        {
-          field: "id",
-          label: "ID",
-          width: "40",
-          numeric: true
-        },
-        {
-          field: "first_name",
-          label: "First Name"
-        },
-        {
-          field: "last_name",
-          label: "Last Name"
-        },
-        {
-          field: "date",
-          label: "Date",
-          centered: true
-        },
-        {
-          field: "gender",
-          label: "Gender"
-        }
-      ]
-    };
+      `,
+      update: result => result.projects
+    }
+  },
+  methods: {
+    goToProject(item_name) {
+      this.$router.push("/project/" + btoa(item_name));
+    }
   }
 };
 </script>

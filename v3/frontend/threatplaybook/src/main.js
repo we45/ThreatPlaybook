@@ -24,18 +24,6 @@ const httpLink = new HttpLink({
   uri: `http://localhost:5042/graph`
 });
 
-const link = httpLink;
-
-const apolloClient = new ApolloClient({
-  link,
-  cache: new InMemoryCache(),
-  connectToDevTools: true
-});
-
-const apolloProvider = new VueApollo({
-  defaultClient: apolloClient
-});
-
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");
   return {
@@ -46,6 +34,14 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const link = authLink.concat(httpLink);
+const apolloClient = new ApolloClient({
+    link,
+    cache: new InMemoryCache(),
+    connectToDevTools: true
+});
+const apolloProvider = new VueApollo({
+    defaultClient: apolloClient
+});
 
 new Vue({
   el: "#app",

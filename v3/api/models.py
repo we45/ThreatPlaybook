@@ -107,15 +107,14 @@ class Recon(Document):
     target = ReferenceField(Target)
 
 
-# class VulnerabilityEvidence(EmbeddedDocument):
-#     name = StringField(max_length=100)
-#     log = StringField()
-#     data = StringField()
-#     url = StringField()
-#     param = StringField(max_length=100)
-#     attack = StringField()
-#     evidence = StringField()
-#     other_info = StringField()
+class VulnerabilityEvidence(Document):
+    name = StringField(max_length=100)
+    log = StringField()
+    url = StringField()
+    param = StringField(max_length=100)
+    attack = StringField()
+    other_info = StringField()
+    evidence = StringField()
 
 
 class Vulnerability(Document):
@@ -127,8 +126,7 @@ class Vulnerability(Document):
     description = StringField()
     observation = StringField()
     remediation = StringField()
-    evidences = ListField(DictField())
-    models = ListField(ReferenceField(ThreatModel))
+    evidences = ListField(ReferenceField(VulnerabilityEvidence))
     project = ReferenceField(Project)
     target = ReferenceField(Target)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
