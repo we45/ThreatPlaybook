@@ -1,0 +1,1360 @@
+{
+    "files": [
+        {
+            "LICENSE": "/home/pavan/Downloads/devsecops/juice-shop/LICENSE"
+        },
+        {
+            "stryker.server-conf.js": "/home/pavan/Downloads/devsecops/juice-shop/stryker.server-conf.js"
+        },
+        {
+            "swagger.yml": "/home/pavan/Downloads/devsecops/juice-shop/swagger.yml"
+        },
+        {
+            "crowdin.yaml": "/home/pavan/Downloads/devsecops/juice-shop/crowdin.yaml"
+        },
+        {
+            "Dockerfile": "/home/pavan/Downloads/devsecops/juice-shop/Dockerfile"
+        },
+        {
+            ".gitignore": "/home/pavan/Downloads/devsecops/juice-shop/.gitignore"
+        },
+        {
+            "app.json": "/home/pavan/Downloads/devsecops/juice-shop/app.json"
+        },
+        {
+            "CONTRIBUTING.md": "/home/pavan/Downloads/devsecops/juice-shop/CONTRIBUTING.md"
+        },
+        {
+            "REFERENCES.md": "/home/pavan/Downloads/devsecops/juice-shop/REFERENCES.md"
+        },
+        {
+            "karma.conf.js": "/home/pavan/Downloads/devsecops/juice-shop/karma.conf.js"
+        },
+        {
+            "TROUBLESHOOTING.md": "/home/pavan/Downloads/devsecops/juice-shop/TROUBLESHOOTING.md"
+        },
+        {
+            "appveyor.yml": "/home/pavan/Downloads/devsecops/juice-shop/appveyor.yml"
+        },
+        {
+            ".travis.yml": "/home/pavan/Downloads/devsecops/juice-shop/.travis.yml"
+        },
+        {
+            "Gruntfile.js": "/home/pavan/Downloads/devsecops/juice-shop/Gruntfile.js"
+        },
+        {
+            "protractor.conf.js": "/home/pavan/Downloads/devsecops/juice-shop/protractor.conf.js"
+        },
+        {
+            "server.js": "/home/pavan/Downloads/devsecops/juice-shop/server.js"
+        },
+        {
+            "CODE_OF_CONDUCT.md": "/home/pavan/Downloads/devsecops/juice-shop/CODE_OF_CONDUCT.md"
+        },
+        {
+            ".codeclimate.yml": "/home/pavan/Downloads/devsecops/juice-shop/.codeclimate.yml"
+        },
+        {
+            "app.js": "/home/pavan/Downloads/devsecops/juice-shop/app.js"
+        },
+        {
+            "ctf.key": "/home/pavan/Downloads/devsecops/juice-shop/ctf.key"
+        },
+        {
+            "stryker.client-conf.js": "/home/pavan/Downloads/devsecops/juice-shop/stryker.client-conf.js"
+        },
+        {
+            ".dockerignore": "/home/pavan/Downloads/devsecops/juice-shop/.dockerignore"
+        },
+        {
+            "package.json": "/home/pavan/Downloads/devsecops/juice-shop/package.json"
+        },
+        {
+            ".nsprc": "/home/pavan/Downloads/devsecops/juice-shop/.nsprc"
+        },
+        {
+            "README.md": "/home/pavan/Downloads/devsecops/juice-shop/README.md"
+        },
+        {
+            ".github/stale.yml": "/home/pavan/Downloads/devsecops/juice-shop/.github/stale.yml"
+        },
+        {
+            "test/e2eTests.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2eTests.js"
+        },
+        {
+            "test/apiTests.js": "/home/pavan/Downloads/devsecops/juice-shop/test/apiTests.js"
+        },
+        {
+            "test/api/fileUploadSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/fileUploadSpec.js"
+        },
+        {
+            "test/api/basketApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/basketApiSpec.js"
+        },
+        {
+            "test/api/fileServingSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/fileServingSpec.js"
+        },
+        {
+            "test/api/b2bOrderSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/b2bOrderSpec.js"
+        },
+        {
+            "test/api/searchApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/searchApiSpec.js"
+        },
+        {
+            "test/api/recycleApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/recycleApiSpec.js"
+        },
+        {
+            "test/api/passwordApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/passwordApiSpec.js"
+        },
+        {
+            "test/api/securityQuestionApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/securityQuestionApiSpec.js"
+        },
+        {
+            "test/api/userApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/userApiSpec.js"
+        },
+        {
+            "test/api/httpSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/httpSpec.js"
+        },
+        {
+            "test/api/securityAnswerApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/securityAnswerApiSpec.js"
+        },
+        {
+            "test/api/feedbackApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/feedbackApiSpec.js"
+        },
+        {
+            "test/api/complaintApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/complaintApiSpec.js"
+        },
+        {
+            "test/api/repeatNotificationSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/repeatNotificationSpec.js"
+        },
+        {
+            "test/api/administrationApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/administrationApiSpec.js"
+        },
+        {
+            "test/api/apiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/apiSpec.js"
+        },
+        {
+            "test/api/challengeApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/challengeApiSpec.js"
+        },
+        {
+            "test/api/ftpFolderSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/ftpFolderSpec.js"
+        },
+        {
+            "test/api/basketItemApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/basketItemApiSpec.js"
+        },
+        {
+            "test/api/socketSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/socketSpec.js"
+        },
+        {
+            "test/api/productReviewApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/productReviewApiSpec.js"
+        },
+        {
+            "test/api/redirectSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/redirectSpec.js"
+        },
+        {
+            "test/api/loginApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/loginApiSpec.js"
+        },
+        {
+            "test/api/productApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/api/productApiSpec.js"
+        },
+        {
+            "test/files/invalidSizeForClient.pdf": "/home/pavan/Downloads/devsecops/juice-shop/test/files/invalidSizeForClient.pdf"
+        },
+        {
+            "test/files/xxeForLinux.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/xxeForLinux.xml"
+        },
+        {
+            "test/files/deprecatedTypeForServer.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/deprecatedTypeForServer.xml"
+        },
+        {
+            "test/files/xxeQuadraticBlowup.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/xxeQuadraticBlowup.xml"
+        },
+        {
+            "test/files/validSizeAndTypeForClient.pdf": "/home/pavan/Downloads/devsecops/juice-shop/test/files/validSizeAndTypeForClient.pdf"
+        },
+        {
+            "test/files/xxeDosForLinux.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/xxeDosForLinux.xml"
+        },
+        {
+            "test/files/xxeBillionLaughs.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/xxeBillionLaughs.xml"
+        },
+        {
+            "test/files/invalidSizeForServer.pdf": "/home/pavan/Downloads/devsecops/juice-shop/test/files/invalidSizeForServer.pdf"
+        },
+        {
+            "test/files/maxSizeForServer.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/maxSizeForServer.xml"
+        },
+        {
+            "test/files/xxeForWindows.xml": "/home/pavan/Downloads/devsecops/juice-shop/test/files/xxeForWindows.xml"
+        },
+        {
+            "test/files/invalidTypeForClient.exe": "/home/pavan/Downloads/devsecops/juice-shop/test/files/invalidTypeForClient.exe"
+        },
+        {
+            "test/server/currentUserSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/currentUserSpec.js"
+        },
+        {
+            "test/server/fileUploadSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/fileUploadSpec.js"
+        },
+        {
+            "test/server/fileServerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/fileServerSpec.js"
+        },
+        {
+            "test/server/verifySpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/verifySpec.js"
+        },
+        {
+            "test/server/easterEggSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/easterEggSpec.js"
+        },
+        {
+            "test/server/b2bOrderSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/b2bOrderSpec.js"
+        },
+        {
+            "test/server/premiumRewardSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/premiumRewardSpec.js"
+        },
+        {
+            "test/server/appVersionSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/appVersionSpec.js"
+        },
+        {
+            "test/server/keyServerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/keyServerSpec.js"
+        },
+        {
+            "test/server/appConfigurationSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/appConfigurationSpec.js"
+        },
+        {
+            "test/server/continueCodeSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/continueCodeSpec.js"
+        },
+        {
+            "test/server/angularSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/angularSpec.js"
+        },
+        {
+            "test/server/redirectSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/server/redirectSpec.js"
+        },
+        {
+            "test/e2e/basketSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/basketSpec.js"
+        },
+        {
+            "test/e2e/b2bOrderSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/b2bOrderSpec.js"
+        },
+        {
+            "test/e2e/loginSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/loginSpec.js"
+        },
+        {
+            "test/e2e/scoreBoardSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/scoreBoardSpec.js"
+        },
+        {
+            "test/e2e/searchSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/searchSpec.js"
+        },
+        {
+            "test/e2e/restApiSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/restApiSpec.js"
+        },
+        {
+            "test/e2e/administrationSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/administrationSpec.js"
+        },
+        {
+            "test/e2e/forgotPasswordSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/forgotPasswordSpec.js"
+        },
+        {
+            "test/e2e/forgedJwtSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/forgedJwtSpec.js"
+        },
+        {
+            "test/e2e/registerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/registerSpec.js"
+        },
+        {
+            "test/e2e/directAccessSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/directAccessSpec.js"
+        },
+        {
+            "test/e2e/noSqlSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/noSqlSpec.js"
+        },
+        {
+            "test/e2e/changePasswordSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/changePasswordSpec.js"
+        },
+        {
+            "test/e2e/_sharedSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/_sharedSpec.js"
+        },
+        {
+            "test/e2e/complainSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/complainSpec.js"
+        },
+        {
+            "test/e2e/redirectSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/redirectSpec.js"
+        },
+        {
+            "test/e2e/contactSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/contactSpec.js"
+        },
+        {
+            "test/e2e/publicFtpSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/e2e/publicFtpSpec.js"
+        },
+        {
+            "test/client/appSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/appSpec.js"
+        },
+        {
+            "test/client/routesSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/routesSpec.js"
+        },
+        {
+            "test/client/controllers/forgotPasswordControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/forgotPasswordControllerSpec.js"
+        },
+        {
+            "test/client/controllers/logoutControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/logoutControllerSpec.js"
+        },
+        {
+            "test/client/controllers/recycleControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/recycleControllerSpec.js"
+        },
+        {
+            "test/client/controllers/searchControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/searchControllerSpec.js"
+        },
+        {
+            "test/client/controllers/navbarControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/navbarControllerSpec.js"
+        },
+        {
+            "test/client/controllers/administrationControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/administrationControllerSpec.js"
+        },
+        {
+            "test/client/controllers/qrCodeModalsSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/qrCodeModalsSpec.js"
+        },
+        {
+            "test/client/controllers/serverStartedNotificationControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/serverStartedNotificationControllerSpec.js"
+        },
+        {
+            "test/client/controllers/userDetailsControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/userDetailsControllerSpec.js"
+        },
+        {
+            "test/client/controllers/registerControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/registerControllerSpec.js"
+        },
+        {
+            "test/client/controllers/challengeControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/challengeControllerSpec.js"
+        },
+        {
+            "test/client/controllers/loginRememberMeSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/loginRememberMeSpec.js"
+        },
+        {
+            "test/client/controllers/searchResultControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/searchResultControllerSpec.js"
+        },
+        {
+            "test/client/controllers/loginControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/loginControllerSpec.js"
+        },
+        {
+            "test/client/controllers/loginGoogleOAuthSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/loginGoogleOAuthSpec.js"
+        },
+        {
+            "test/client/controllers/changePasswordControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/changePasswordControllerSpec.js"
+        },
+        {
+            "test/client/controllers/contactControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/contactControllerSpec.js"
+        },
+        {
+            "test/client/controllers/productDetailsControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/productDetailsControllerSpec.js"
+        },
+        {
+            "test/client/controllers/aboutControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/aboutControllerSpec.js"
+        },
+        {
+            "test/client/controllers/complaintControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/complaintControllerSpec.js"
+        },
+        {
+            "test/client/controllers/qrCodeControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/qrCodeControllerSpec.js"
+        },
+        {
+            "test/client/controllers/basketControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/basketControllerSpec.js"
+        },
+        {
+            "test/client/controllers/challengeSolvedNotificationControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/challengeSolvedNotificationControllerSpec.js"
+        },
+        {
+            "test/client/controllers/productReviewEditControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/productReviewEditControllerSpec.js"
+        },
+        {
+            "test/client/controllers/languageControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/languageControllerSpec.js"
+        },
+        {
+            "test/client/controllers/feedbackControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/feedbackControllerSpec.js"
+        },
+        {
+            "test/client/controllers/userControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/userControllerSpec.js"
+        },
+        {
+            "test/client/controllers/oauthControllerSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/controllers/oauthControllerSpec.js"
+        },
+        {
+            "test/client/services/productReviewServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/productReviewServiceSpec.js"
+        },
+        {
+            "test/client/services/administrationServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/administrationServiceSpec.js"
+        },
+        {
+            "test/client/services/recycleServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/recycleServiceSpec.js"
+        },
+        {
+            "test/client/services/securityQuestionServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/securityQuestionServiceSpec.js"
+        },
+        {
+            "test/client/services/complaintServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/complaintServiceSpec.js"
+        },
+        {
+            "test/client/services/securityAnswerServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/securityAnswerServiceSpec.js"
+        },
+        {
+            "test/client/services/challengeServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/challengeServiceSpec.js"
+        },
+        {
+            "test/client/services/basketServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/basketServiceSpec.js"
+        },
+        {
+            "test/client/services/feedbackServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/feedbackServiceSpec.js"
+        },
+        {
+            "test/client/services/productServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/productServiceSpec.js"
+        },
+        {
+            "test/client/services/userServiceSpec.js": "/home/pavan/Downloads/devsecops/juice-shop/test/client/services/userServiceSpec.js"
+        },
+        {
+            "ftp/eastere.gg": "/home/pavan/Downloads/devsecops/juice-shop/ftp/eastere.gg"
+        },
+        {
+            "ftp/acquisitions.md": "/home/pavan/Downloads/devsecops/juice-shop/ftp/acquisitions.md"
+        },
+        {
+            "ftp/legal.md": "/home/pavan/Downloads/devsecops/juice-shop/ftp/legal.md"
+        },
+        {
+            "ftp/package.json.bak": "/home/pavan/Downloads/devsecops/juice-shop/ftp/package.json.bak"
+        },
+        {
+            "ftp/incident-support.kdbx": "/home/pavan/Downloads/devsecops/juice-shop/ftp/incident-support.kdbx"
+        },
+        {
+            "ftp/suspicious_errors.yml": "/home/pavan/Downloads/devsecops/juice-shop/ftp/suspicious_errors.yml"
+        },
+        {
+            "ftp/coupons_2013.md.bak": "/home/pavan/Downloads/devsecops/juice-shop/ftp/coupons_2013.md.bak"
+        },
+        {
+            ".git/config": "/home/pavan/Downloads/devsecops/juice-shop/.git/config"
+        },
+        {
+            ".git/description": "/home/pavan/Downloads/devsecops/juice-shop/.git/description"
+        },
+        {
+            ".git/COMMIT_EDITMSG": "/home/pavan/Downloads/devsecops/juice-shop/.git/COMMIT_EDITMSG"
+        },
+        {
+            ".git/HEAD": "/home/pavan/Downloads/devsecops/juice-shop/.git/HEAD"
+        },
+        {
+            ".git/index": "/home/pavan/Downloads/devsecops/juice-shop/.git/index"
+        },
+        {
+            ".git/packed-refs": "/home/pavan/Downloads/devsecops/juice-shop/.git/packed-refs"
+        },
+        {
+            ".git/objects/d0/35db7a097464770fbc220c37a1cb3396f07336": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/d0/35db7a097464770fbc220c37a1cb3396f07336"
+        },
+        {
+            ".git/objects/46/48aba0713fa1517f1d40b502c467941d107482": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/46/48aba0713fa1517f1d40b502c467941d107482"
+        },
+        {
+            ".git/objects/88/2fe285866c34a536ce819a13af0401b898cbaa": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/88/2fe285866c34a536ce819a13af0401b898cbaa"
+        },
+        {
+            ".git/objects/44/ff32396a942f8e003f95bfe4d0314eaac90a31": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/44/ff32396a942f8e003f95bfe4d0314eaac90a31"
+        },
+        {
+            ".git/objects/e7/d367f5c77f7a970ef36f122510ba865c121776": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/e7/d367f5c77f7a970ef36f122510ba865c121776"
+        },
+        {
+            ".git/objects/03/53fc8ed0001d6a0f63ffc61ea8eb538017dbbf": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/03/53fc8ed0001d6a0f63ffc61ea8eb538017dbbf"
+        },
+        {
+            ".git/objects/pack/pack-97403bcad89d145f2b25fb360f3e88421e5bed3c.idx": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/pack/pack-97403bcad89d145f2b25fb360f3e88421e5bed3c.idx"
+        },
+        {
+            ".git/objects/pack/pack-97403bcad89d145f2b25fb360f3e88421e5bed3c.pack": "/home/pavan/Downloads/devsecops/juice-shop/.git/objects/pack/pack-97403bcad89d145f2b25fb360f3e88421e5bed3c.pack"
+        },
+        {
+            ".git/logs/HEAD": "/home/pavan/Downloads/devsecops/juice-shop/.git/logs/HEAD"
+        },
+        {
+            ".git/logs/refs/heads/master": "/home/pavan/Downloads/devsecops/juice-shop/.git/logs/refs/heads/master"
+        },
+        {
+            ".git/logs/refs/remotes/origin/master": "/home/pavan/Downloads/devsecops/juice-shop/.git/logs/refs/remotes/origin/master"
+        },
+        {
+            ".git/logs/refs/remotes/origin/HEAD": "/home/pavan/Downloads/devsecops/juice-shop/.git/logs/refs/remotes/origin/HEAD"
+        },
+        {
+            ".git/refs/heads/master": "/home/pavan/Downloads/devsecops/juice-shop/.git/refs/heads/master"
+        },
+        {
+            ".git/refs/remotes/origin/master": "/home/pavan/Downloads/devsecops/juice-shop/.git/refs/remotes/origin/master"
+        },
+        {
+            ".git/refs/remotes/origin/HEAD": "/home/pavan/Downloads/devsecops/juice-shop/.git/refs/remotes/origin/HEAD"
+        },
+        {
+            ".git/hooks/pre-applypatch.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/pre-applypatch.sample"
+        },
+        {
+            ".git/hooks/update.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/update.sample"
+        },
+        {
+            ".git/hooks/prepare-commit-msg.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/prepare-commit-msg.sample"
+        },
+        {
+            ".git/hooks/pre-commit.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/pre-commit.sample"
+        },
+        {
+            ".git/hooks/commit-msg.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/commit-msg.sample"
+        },
+        {
+            ".git/hooks/applypatch-msg.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/applypatch-msg.sample"
+        },
+        {
+            ".git/hooks/post-update.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/post-update.sample"
+        },
+        {
+            ".git/hooks/pre-rebase.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/pre-rebase.sample"
+        },
+        {
+            ".git/hooks/pre-push.sample": "/home/pavan/Downloads/devsecops/juice-shop/.git/hooks/pre-push.sample"
+        },
+        {
+            ".git/info/exclude": "/home/pavan/Downloads/devsecops/juice-shop/.git/info/exclude"
+        },
+        {
+            "vagrant/Vagrantfile": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/Vagrantfile"
+        },
+        {
+            "vagrant/logger.php": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/logger.php"
+        },
+        {
+            "vagrant/shake.js": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/shake.js"
+        },
+        {
+            "vagrant/bootstrap.sh": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/bootstrap.sh"
+        },
+        {
+            "vagrant/bootstrap-post.sh": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/bootstrap-post.sh"
+        },
+        {
+            "vagrant/default.conf": "/home/pavan/Downloads/devsecops/juice-shop/vagrant/default.conf"
+        },
+        {
+            "app/index.template.html": "/home/pavan/Downloads/devsecops/juice-shop/app/index.template.html"
+        },
+        {
+            "app/package.json": "/home/pavan/Downloads/devsecops/juice-shop/app/package.json"
+        },
+        {
+            "app/views/Register.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Register.html"
+        },
+        {
+            "app/views/QrCode.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/QrCode.html"
+        },
+        {
+            "app/views/About.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/About.html"
+        },
+        {
+            "app/views/SearchResult.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/SearchResult.html"
+        },
+        {
+            "app/views/ChangePassword.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/ChangePassword.html"
+        },
+        {
+            "app/views/ScoreBoard.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/ScoreBoard.html"
+        },
+        {
+            "app/views/OAuth.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/OAuth.html"
+        },
+        {
+            "app/views/Recycle.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Recycle.html"
+        },
+        {
+            "app/views/UserDetail.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/UserDetail.html"
+        },
+        {
+            "app/views/Login.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Login.html"
+        },
+        {
+            "app/views/ProductDetail.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/ProductDetail.html"
+        },
+        {
+            "app/views/Logout.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Logout.html"
+        },
+        {
+            "app/views/ForgotPassword.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/ForgotPassword.html"
+        },
+        {
+            "app/views/Complaint.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Complaint.html"
+        },
+        {
+            "app/views/Basket.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Basket.html"
+        },
+        {
+            "app/views/ProductReviewEdit.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/ProductReviewEdit.html"
+        },
+        {
+            "app/views/Administration.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Administration.html"
+        },
+        {
+            "app/views/Contact.html": "/home/pavan/Downloads/devsecops/juice-shop/app/views/Contact.html"
+        },
+        {
+            "app/i18n/zh_CN.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/zh_CN.json"
+        },
+        {
+            "app/i18n/lt_LT.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/lt_LT.json"
+        },
+        {
+            "app/i18n/lv_LV.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/lv_LV.json"
+        },
+        {
+            "app/i18n/he_IL.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/he_IL.json"
+        },
+        {
+            "app/i18n/en.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/en.json"
+        },
+        {
+            "app/i18n/ru_RU.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/ru_RU.json"
+        },
+        {
+            "app/i18n/cs_CZ.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/cs_CZ.json"
+        },
+        {
+            "app/i18n/no_NO.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/no_NO.json"
+        },
+        {
+            "app/i18n/hu_HU.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/hu_HU.json"
+        },
+        {
+            "app/i18n/ar_SA.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/ar_SA.json"
+        },
+        {
+            "app/i18n/zh_HK.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/zh_HK.json"
+        },
+        {
+            "app/i18n/da_DK.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/da_DK.json"
+        },
+        {
+            "app/i18n/ja_JP.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/ja_JP.json"
+        },
+        {
+            "app/i18n/it_IT.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/it_IT.json"
+        },
+        {
+            "app/i18n/es_ES.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/es_ES.json"
+        },
+        {
+            "app/i18n/el_GR.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/el_GR.json"
+        },
+        {
+            "app/i18n/ro_RO.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/ro_RO.json"
+        },
+        {
+            "app/i18n/ur_PK.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/ur_PK.json"
+        },
+        {
+            "app/i18n/id_ID.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/id_ID.json"
+        },
+        {
+            "app/i18n/et_EE.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/et_EE.json"
+        },
+        {
+            "app/i18n/tlh_AA.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/tlh_AA.json"
+        },
+        {
+            "app/i18n/my_MM.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/my_MM.json"
+        },
+        {
+            "app/i18n/nl_NL.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/nl_NL.json"
+        },
+        {
+            "app/i18n/pl_PL.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/pl_PL.json"
+        },
+        {
+            "app/i18n/pt_PT.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/pt_PT.json"
+        },
+        {
+            "app/i18n/sv_SE.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/sv_SE.json"
+        },
+        {
+            "app/i18n/de_DE.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/de_DE.json"
+        },
+        {
+            "app/i18n/fr_FR.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/fr_FR.json"
+        },
+        {
+            "app/i18n/fi_FI.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/fi_FI.json"
+        },
+        {
+            "app/i18n/tr_TR.json": "/home/pavan/Downloads/devsecops/juice-shop/app/i18n/tr_TR.json"
+        },
+        {
+            "app/js/app.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/app.js"
+        },
+        {
+            "app/js/routes.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/routes.js"
+        },
+        {
+            "app/js/controllers/AdministrationController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/AdministrationController.js"
+        },
+        {
+            "app/js/controllers/ContactController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ContactController.js"
+        },
+        {
+            "app/js/controllers/BasketController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/BasketController.js"
+        },
+        {
+            "app/js/controllers/ComplaintController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ComplaintController.js"
+        },
+        {
+            "app/js/controllers/AboutController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/AboutController.js"
+        },
+        {
+            "app/js/controllers/LanguageController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/LanguageController.js"
+        },
+        {
+            "app/js/controllers/UserController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/UserController.js"
+        },
+        {
+            "app/js/controllers/RecycleController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/RecycleController.js"
+        },
+        {
+            "app/js/controllers/NavbarController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/NavbarController.js"
+        },
+        {
+            "app/js/controllers/ProductDetailsController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ProductDetailsController.js"
+        },
+        {
+            "app/js/controllers/ProductReviewEditController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ProductReviewEditController.js"
+        },
+        {
+            "app/js/controllers/ChangePasswordController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ChangePasswordController.js"
+        },
+        {
+            "app/js/controllers/LogoutController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/LogoutController.js"
+        },
+        {
+            "app/js/controllers/OAuthController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/OAuthController.js"
+        },
+        {
+            "app/js/controllers/ServerStartedNotificationController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ServerStartedNotificationController.js"
+        },
+        {
+            "app/js/controllers/RegisterController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/RegisterController.js"
+        },
+        {
+            "app/js/controllers/FeedbackController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/FeedbackController.js"
+        },
+        {
+            "app/js/controllers/ChallengeSolvedNotificationController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ChallengeSolvedNotificationController.js"
+        },
+        {
+            "app/js/controllers/UserDetailsController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/UserDetailsController.js"
+        },
+        {
+            "app/js/controllers/LoginController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/LoginController.js"
+        },
+        {
+            "app/js/controllers/QrCodeController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/QrCodeController.js"
+        },
+        {
+            "app/js/controllers/SearchController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/SearchController.js"
+        },
+        {
+            "app/js/controllers/ForgotPasswordController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ForgotPasswordController.js"
+        },
+        {
+            "app/js/controllers/SearchResultController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/SearchResultController.js"
+        },
+        {
+            "app/js/controllers/ChallengeController.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/controllers/ChallengeController.js"
+        },
+        {
+            "app/js/services/FeedbackService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/FeedbackService.js"
+        },
+        {
+            "app/js/services/ProductReviewService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/ProductReviewService.js"
+        },
+        {
+            "app/js/services/ConfigurationService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/ConfigurationService.js"
+        },
+        {
+            "app/js/services/SecurityAnswerService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/SecurityAnswerService.js"
+        },
+        {
+            "app/js/services/BasketService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/BasketService.js"
+        },
+        {
+            "app/js/services/RecycleService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/RecycleService.js"
+        },
+        {
+            "app/js/services/UserService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/UserService.js"
+        },
+        {
+            "app/js/services/ChallengeService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/ChallengeService.js"
+        },
+        {
+            "app/js/services/ProductService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/ProductService.js"
+        },
+        {
+            "app/js/services/SecurityQuestionService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/SecurityQuestionService.js"
+        },
+        {
+            "app/js/services/ComplaintService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/ComplaintService.js"
+        },
+        {
+            "app/js/services/AdministrationService.js": "/home/pavan/Downloads/devsecops/juice-shop/app/js/services/AdministrationService.js"
+        },
+        {
+            "app/public/favicon_v2.ico": "/home/pavan/Downloads/devsecops/juice-shop/app/public/favicon_v2.ico"
+        },
+        {
+            "app/public/favicon_ctf.ico": "/home/pavan/Downloads/devsecops/juice-shop/app/public/favicon_ctf.ico"
+        },
+        {
+            "app/public/images/JuiceShop_Logo.ai": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShop_Logo.ai"
+        },
+        {
+            "app/public/images/JuiceShop_Logo.svg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShop_Logo.svg"
+        },
+        {
+            "app/public/images/JuiceShop_Logo_100px.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShop_Logo_100px.png"
+        },
+        {
+            "app/public/images/JuiceShopCTF_Logo.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShopCTF_Logo.png"
+        },
+        {
+            "app/public/images/JuiceShop_Logo_50px.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShop_Logo_50px.png"
+        },
+        {
+            "app/public/images/JuiceShop_Logo.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/JuiceShop_Logo.png"
+        },
+        {
+            "app/public/images/products/fan_girlie.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/fan_girlie.jpg"
+        },
+        {
+            "app/public/images/products/raspberry_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/raspberry_juice.jpg"
+        },
+        {
+            "app/public/images/products/carrot_juice.jpeg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/carrot_juice.jpeg"
+        },
+        {
+            "app/public/images/products/Wooden-crutch.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/Wooden-crutch.jpg"
+        },
+        {
+            "app/public/images/products/magnets.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/magnets.jpg"
+        },
+        {
+            "app/public/images/products/apple_pressings.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/apple_pressings.jpg"
+        },
+        {
+            "app/public/images/products/orange_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/orange_juice.jpg"
+        },
+        {
+            "app/public/images/products/banana_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/banana_juice.jpg"
+        },
+        {
+            "app/public/images/products/fan_mug.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/fan_mug.jpg"
+        },
+        {
+            "app/public/images/products/sticker_single.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/sticker_single.jpg"
+        },
+        {
+            "app/public/images/products/tattoo.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/tattoo.jpg"
+        },
+        {
+            "app/public/images/products/waspy.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/waspy.png"
+        },
+        {
+            "app/public/images/products/stickersheet_se.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/stickersheet_se.png"
+        },
+        {
+            "app/public/images/products/strawberry_juice.jpeg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/strawberry_juice.jpeg"
+        },
+        {
+            "app/public/images/products/iron-on.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/iron-on.jpg"
+        },
+        {
+            "app/public/images/products/green_smoothie.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/green_smoothie.jpg"
+        },
+        {
+            "app/public/images/products/fan_hoodie.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/fan_hoodie.jpg"
+        },
+        {
+            "app/public/images/products/sticker.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/sticker.png"
+        },
+        {
+            "app/public/images/products/JuiceShop.stl": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/JuiceShop.stl"
+        },
+        {
+            "app/public/images/products/jawa_script.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/jawa_script.jpg"
+        },
+        {
+            "app/public/images/products/apple_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/apple_juice.jpg"
+        },
+        {
+            "app/public/images/products/owasplogo.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/owasplogo.png"
+        },
+        {
+            "app/public/images/products/squareBox1-40x40x40.stl": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/squareBox1-40x40x40.stl"
+        },
+        {
+            "app/public/images/products/eggfruit_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/eggfruit_juice.jpg"
+        },
+        {
+            "app/public/images/products/thingie1.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/thingie1.jpg"
+        },
+        {
+            "app/public/images/products/artwork.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/artwork.jpg"
+        },
+        {
+            "app/public/images/products/sticker_page.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/sticker_page.jpg"
+        },
+        {
+            "app/public/images/products/fan_shirt.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/fan_shirt.jpg"
+        },
+        {
+            "app/public/images/products/woodruff_syrup.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/woodruff_syrup.jpg"
+        },
+        {
+            "app/public/images/products/undefined.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/undefined.png"
+        },
+        {
+            "app/public/images/products/melon_bike.jpeg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/melon_bike.jpeg"
+        },
+        {
+            "app/public/images/products/white_raffards.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/white_raffards.jpg"
+        },
+        {
+            "app/public/images/products/cover_small.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/cover_small.jpg"
+        },
+        {
+            "app/public/images/products/crutch.123dx": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/crutch.123dx"
+        },
+        {
+            "app/public/images/products/fruit_press.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/fruit_press.jpg"
+        },
+        {
+            "app/public/images/products/quince.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/quince.jpg"
+        },
+        {
+            "app/public/images/products/3d_keychain.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/3d_keychain.jpg"
+        },
+        {
+            "app/public/images/products/lemon_juice.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/lemon_juice.jpg"
+        },
+        {
+            "app/public/images/products/owasp_osaft.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/products/owasp_osaft.jpg"
+        },
+        {
+            "app/public/images/carousel/2.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/2.jpg"
+        },
+        {
+            "app/public/images/carousel/7.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/7.jpg"
+        },
+        {
+            "app/public/images/carousel/3.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/3.jpg"
+        },
+        {
+            "app/public/images/carousel/6.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/6.jpg"
+        },
+        {
+            "app/public/images/carousel/5.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/5.jpg"
+        },
+        {
+            "app/public/images/carousel/4.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/4.jpg"
+        },
+        {
+            "app/public/images/carousel/1.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/carousel/1.jpg"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_green.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_green.png"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_white.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_white.png"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_orange.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_orange.png"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_red.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_red.png"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_gray.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_gray.png"
+        },
+        {
+            "app/public/images/ribbons/forkme_right_darkblue.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/ribbons/forkme_right_darkblue.png"
+        },
+        {
+            "app/public/images/tracking/microfab.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/tracking/microfab.gif"
+        },
+        {
+            "app/public/images/tracking/scoreboard.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/tracking/scoreboard.png"
+        },
+        {
+            "app/public/images/tracking/administration.png": "/home/pavan/Downloads/devsecops/juice-shop/app/public/images/tracking/administration.png"
+        },
+        {
+            "app/private/RenderPass.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/RenderPass.js"
+        },
+        {
+            "app/private/OrbitControls.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/OrbitControls.js"
+        },
+        {
+            "app/private/EffectComposer.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/EffectComposer.js"
+        },
+        {
+            "app/private/threejs-demo.html": "/home/pavan/Downloads/devsecops/juice-shop/app/private/threejs-demo.html"
+        },
+        {
+            "app/private/starry_background.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/private/starry_background.jpg"
+        },
+        {
+            "app/private/fair_clouds_4k.png": "/home/pavan/Downloads/devsecops/juice-shop/app/private/fair_clouds_4k.png"
+        },
+        {
+            "app/private/stats.min.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/stats.min.js"
+        },
+        {
+            "app/private/ShaderPass.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/ShaderPass.js"
+        },
+        {
+            "app/private/three.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/three.js"
+        },
+        {
+            "app/private/MaskPass.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/MaskPass.js"
+        },
+        {
+            "app/private/fontawesome-all.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/fontawesome-all.js"
+        },
+        {
+            "app/private/under-construction.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/private/under-construction.gif"
+        },
+        {
+            "app/private/earth_normalmap_flat4k.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/private/earth_normalmap_flat4k.jpg"
+        },
+        {
+            "app/private/earthspec4k.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/private/earthspec4k.jpg"
+        },
+        {
+            "app/private/orangemap2k.jpg": "/home/pavan/Downloads/devsecops/juice-shop/app/private/orangemap2k.jpg"
+        },
+        {
+            "app/private/dat.gui.min.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/dat.gui.min.js"
+        },
+        {
+            "app/private/CopyShader.js": "/home/pavan/Downloads/devsecops/juice-shop/app/private/CopyShader.js"
+        },
+        {
+            "app/css/app.css": "/home/pavan/Downloads/devsecops/juice-shop/app/css/app.css"
+        },
+        {
+            "app/css/geo-bootstrap/swatch/variables.less": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/swatch/variables.less"
+        },
+        {
+            "app/css/geo-bootstrap/swatch/bootstrap.css": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/swatch/bootstrap.css"
+        },
+        {
+            "app/css/geo-bootstrap/swatch/bootswatch.less": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/swatch/bootswatch.less"
+        },
+        {
+            "app/css/geo-bootstrap/img/stars.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/stars.gif"
+        },
+        {
+            "app/css/geo-bootstrap/img/hot.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/hot.gif"
+        },
+        {
+            "app/css/geo-bootstrap/img/progress.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/progress.gif"
+        },
+        {
+            "app/css/geo-bootstrap/img/rainbow.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/rainbow.gif"
+        },
+        {
+            "app/css/geo-bootstrap/img/glyphicons-halflings-white.png": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/glyphicons-halflings-white.png"
+        },
+        {
+            "app/css/geo-bootstrap/img/flames.gif": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/flames.gif"
+        },
+        {
+            "app/css/geo-bootstrap/img/glyphicons-halflings.png": "/home/pavan/Downloads/devsecops/juice-shop/app/css/geo-bootstrap/img/glyphicons-halflings.png"
+        },
+        {
+            "config/7ms.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/7ms.yml"
+        },
+        {
+            "config/ctf.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/ctf.yml"
+        },
+        {
+            "config/default.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/default.yml"
+        },
+        {
+            "config/bodgeit.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/bodgeit.yml"
+        },
+        {
+            "config/sickshop.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/sickshop.yml"
+        },
+        {
+            "config/test.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/test.yml"
+        },
+        {
+            "config/juicebox.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/juicebox.yml"
+        },
+        {
+            "config/quiet.yml": "/home/pavan/Downloads/devsecops/juice-shop/config/quiet.yml"
+        },
+        {
+            "screenshots/screenshot04.png": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/screenshot04.png"
+        },
+        {
+            "screenshots/screenshot05.png": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/screenshot05.png"
+        },
+        {
+            "screenshots/screenshot02.png": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/screenshot02.png"
+        },
+        {
+            "screenshots/screenshot01.png": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/screenshot01.png"
+        },
+        {
+            "screenshots/screenshot03.png": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/screenshot03.png"
+        },
+        {
+            "screenshots/slideshow.gif": "/home/pavan/Downloads/devsecops/juice-shop/screenshots/slideshow.gif"
+        },
+        {
+            "data/mongodb.js": "/home/pavan/Downloads/devsecops/juice-shop/data/mongodb.js"
+        },
+        {
+            "data/datacache.js": "/home/pavan/Downloads/devsecops/juice-shop/data/datacache.js"
+        },
+        {
+            "data/datacreator.js": "/home/pavan/Downloads/devsecops/juice-shop/data/datacreator.js"
+        },
+        {
+            "lib/utils.js": "/home/pavan/Downloads/devsecops/juice-shop/lib/utils.js"
+        },
+        {
+            "lib/insecurity.js": "/home/pavan/Downloads/devsecops/juice-shop/lib/insecurity.js"
+        },
+        {
+            "hooks/build": "/home/pavan/Downloads/devsecops/juice-shop/hooks/build"
+        },
+        {
+            "models/basket.js": "/home/pavan/Downloads/devsecops/juice-shop/models/basket.js"
+        },
+        {
+            "models/product.js": "/home/pavan/Downloads/devsecops/juice-shop/models/product.js"
+        },
+        {
+            "models/securityAnswer.js": "/home/pavan/Downloads/devsecops/juice-shop/models/securityAnswer.js"
+        },
+        {
+            "models/securityQuestion.js": "/home/pavan/Downloads/devsecops/juice-shop/models/securityQuestion.js"
+        },
+        {
+            "models/user.js": "/home/pavan/Downloads/devsecops/juice-shop/models/user.js"
+        },
+        {
+            "models/challenge.js": "/home/pavan/Downloads/devsecops/juice-shop/models/challenge.js"
+        },
+        {
+            "models/recycle.js": "/home/pavan/Downloads/devsecops/juice-shop/models/recycle.js"
+        },
+        {
+            "models/complaint.js": "/home/pavan/Downloads/devsecops/juice-shop/models/complaint.js"
+        },
+        {
+            "models/basketitem.js": "/home/pavan/Downloads/devsecops/juice-shop/models/basketitem.js"
+        },
+        {
+            "models/index.js": "/home/pavan/Downloads/devsecops/juice-shop/models/index.js"
+        },
+        {
+            "models/feedback.js": "/home/pavan/Downloads/devsecops/juice-shop/models/feedback.js"
+        },
+        {
+            "encryptionkeys/premium.key": "/home/pavan/Downloads/devsecops/juice-shop/encryptionkeys/premium.key"
+        },
+        {
+            "encryptionkeys/jwt.pub": "/home/pavan/Downloads/devsecops/juice-shop/encryptionkeys/jwt.pub"
+        },
+        {
+            "routes/basket.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/basket.js"
+        },
+        {
+            "routes/easterEgg.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/easterEgg.js"
+        },
+        {
+            "routes/search.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/search.js"
+        },
+        {
+            "routes/securityQuestion.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/securityQuestion.js"
+        },
+        {
+            "routes/continueCode.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/continueCode.js"
+        },
+        {
+            "routes/b2bOrder.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/b2bOrder.js"
+        },
+        {
+            "routes/angular.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/angular.js"
+        },
+        {
+            "routes/appConfiguration.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/appConfiguration.js"
+        },
+        {
+            "routes/currentUser.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/currentUser.js"
+        },
+        {
+            "routes/fileUpload.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/fileUpload.js"
+        },
+        {
+            "routes/restoreProgress.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/restoreProgress.js"
+        },
+        {
+            "routes/resetPassword.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/resetPassword.js"
+        },
+        {
+            "routes/fileServer.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/fileServer.js"
+        },
+        {
+            "routes/updateProductReviews.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/updateProductReviews.js"
+        },
+        {
+            "routes/keyServer.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/keyServer.js"
+        },
+        {
+            "routes/authenticatedUsers.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/authenticatedUsers.js"
+        },
+        {
+            "routes/verify.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/verify.js"
+        },
+        {
+            "routes/redirect.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/redirect.js"
+        },
+        {
+            "routes/coupon.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/coupon.js"
+        },
+        {
+            "routes/showProductReviews.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/showProductReviews.js"
+        },
+        {
+            "routes/order.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/order.js"
+        },
+        {
+            "routes/createProductReviews.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/createProductReviews.js"
+        },
+        {
+            "routes/login.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/login.js"
+        },
+        {
+            "routes/repeatNotification.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/repeatNotification.js"
+        },
+        {
+            "routes/changePassword.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/changePassword.js"
+        },
+        {
+            "routes/premiumReward.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/premiumReward.js"
+        },
+        {
+            "routes/appVersion.js": "/home/pavan/Downloads/devsecops/juice-shop/routes/appVersion.js"
+        }
+    ],
+    "good_finding": {},
+    "missing_sec_header": {
+        "Web Security": [
+            {
+                "description": "Content Security Policy (CSP), a mechanism web applications can use to mitigate a broad class of content injection vulnerabilities, such as cross-site scripting (XSS). CSP Header was not found.",
+                "tag": "web",
+                "title": "Missing Security Header - Content-Security-Policy (CSP)"
+            },
+            {
+                "description": "Strict-Transport-Security (HSTS) header enforces secure (HTTP over SSL/TLS) connections to the server.",
+                "tag": "web",
+                "title": "Missing Security Header - Strict-Transport-Security (HSTS)"
+            },
+            {
+                "description": "JavaScript can access Cookies if they are not marked httpOnly.",
+                "tag": "web",
+                "title": "Missing 'httpOnly' in Cookie"
+            },
+            {
+                "description": "Remove the X-Powered-By header to prevent information gathering.",
+                "tag": "web",
+                "title": "Infromation Disclosure - X-Powered-By"
+            },
+            {
+                "description": "X-Download-Options header set to noopen prevents IE users from directly opening and executing downloads in your site's context.",
+                "tag": "web",
+                "title": "Missing Security Header - X-Download-Options: noopen"
+            },
+            {
+                "description": "X-XSS-Protection header set to 1 enables the Cross-site scripting (XSS) filter built into most recent web browsers.",
+                "tag": "web",
+                "title": "Missing Security Header - X-XSS-Protection:1"
+            },
+            {
+                "description": "Public-Key-Pins (HPKP) ensures that certificate is Pinned.",
+                "tag": "web",
+                "title": "Missing Security Header - Public-Key-Pins (HPKP)"
+            }
+        ]
+    },
+    "sec_issues": {
+        "Application Related": [
+            {
+                "description": "MD5 is a a weak hash which is known to have collision. Use a strong hashing function.",
+                "filename": "insecurity.js",
+                "line": 13,
+                "lines": "const fs = require('fs')\n\nexports.publicKey = fs.readFileSync('encryptionkeys/jwt.pub', 'utf8')\nconst privateKey = '-----BEGIN RSA PRIVATE KEY-----\\r\\nMIICXAIBAAKBgQDNwqLEe9wgTXCbC7+RPdDbBbeqjdbs4kOPOIGzqLpXvJXlxxW8iMz0EaM4BKUqYsIa+ndv3NAn2RxCd5ubVdJJcX43zO6Ko0TFEZx/65gY3BE0O6syCEmUP4qbSd6exou/F+WTISzbQ5FBVPVmhnYhG/kpwt/cIxK5iUn5hm+4tQIDAQABAoGBAI+8xiPoOrA+KMnG/T4jJsG6TsHQcDHvJi7o1IKC/hnIXha0atTX5AUkRRce95qSfvKFweXdJXSQ0JMGJyfuXgU6dI0TcseFRfewXAa/ssxAC+iUVR6KUMh1PE2wXLitfeI6JLvVtrBYswm2I7CtY0q8n5AGimHWVXJPLfGV7m0BAkEA+fqFt2LXbLtyg6wZyxMA/cnmt5Nt3U2dAu77MzFJvibANUNHE4HPLZxjGNXN+a6m0K6TD4kDdh5HfUYLWWRBYQJBANK3carmulBwqzcDBjsJ0YrIONBpCAsXxk8idXb8jL9aNIg15Wumm2enqqObahDHB5jnGOLmbasizvSVqypfM9UCQCQl8xIqy+YgURXzXCN+kwUgHinrutZms87Jyi+D8Br8NY0+Nlf+zHvXAomD2W5CsEK7C+8SLBr3k/TsnRWHJuECQHFE9RA2OP8WoaLPuGCyFXaxzICThSRZYluVnWkZtxsBhW2W8z1b8PvWUE7kMy7TnkzeJS2LSnaNHoyxi7IaPQUCQCwWU4U+v4lD7uYBw00Ga/xt+7+UqFPlPVdz1yyr4q24Zxaw0LgmuEvgU5dycq8N7JxjTubX0MIRR+G9fmDBBl8=\\r\\n-----END RSA PRIVATE KEY-----'\n\nexports.hash = data => crypto.createHash('md5').update(data).digest('hex')\nexports.hmac = data => crypto.createHmac('sha256', '07-92-75-2C-DB-D3').update(data).digest('hex')\n\nexports.cutOffPoisonNullByte = str => {\n        const nullByte = '%00'",
+                "path": "/home/pavan/Downloads/devsecops/juice-shop/lib/insecurity.js",
+                "sha2": "a1d0e5092a15be3fec11d9deb9ef31f4dcaaa5f5ae63a9bcb9fb4d51a7199513",
+                "tag": "node",
+                "title": "Weak Hash used - MD5"
+            },
+            {
+                "description": "A hardcoded secret was identified.",
+                "filename": "insecurity.js",
+                "line": 25,
+                "lines": "  }\n  return str\n  }\n\n  exports.isAuthorized = () => expressJwt({\n      secret: this.publicKey\n  })\n  exports.denyAll = () => expressJwt({\n      secret: '' + Math.random()\n  })\n  exports.authorize = (user = {}) => jwt.sign(user, privateKey, {\n      expiresIn: 3600 * 5,\n      algorithm: 'RS256'\n  })\n\n  exports.sanitizeHtml = html => sanitizeHtml(html)",
+                "path": "/home/pavan/Downloads/devsecops/juice-shop/lib/insecurity.js",
+                "sha2": "a2de6ca9fa3844806531f33daaf8e8505ab6cb48348e3cd609cf6d35303c1735",
+                "tag": "node",
+                "title": "Secret Hardcoded"
+            }
+        ],
+        "Remote Code Injection": [
+            {
+                "description": "User controlled data in 'load()' function can result in Remote Code Injection.",
+                "filename": "server.js",
+                "line": 20,
+                "lines": "const cors = require('cors')\nconst multer = require('multer')\nconst upload = multer({\n    storage: multer.memoryStorage(),\n    limits: {\n        fileSize: 200000\n    }\n})\nconst yaml = require('js-yaml')\nconst swaggerUi = require('swagger-ui-express')\nconst swaggerDocument = yaml.load(fs.readFileSync('./swagger.yml', 'utf8'))\nconst fileUpload = require('./routes/fileUpload')\nconst redirect = require('./routes/redirect')\nconst angular = require('./routes/angular')\nconst easterEgg = require('./routes/easterEgg')",
+                "path": "/home/pavan/Downloads/devsecops/juice-shop/server.js",
+                "sha2": "19c1df710dbc7abfe346f993e358ffa53b7377fd03b8ef381141df6165935967",
+                "tag": "rci",
+                "title": "Loading of untrusted YAML can cause Remote Code Injection"
+            }
+        ],
+        "SQL Injection (SQLi)": [
+            {
+                "description": "Untrusted User Input in RAW SQL Query can cause SQL Injection",
+                "filename": "login.js",
+                "line": 37,
+                "lines": "      utils.solve(challenges.loginSupportChallenge)\n      }\n      if (utils.notSolved(challenges.oauthUserPasswordChallenge) && req.body.email === 'bjoern.kimminich@googlemail.com' && req.body.password === 'YmpvZXJuLmtpbW1pbmljaEBnb29nbGVtYWlsLmNvbQ==') {\n          utils.solve(challenges.oauthUserPasswordChallenge)\n      }\n      models.sequelize.query('SELECT * FROM Users WHERE email = \\'' + (req.body.email || '') + '\\' AND password = \\'' + insecurity.hash(req.body.password || '') + '\\'', {\n              model: models.User,\n              plain: true\n          })\n          .then((authenticatedUser) => {\n                  let user = utils.queryResultToJson(authenticatedUser)\n\n                  const rememberedEmail = insecurity.userEmailFrom(req)",
+                "path": "/home/pavan/Downloads/devsecops/juice-shop/routes/login.js",
+                "sha2": "43e5e903217008c99762bba0550114247fe6832dd166b2ac33d60934a0908fbb",
+                "tag": "sqli",
+                "title": "SQLi - SQL Injection"
+            }
+        ]
+    },
+    "total_count": {
+        "good": 0,
+        "mis": 7,
+        "sec": 4
+    },
+    "vuln_count": {
+        "Loading of untrusted YAML can cause Remote Code Injection": 1,
+        "SQLi - SQL Injection": 1,
+        "Secret Hardcoded": 1,
+        "Weak Hash used - MD5": 1
+    }
+}
