@@ -141,6 +141,7 @@ class ThreatModelInput(graphene.InputObjectType):
     categories = graphene.List(graphene.String)
 
 class NewVulnerability(graphene.ObjectType):
+    id = graphene.String()
     tool = graphene.String()
     name = graphene.String()
     cwe = graphene.Int()
