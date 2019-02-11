@@ -1,19 +1,25 @@
 <template>
+  <div>
     <div>
-    <div>
-        <network
-            class="network"
-            ref="network"
-            :nodes="network.nodes"
-            :edges="network.edges"
-            :options="network.options"
-            @select-node="setClickEvent()"
-    ></network>
+      <network
+        class="network"
+        ref="network"
+        :nodes="network.nodes"
+        :edges="network.edges"
+        :options="network.options"
+        @select-node="setClickEvent()"
+      ></network>
     </div>
-    <div>
-        <p v-if="nodeCaption">{{ nodeCaption }}</p>
+    <div v-if="nodeCaption">
+      <div class="tile">
+        <div class="tile is-parent is-vertical">
+          <article class="tile is-child notification is-primary">
+            <p>{{ nodeCaption }}</p>
+          </article>
+        </div>
+      </div>
     </div>
-    </div>
+  </div>
 </template>
 <script>
 import gql from "graphql-tag";
@@ -29,6 +35,20 @@ export default {
         options: {
           nodes: {
             shape: "dot"
+          },
+          layout: {
+            hierarchical: {
+              direction: "UD",
+              sortMethod: "directed"
+            }
+          },
+          edges: {
+            smooth: {
+              forceDirection: "UD"
+            }
+          },
+          physics: {
+            enabled: false
           }
         }
       },
@@ -88,30 +108,42 @@ export default {
         label: `Project: ${this.projectActual}`
       });
       for (let singleFeature of result.data.userStoryByProject) {
-        let featureRandom = Math.floor(Math.random() * 1000);
+        let featureRandom = Math.floor(Math.random() * 100000);
         this.network.nodes.push({
           id: featureRandom,
           label: singleFeature.shortName,
-          title: JSON.stringify(singleFeature)
+          title: singleFeature.description,
+          color: {
+            background: "#3399ff"
+          }
         });
-        let edgeFeatureRandom = Math.floor(Math.random() * 1000);
+        let edgeFeatureRandom = Math.floor(Math.random() * 100000);
         this.network.edges.push({
           id: edgeFeatureRandom,
           from: 1,
-          to: featureRandom
+          to: featureRandom,
+          color: {
+            highlight: "#3399ff"
+          }
         });
         for (let singleAbuse of singleFeature.abuses) {
-          let abuseRandom = Math.floor(Math.random() * 1000);
+          let abuseRandom = Math.floor(Math.random() * 100000);
           this.network.nodes.push({
             id: abuseRandom,
             label: singleAbuse.shortName,
-            title: singleAbuse.description
+            title: singleAbuse.description,
+            color: {
+              background: "#ffb99d"
+            }
           });
-          let edgeAbuseRandom = Math.floor(Math.random() * 1000);
+          let edgeAbuseRandom = Math.floor(Math.random() * 100000);
           this.network.edges.push({
             id: edgeAbuseRandom,
             from: featureRandom,
-            to: abuseRandom
+            to: abuseRandom,
+            color: {
+              highlight: "#ffb99d"
+            }
           });
 
           for (let singleScenario of singleAbuse.models) {
@@ -119,14 +151,41 @@ export default {
             this.network.nodes.push({
               id: sceneRandom,
               label: singleScenario.name,
-              title: singleScenario.description
+              title: singleScenario.description,
+              color: {
+                background: "#FF6122"
+              }
             });
-            let sceneEdgeRandom = Math.floor(Math.random() * 1000);
+            let sceneEdgeRandom = Math.floor(Math.random() * 100000);
             this.network.edges.push({
               id: sceneEdgeRandom,
               from: abuseRandom,
-              to: sceneRandom
+              to: sceneRandom,
+              color: {
+                highlight: "#FF6122"
+              }
             });
+
+            for (let singleTest of singleScenario.tests) {
+              let testRandom = Math.floor(Math.random() * 100000);
+              this.network.nodes.push({
+                id: testRandom,
+                label: singleTest.name,
+                title: singleTest.testCase,
+                color: {
+                  background: "#16fd1a"
+                }
+              });
+              let testEdgeRandom = Math.floor(Math.random() * 100000);
+              this.network.edges.push({
+                id: testEdgeRandom,
+                from: sceneRandom,
+                to: testRandom,
+                color: {
+                  highlight: "#16fd1a"
+                }
+              });
+            }
           }
         }
       }

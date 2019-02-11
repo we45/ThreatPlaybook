@@ -1,6 +1,10 @@
 from mongoengine import *
 import datetime
+import namesgenerator
+from uuid import uuid4
 
+def random_scan_name():
+    return "{}-{}".format(namesgenerator.get_random_name(), str(uuid4()))
 
 class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
@@ -130,6 +134,12 @@ class Vulnerability(Document):
     project = ReferenceField(Project)
     target = ReferenceField(Target)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
+
+class Scan(Document):
+    created_on = DateTimeField(default=datetime.datetime.utcnow)
+    name = StringField(default = random_scan_name)
+    target = ReferenceField(Target)
+    vulnerabilities = ListField(ReferenceField(Vulnerability))
 
 class User(Document):
     user_type_choices = (('super', "superuser"), ('user', "user"))

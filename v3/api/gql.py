@@ -3,12 +3,16 @@ from graphene_mongo import MongoengineObjectType
 from models import Vulnerability, Target
 from models import Project as Proj
 from models import ThreatModel, Test, Repo, RepoTestCase
-from models import UseCase, AbuseCase, VulnerabilityEvidence
+from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
 
 connect_db()
+
+class VulScan(MongoengineObjectType):
+    class Meta:
+        model = Scan
 
 class Vuln(MongoengineObjectType):
     class Meta:
@@ -46,6 +50,10 @@ class RepositoryTestCase(MongoengineObjectType):
         model = RepoTestCase
 
 class NewProject(graphene.ObjectType):
+    name = graphene.String()
+
+class NewScan(graphene.ObjectType):
+    created_on = graphene.String()
     name = graphene.String()
 
 class NewUserStory(graphene.ObjectType):
@@ -109,7 +117,7 @@ class VulnerabilityInput(graphene.InputObjectType):
     remediation = graphene.String()
     target = graphene.String()
     project = graphene.String()
-    evidences = graphene.InputField(graphene.List(VulnerabilityEvidenceInput))
+    scan = graphene.String()
 
 # class TestCaseInput(graphene.InputObjectType):
 #     name = graphene.String()
@@ -249,7 +257,6 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
         else:
             raise Exception("Unauthorized to perform action")
 
-
 class CreateOrUpdateThreatModel(graphene.Mutation):
     class Arguments:
         t_model = ThreatModelInput(required = True)
@@ -351,6 +358,25 @@ class CreateOrUpdateTarget(graphene.Mutation):
         else:
             raise Exception("Unauthorized to perform action")
 
+class CreateScan(graphene.Mutation):
+    class Arguments:
+        target = graphene.String()
+
+    scan = graphene.Field(lambda: NewScan)
+
+    def mutate(self, info, target):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                ref_target = Target.objects.get(name = target)
+                new_scan = Scan(target = ref_target).save()
+            except DoesNotExist:
+                raise Exception("Target matching query does not exist")
+            return CreateScan(scan = new_scan)
+        else:
+            raise Exception("Unauthorized to perform action")
+
+
+
 class CreateVulnerability(graphene.Mutation):
     class Arguments:
         vuln = VulnerabilityInput(required = True)
@@ -364,12 +390,13 @@ class CreateVulnerability(graphene.Mutation):
             if not vuln_attributes:
                 raise Exception("You need to specify a vuln key")
             else:
-                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target")):
+                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target", "scan")):
                     raise Exception("Mandatory fields not in Vulnerability Definition")
                 else:
                     try:
                         ref_project = Proj.objects.get(name=vuln_attributes.get('project'))
                         ref_target = Target.objects.get(name = vuln_attributes.get('target'))
+                        ref_scan = Scan.objects.get(name = vuln_attributes.get('scan'))
                         new_vuln = Vulnerability(name=vuln_attributes['name'], tool=vuln_attributes['tool'],
                                                  description=vuln_attributes['description'],
                                                  cwe=vuln_attributes.get('cwe', 0),
@@ -377,8 +404,9 @@ class CreateVulnerability(graphene.Mutation):
                                                  severity=vuln_attributes.get('severity', 1), project=ref_project,
                                                  target = ref_target,remediation=vuln_attributes.get('remediation', '')
                                                  ).save()
+                        ref_scan.update(add_to_set__vulnerabilities = new_vuln.id)
                     except DoesNotExist:
-                        return "Project OR Target not found"
+                        return "Project OR Target or Scan not found"
                     except Exception as e:
                         return e.args
 
@@ -422,7 +450,6 @@ class CreateVulnerabilityEvidence(graphene.Mutation):
             return CreateVulnerabilityEvidence(new_evidence)
         else:
             raise Exception("Unauthorized to perform action")
-
 
 class CreateOrUpdateTestCase(graphene.Mutation):
     class Arguments:
@@ -480,10 +507,12 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     create_target = CreateOrUpdateTarget.Field()
     create_or_update_test_case = CreateOrUpdateTestCase.Field()
     create_vulnerability_evidence = CreateVulnerabilityEvidence.Field()
+    create_scan = CreateScan.Field()
 
 
 class Query(graphene.ObjectType):
     vulns = graphene.List(Vuln)
+    scans = graphene.List(VulScan)
     projects = graphene.List(Project)
     scenarios = graphene.List(TModel)
     user_stories = graphene.List(UserStory)
@@ -505,6 +534,12 @@ class Query(graphene.ObjectType):
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
             return list(Vulnerability.objects.all())
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_scans(self, info):
+        if _validate_jwt(info.context['request'].headers):
+            return list(Scan.objects.all())
         else:
             raise Exception("Unauthorized to perform action")
 
