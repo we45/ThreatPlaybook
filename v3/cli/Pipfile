@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+ipython = "*"
+
+[packages]
+docopt = "*"
+requests = "*"
+huepy = "*"
+pickledb = "*"
+jsonschema = "*"
+pyyaml = "*"
+pyjq = "*"
+"jinja2" = "*"
+tabulate = "*"
+
+[requires]
+python_version = "3.6"

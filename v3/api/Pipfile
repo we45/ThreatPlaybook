@@ -1,0 +1,30 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+recommonmark = "*"
+
+
+[packages]
+
+responder = "*"
+mongoengine = "*"
+graphene = "*"
+graphene-mongo = "*"
+schema = "*"
+"argon2-cffi" = "*"
+pyjwt = "*"
+python-dotenv = "*"
+prompt-toolkit = "*"
+huepy = "*"
+namesgenerator = "*"
+
+
+[requires]
+
+python_version = "3.6"

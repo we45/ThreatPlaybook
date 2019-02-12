@@ -1,0 +1,105 @@
+name: Cross-Site Scripting
+cwe: 79
+description: The software does not neutralize or incorrectly neutralizes user-controllable
+  input before it is placed in output that is used as a web page that is served to
+  other users.
+mitigations:
+- description: Examples of libraries and frameworks that make it easier to generate
+    properly encoded output include Microsoft's Anti-XSS library, the OWASP ESAPI
+    Encoding module, and Apache Wicket.
+  phase: Architecture and Design
+- description: Understand all the potential areas where untrusted inputs can enter
+    your software. Parameters or arguments, cookies, anything read from the network,
+    environment variables, reverse DNS lookups, query results, request headers, URL
+    components, e-mail, files, filenames, databases, and any external systems that
+    provide data to the application. Remember that such inputs may be obtained indirectly
+    through API calls.
+  phase: Architecture and Design
+- description: For any security checks that are performed on the client side, ensure
+    that these checks are duplicated on the server side.
+  phase: Architecture and Design
+- description: If available, use structured mechanisms that automatically enforce
+    the separation between data and code. These mechanisms may be able to provide
+    the relevant quoting, encoding, and validation automatically, instead of relying
+    on the developer to provide this capability at every point where output is generated.
+  phase: Architecture and Design
+- description: The problem of inconsistent output encodings often arises in web pages.
+    If an encoding is not specified in an HTTP header, web browsers often guess about
+    which encoding is being used. This can open up the browser to subtle XSS attacks.
+  phase: Implementation
+- description: To help mitigate XSS attacks against the user's session cookie, set
+    the session cookie to be HttpOnly. In browsers that support the HttpOnly feature
+    (such as more recent versions of Internet Explorer and Firefox), this attribute
+    can prevent the user's session cookie from being accessible to malicious client-side
+    scripts that use document.cookie. This is not a complete solution, since HttpOnly
+    is not supported by all browsers. More importantly, XMLHTTPRequest and other powerful
+    browser technologies provide read access to HTTP headers, including the Set-Cookie
+    header in which the HttpOnly flag is set.
+  phase: Implementation
+- description: Ensure that you perform input validation at well-defined interfaces
+    within the application. This will help protect the application even if a component
+    is reused or moved elsewhere.
+  phase: Implementation
+- description: When the set of acceptable objects, such as filenames or URLs, is limited
+    or known, create a mapping from a set of fixed input values (such as numeric IDs)
+    to the actual filenames or URLs, and reject all other inputs.
+  phase: Architecture and Design
+- description: Use an application firewall that can detect attacks against this weakness.
+    It can be beneficial in cases in which the code cannot be fixed (because it is
+    controlled by a third party), as an emergency prevention measure while more comprehensive
+    software assurance measures are applied, or to provide defense in depth.
+  phase: Operation
+- description: Use a Content-Security-Policy Header for your application that is honored by a modern browser.
+    Content Security Policy allows you to define specific execution scopes for attributes and elements that can be used
+    to perform Cross-Site Scripting.
+  phase: Implementation
+- description: Deploy a Cross-Origin-Resource Sharing implementation to prevent your application's front-end from accessing
+    unauthorized third-party URLs that may be part of an attacker's Cross-Site Scripting Attack
+  phase: Implementation
+categories: [app_vulns,owasp]
+risk:
+- consequence: The most common attack performed with cross-site scripting involves
+    the disclosure of information stored in user cookies. Typically, a malicious user
+    will craft a client-side script, which -- when parsed by a web browser -- performs
+    some activity (such as sending all site cookies to a given E-mail address). This
+    script will be loaded and run by each user visiting the web site. Since the site
+    requesting to run the script has access to the cookies in question, the malicious
+    script does also.
+  type: Access_Control
+- consequence: In some circumstances it may be possible to run arbitrary code on a
+    victim's computer when cross-site scripting is combined with other flaws.
+  type: Integrity
+- consequence: The consequence of an XSS attack is the same regardless of whether
+    it is stored or reflected. The difference is in how the payload arrives at the
+    server.
+  type: Confidentiality
+variants:
+- Persistent Cross-Site Scripting
+- Reflected Cross-Site Scripting
+- DOM-Based Cross Site Scripting
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools and its XSS payloads against the application
+  tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+  type: discovery
+- name: manual
+  test: test for XSS variants manually with pentesters, bug-bounty
+  type: manual
+- name: content-security-policy
+  test: Look for Content Security Policy headers in the Application and validate if the application enforces content-security-policy headers with optimal efficacy
+  type: recon
+- name: cors
+  test: Look for Cross-Origin Resource Sharing to ensure that the application is unable to make calls to URLs outside a specific set of whitelisted URLs and domains
+  type: discovery
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of improper input validation and output encoding for Cross-Site Scripting
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity,]
+  type: sast
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of Cross-Site Scripting
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+related_cwes:
+- 80
+- 116
+
