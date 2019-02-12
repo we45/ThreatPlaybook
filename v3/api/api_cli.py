@@ -133,7 +133,10 @@ if __name__ == '__main__':
             print(good("Superuser with email: {} created successfully".format(email)))
         except Exception as e:
             print(bold(red(e)))
-
+    if arguments.get('load-repo-db'):
+        db = connect_db()
+        load_reload_repo_db()
+        print (good("Data loaded successfully!!!"))
 
 
 

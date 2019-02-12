@@ -1,76 +1,75 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <header class="card-header">
-        <img alt="ThreatPlaybook Logo" src="../assets/tp-logo.png" />
-      </header>
-      <div class="card-content">
-        <b-field label="Email">
-          <b-input
-            type="email"
-            value="john@"
-            maxlength="30"
-            v-model="form.email"
-          >
-          </b-input>
-        </b-field>
-        <b-field label="Password">
-          <b-input
-            value="123"
-            type="password"
-            maxlength="30"
-            v-model="form.password"
-          ></b-input>
-        </b-field>
-        <button class="button is-primary" @click="loginAction">Login</button>
-      </div>
+    <div>
+        <div class="task-container columns is-multiline">
+            <div class="card column is-half is-offset-one-quarter">
+                <img alt="ThreatPlaybook Logo" src="../assets/tp-logo.png"/>
+                <hr>
+                <form @submit.prevent="loginAction">
+                <div class="card-content" align="left">
+                    <b-field label="Email">
+                        <b-input
+                                placeholder="Enter Email"
+                                type="email"
+                                value="john@"
+                                v-model="form.email"
+
+                        >
+                        </b-input>
+                    </b-field>
+                    <br>
+                    <b-field label="Password">
+                        <b-input
+                                placeholder="Enter Password"
+                                value="123"
+                                type="password"
+                                v-model="form.password"
+                        ></b-input>
+                    </b-field>
+                    <br>
+                    <button class="button is-primary is-large is-fullwidth"
+                            @click="loginAction">Login
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+
     </div>
-  </div>
 </template>
 <script>
-import axios from "axios";
-export default {
-  data() {
-    return {
-      form: {
-        email: "",
-        password: ""
-      }
-    };
-  },
-  methods: {
-    loginAction() {
-      axios
-        .post("http://localhost:5042/login", {
-          email: this.form.email,
-          password: this.form.password
-        })
-        .then(response => {
-          if ("token" in response.data) {
-            if (localStorage.getItem("token") !== null) {
-              localStorage.removeItem("token");
-            } else {
-              localStorage.setItem("token", response.data.token);
+    import axios from "axios";
+
+    export default {
+        data() {
+            return {
+                form: {
+                    email: "",
+                    password: ""
+                }
+            };
+        },
+        methods: {
+            loginAction() {
+                axios
+                    .post("http://localhost:5042/login", {
+                        email: this.form.email,
+                        password: this.form.password
+                    })
+                    .then(response => {
+                        localStorage.removeItem('token')
+                        localStorage.setItem('token', response.data.token)
+                        this.$router.push("/projects");
+                    })
+                    .catch(error => {
+                        localStorage.removeItem('token')
+                        this.$toast.open({
+                            duration: 7000,
+                            message: "Invalid Credentials",
+                            position: "is-top",
+                            type: "is-danger"
+                        });
+                    });
             }
-            this.$toast.open({
-              duration: 5000,
-              message: "Successfully logged in",
-              position: "is-top",
-              type: "is-success"
-            });
-            this.$router.push("/projects");
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$toast.open({
-            duration: 7000,
-            message: "Invalid Credentials",
-            position: "is-top",
-            type: "is-danger"
-          });
-        });
-    }
-  }
-};
+        }
+    };
 </script>
