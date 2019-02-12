@@ -3,7 +3,6 @@ ThreatPlaybook API Configurator
 
 Usage:
     api_cli configure
-    api_cli set (database|host|port)
     api_cli create-super-user [--email=<email>] [--password=<password]
     api_cli load-repo-db
 
