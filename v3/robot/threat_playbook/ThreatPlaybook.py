@@ -117,10 +117,35 @@ class ThreatPlaybook(object):
                 logger.info(msg='Target Created: {}'.format(cleaned_response))
             else:
                 logger.warn(msg='Error while creating target: {}'.format(response))
-                exit(1)
+                raise Exception("Invalid response while attempting to create target")
         else:
             logger.warn(msg='Error while creating target')
-            exit(1)
+            raise Exception("Invalid response while attempting to create target")
+
+    def create_scan(self, target_name):
+        create_scan_query = """
+        mutation {
+          createScan(target: "%s") {
+            scan {
+              name
+              createdOn
+            }
+          }
+        }
+        """ % target_name
+        response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+        if response:
+            cleaned_response = validate_scan_response(content = response)
+            if cleaned_response:
+                logger.info(msg='Scan Created: {}'.format(cleaned_response))
+            else:
+                logger.warn(msg='Error while creating scan: {}'.format(response))
+                raise Exception("Invalid response while attempting to create scan")
+        else:
+            logger.warn(msg='Error while creating scan')
+            raise Exception("Invalid response while attempting to create scan")
+
+
 
     def manage_bandit_results(self, result_file):
         logger.info('in manage_bandit_results')

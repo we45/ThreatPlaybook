@@ -19,3 +19,6 @@ def validate_vulnerability_response_id(content):
 
 def valid_evidence_response(content):
     return pyjq.first('.data.createVulnerabilityEvidence.vulnEvidence.name', content)
+
+def valid_scan_response(content):
+    return pyjq.first('.data.createScan.scan', content)
