@@ -1,20 +1,26 @@
 <template>
-  <div class="container">
+  <div>
     <nav-bar></nav-bar>
-    <h1 class="title">Projects</h1>
-    <template>
-      <div v-if="projectQuery">
-        <div class="tile">
-          <div class="tile is-parent is-vertical" v-for="item in projectQuery">
-            <article class="tile is-child notification is-primary">
-              <a href="#" @click="goToProject(item.name)" class="title">{{
-                item.name
-              }}</a>
-            </article>
+    <div class="column is-narrow"></div>
+    <div class="column">
+      <h1 class="has-text-left has-text-weight-semibold" style="font-size: 20px;">Projects</h1>
+      <hr>
+      <div class="columns is-multiline">
+        <template v-for="item in projectQuery">
+          <div class="column is-3">
+            <div class="tile">
+              <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                  <a href="#" @click="goToProject(item.name)" class="title" style="text-decoration: none;">
+                    {{ item.name }}
+                  </a>
+                </article>
+              </div>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 <script>

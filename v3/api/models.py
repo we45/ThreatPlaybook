@@ -135,6 +135,7 @@ class Vulnerability(Document):
     target = ReferenceField(Target)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
 
+
 class Scan(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     name = StringField(default = random_scan_name)
