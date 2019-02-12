@@ -9,14 +9,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='ThreatPlaybook',
-    version='1',
+    version='rel3',
     packages=[''],
     package_dir={'': 'threat_playbook'},
-    # entry_points={
-    #     'console_scripts': [
-    #         'threat-playbook = threat_playbook:main'
-    #     ]
-    # },
     url='https://we45.gitbook.io/threatplaybook/',
     license='MIT License',
     author='we45',

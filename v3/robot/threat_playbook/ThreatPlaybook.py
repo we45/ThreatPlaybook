@@ -2,10 +2,10 @@ import os
 from robot.api import logger
 import json
 from sys import exit
-from validations import validate_project_response, validate_target_response
+from validations import validate_project_response, validate_target_response, validate_scan_response
 from parsers import parse_bandit_file, parse_nodejsscan_file, parse_npmaudit_file, parse_zap_file,\
                     parse_brakeman_file
-from utils import threatplaybook_con, _post_req, _post_query, config_file
+from utils import threatplaybook_con, _post_req, _post_query, config_file, create_scan
 
 
 class ThreatPlaybook(object):
@@ -15,6 +15,8 @@ class ThreatPlaybook(object):
     def __init__(self, project, target, threatplaybook='http://127.0.0.1:5042'):
         """
         Initialize Threatplaybook API Connection
+        :param project: Project Name
+        :param target: Target Name
         :param threatplaybook: URL of ThreatPlaybook API Server. [default: http://127.0.0.1:5042]
         """
         self.threatplaybook = threatplaybook
@@ -51,29 +53,24 @@ class ThreatPlaybook(object):
             exit(1)
 
     def login(self, email, password):
-        logger.info('TEST')
         try:
             url = '{}/login'.format(self.threatplaybook)
             response = _post_req(url=url, email=email, password=password)
-            logger.info(response)
             if response:
                 if response.get('success'):
                     config_file_path = config_file()
-                    logger.info(config_file_path)
                     login_data = {"token": response.get('token'), "threatplaybook": self.threatplaybook}
                     json.dump(obj=login_data, fp=open(file=config_file_path, mode='w'))
                     logger.info(msg='Login Success: {}'.format(response.get("token")))
                 elif response.get('error'):
-                    logger.warn(msg='Error while logging in: {}'.format(response.get('error')))
-                    # exit(1)
+                    raise Exception("Invalid response while attempting to login: {}".format(response.get('error')))
                 else:
-                    logger.warn(msg='Error while logging in')
-                    # exit(1)
+                    raise Exception("Invalid response while attempting to login")
             else:
                 logger.warn(msg='Error while logging in')
-                # exit(1)
-        except BaseException as e:
-            logger.info(e)
+                raise Exception("Invalid response while attempting to login")
+        except BaseException:
+            raise Exception("Exception while attempting to login")
 
     def create_project(self):
         create_project_query = """
@@ -91,10 +88,10 @@ class ThreatPlaybook(object):
                 logger.info(msg='Project created: {}'.format(cleaned_response))
             else:
                 logger.warn(msg='Error while creating project: {}'.format(response))
-                exit(1)
+                raise Exception("Invalid response while attempting to create project")
         else:
             logger.warn(msg='Error while creating project')
-            exit(1)
+            raise Exception("Invalid response while attempting to create project")
 
     def create_target(self, url):
         create_target_query = """
@@ -122,42 +119,26 @@ class ThreatPlaybook(object):
             logger.warn(msg='Error while creating target')
             raise Exception("Invalid response while attempting to create target")
 
-    def create_scan(self, target_name):
-        create_scan_query = """
-        mutation {
-          createScan(target: "%s") {
-            scan {
-              name
-              createdOn
-            }
-          }
-        }
-        """ % target_name
-        response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
-        if response:
-            cleaned_response = validate_scan_response(content = response)
-            if cleaned_response:
-                logger.info(msg='Scan Created: {}'.format(cleaned_response))
-            else:
-                logger.warn(msg='Error while creating scan: {}'.format(response))
-                raise Exception("Invalid response while attempting to create scan")
-        else:
-            logger.warn(msg='Error while creating scan')
-            raise Exception("Invalid response while attempting to create scan")
-
-
-
     def manage_bandit_results(self, result_file):
         logger.info('in manage_bandit_results')
         results = json.load(open(result_file, 'r'))
         if results:
-            for vul_result in results.get('results', []):
-                bandit_results = parse_bandit_file(threatplaybook=self.threatplaybook, vul_result=vul_result,
-                                                   project=self.project, target=self.target)
-                if bandit_results:
-                    logger.info(msg=bandit_results)
+            create_scan_query = create_scan(self.target)
+            if create_scan_query:
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                scan = validate_scan_response(content=create_scan_response)
+                if scan:
+                    for vul_result in results.get('results', []):
+                        bandit_results = parse_bandit_file(threatplaybook=self.threatplaybook, vul_result=vul_result,
+                                                           project=self.project, target=self.target, scan=scan)
+                        if bandit_results:
+                            logger.info(msg=bandit_results)
+                        else:
+                            logger.warn(msg='Error while parsing Bandit results')
                 else:
-                    logger.warn(msg='Error while parsing Bandit results')
+                    logger.warn(msg='Error while creating Scan')
+            else:
+                logger.warn(msg='Error while creating Scan Query')
         else:
             logger.warn(msg="Could not fetch results from file")
             exit(1)
@@ -165,16 +146,25 @@ class ThreatPlaybook(object):
     def manage_nodejsscan_results(self, result_file):
         results = json.load(open(result_file, 'r'))
         if results:
-            for vul_type, vul_list in results.get('sec_issues').items():
-                for individual_vul_details in vul_list:
-
-                    nodejsscan_results = parse_nodejsscan_file(threatplaybook=self.threatplaybook,
-                                                               vul_result=individual_vul_details, project=self.project,
-                                                               target=self.target)
-                    if nodejsscan_results:
-                        logger.info(msg=nodejsscan_results)
-                    else:
-                        logger.warn(msg='Error while parsing NodeJsScan results')
+            create_scan_query = create_scan(self.target)
+            if create_scan_query:
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                scan = validate_scan_response(content=create_scan_response)
+                if scan:
+                    for vul_type, vul_list in results.get('sec_issues').items():
+                        for individual_vul_details in vul_list:
+                            nodejsscan_results = parse_nodejsscan_file(threatplaybook=self.threatplaybook,
+                                                                       vul_result=individual_vul_details,
+                                                                       project=self.project, target=self.target,
+                                                                       scan=scan)
+                            if nodejsscan_results:
+                                logger.info(msg=nodejsscan_results)
+                            else:
+                                logger.warn(msg='Error while parsing NodeJsScan results')
+                else:
+                    logger.warn(msg='Error while creating Scan')
+            else:
+                logger.warn(msg='Error while creating Scan Query')
         else:
             logger.warn(msg="Could not fetch results from file")
             exit(1)
@@ -182,14 +172,23 @@ class ThreatPlaybook(object):
     def manage_npmaudit_results(self, result_file):
         results = json.load(open(result_file, 'r'))
         if results:
-            all_advisories = results.get('advisories')
-            for key, advisory in all_advisories.items():
-                npmaudit_results = parse_npmaudit_file(threatplaybook=self.threatplaybook, vul_result=advisory,
-                                                       project=self.project, target=self.target)
-                if npmaudit_results:
-                    logger.info(msg=npmaudit_results)
+            create_scan_query = create_scan(self.target)
+            if create_scan_query:
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                scan = validate_scan_response(content=create_scan_response)
+                if scan:
+                    all_advisories = results.get('advisories')
+                    for key, advisory in all_advisories.items():
+                        npmaudit_results = parse_npmaudit_file(threatplaybook=self.threatplaybook, vul_result=advisory,
+                                                               project=self.project, target=self.target, scan=scan)
+                        if npmaudit_results:
+                            logger.info(msg=npmaudit_results)
+                        else:
+                            logger.warn(msg='Error while parsing NpmAudit results')
                 else:
-                    logger.warn(msg='Error while parsing NpmAudit results')
+                    logger.warn(msg='Error while creating Scan')
+            else:
+                logger.warn(msg='Error while creating Scan Query')
         else:
             logger.warn(msg='Could not fetch results from file')
             exit(1)
@@ -197,28 +196,37 @@ class ThreatPlaybook(object):
     def manage_zap_results(self, result_file, target_url):
         results = json.load(open(result_file, 'r'))
         if results:
-            alerts = None
-            pre_alerts = results['Report']['Sites']
-            if isinstance(pre_alerts, list):
-                for pre in pre_alerts:
-                    if target_url in pre['Host']:
-                        alerts = pre
-            if isinstance(pre_alerts, dict):
-                alerts = pre_alerts
-            alerts = alerts['Alerts']['AlertItem']
-            if alerts:
-                if isinstance(alerts, dict):
-                    alerts = [alerts]
-                if isinstance(alerts, list):
-                    for alert in alerts:
-                        zap_results = parse_zap_file(threatplaybook=self.threatplaybook, vul_result=alert,
-                                                     project=self.project, target=self.target)
-                        if zap_results:
-                            logger.info(msg=zap_results)
-                        else:
-                            logger.warn(msg='Error while parsing ZAP results')
+            create_scan_query = create_scan(self.target)
+            if create_scan_query:
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                scan = validate_scan_response(content=create_scan_response)
+                if scan:
+                    alerts = None
+                    pre_alerts = results['Report']['Sites']
+                    if isinstance(pre_alerts, list):
+                        for pre in pre_alerts:
+                            if target_url in pre['Host']:
+                                alerts = pre
+                    if isinstance(pre_alerts, dict):
+                        alerts = pre_alerts
+                    alerts = alerts['Alerts']['AlertItem']
+                    if alerts:
+                        if isinstance(alerts, dict):
+                            alerts = [alerts]
+                        if isinstance(alerts, list):
+                            for alert in alerts:
+                                zap_results = parse_zap_file(threatplaybook=self.threatplaybook, vul_result=alert,
+                                                             project=self.project, target=self.target, scan=scan)
+                                if zap_results:
+                                    logger.info(msg=zap_results)
+                                else:
+                                    logger.warn(msg='Error while parsing ZAP results')
+                    else:
+                        logger.warn(msg='No Vulnerability data in file')
+                else:
+                    logger.warn(msg='Error while creating Scan')
             else:
-                logger.warn(msg='No Vulnerability data in file')
+                logger.warn(msg='Error while creating Scan Query')
         else:
             logger.warn(msg='Could not fetch results from file')
             exit(1)
@@ -226,14 +234,23 @@ class ThreatPlaybook(object):
     def manage_brakeman_results(self, result_file):
         results = json.load(open(result_file, 'r'))
         if results:
-            vuls = results.get('warnings', [])
-            for vul in vuls:
-                brakeman_results = parse_brakeman_file(threatplaybook=self.threatplaybook, vul_result=vul,
-                                                       project=self.project, target=self.target)
-                if brakeman_results:
-                    logger.info(msg=brakeman_results)
+            create_scan_query = create_scan(self.target)
+            if create_scan_query:
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                scan = validate_scan_response(content=create_scan_response)
+                if scan:
+                    vuls = results.get('warnings', [])
+                    for vul in vuls:
+                        brakeman_results = parse_brakeman_file(threatplaybook=self.threatplaybook, vul_result=vul,
+                                                               project=self.project, target=self.target, scan=scan)
+                        if brakeman_results:
+                            logger.info(msg=brakeman_results)
+                        else:
+                            logger.warn(msg='Error while parsing Brakeman results')
                 else:
-                    logger.warn(msg='Error while parsing Brakeman results')
+                    logger.warn(msg='Error while creating Scan')
+            else:
+                logger.warn(msg='Error while creating Scan Query')
         else:
             logger.warn(msg='Could not fetch results from file')
             exit(1)
