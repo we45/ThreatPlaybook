@@ -29,3 +29,13 @@ v3/cli/threat_model_example.json
 v3/cli/case_example.json
 v3/cli/repo_gql.json
 v3/cli/feature_test.json
+v3/api/.env
+.idea/encodings.xml
+*.xml
+*.xml
+.idea/vcs.xml
+.idea/ThreatPlaybook.iml
+v3/api/.env
+v3/api/.env
+.idea/vcs.xml
+.idea/*
