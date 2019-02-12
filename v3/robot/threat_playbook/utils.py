@@ -12,6 +12,7 @@ vul_schema = Schema(
         'description': str,
         'project': str,
         'target': str,
+        'scan': str,
         Optional('cwe'): And(Use(int)),
         Optional('observation'): str,
         Optional('severity'): And(Use(int), lambda n: 0 <= n <= 3),
@@ -118,7 +119,31 @@ def _post_query(threatplaybook, query):
         return {'error': 'Token not found in config file'}
 
 
+def create_scan(target):
+    """
+    Creates CreateScan mutation query
+    :param target: Target name
+    :return: CreateScan mutation query
+    """
+    create_scan_query = """
+        mutation {
+          createScan(target: "%s") {
+            scan {
+              name
+              createdOn
+            }
+          }
+        }
+        """ % target
+    return create_scan_query
+
+
 def create_evidence(evidence):
+    """
+    Validates evidence dictionary and creates CreateVulnerabilityEvidence mutation query
+    :param evidence: Evidence dictionary of a Vulnerability
+    :return: CreateVulnerabilityEvidence mutation query
+    """
     valid_evidence = evidence_schema.validate(evidence)
     create_evidence_query = """
         mutation {
@@ -153,6 +178,11 @@ def create_evidence(evidence):
 
 
 def create_vulnerability(vul_dict):
+    """
+    Validates vulnerability dictionary and creates CreateVulnerability mutation query
+    :param vul_dict: Vulnerability dictionary
+    :return: CreateVulnerability mutation query
+    """
     valid_vul = vul_schema.validate(vul_dict)
     create_vulnerability_query = """
             mutation {
@@ -163,6 +193,7 @@ def create_vulnerability(vul_dict):
                   description: "%s"
                   project: "%s"
                   target: "%s"
+                  scan: "%s"
                   cwe: %d
                   observation: "%s"
                   severity: %d
@@ -180,6 +211,7 @@ def create_vulnerability(vul_dict):
            valid_vul.get('description', ''),
            valid_vul.get('project'),
            valid_vul.get('target'),
+           valid_vul.get('scan'),
            valid_vul.get('cwe', 0),
            valid_vul.get('observation', ''),
            valid_vul.get('severity', 0),
