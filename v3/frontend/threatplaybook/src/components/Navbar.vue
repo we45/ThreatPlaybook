@@ -9,12 +9,12 @@
             <div class="navbar-end">
                 <div class="navbar-item has-dropdown is-hoverable is-right">
                     <a class="navbar-link">
-                        Tilak.T
+                        USER
                     </a>
                     <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            Profile
-                        </a>
+                        <!--<a class="navbar-item">-->
+                            <!--Profile-->
+                        <!--</a>-->
                         <hr class="navbar-divider">
                         <div class="navbar-item" @click="logOut">
                             Logout
@@ -27,6 +27,7 @@
 </template>
 <script>
 export default {
+    name: "Navbar",
     methods: {
         logOut() {
             localStorage.removeItem('token')

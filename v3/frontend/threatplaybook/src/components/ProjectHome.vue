@@ -14,6 +14,11 @@
                   <a href="#" @click="goToProject(item.name)" class="title" style="text-decoration: none;">
                     {{ item.name }}
                   </a>
+                  <br>
+                  <br>
+                  <a @click="goToProjectMap(item.name)">
+                  <p class="has-text-right">Threat Map</p>
+                  </a>
                 </article>
               </div>
             </div>
@@ -49,6 +54,9 @@ export default {
   methods: {
     goToProject(item_name) {
       this.$router.push("/project/" + btoa(item_name));
+    },
+    goToProjectMap(item_name) {
+      this.$router.push("/map/" + btoa(item_name));
     }
   }
 };

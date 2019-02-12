@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="task-container columns is-multiline">
+        <div class="task-container columns is-multiline" style="margin-top: 5%;text-align: center">
             <div class="card column is-half is-offset-one-quarter">
                 <img alt="ThreatPlaybook Logo" src="../assets/tp-logo.png"/>
                 <hr>
@@ -38,6 +38,7 @@
 </template>
 <script>
     import axios from "axios";
+    import conf from '../../configure'
 
     export default {
         data() {
@@ -50,8 +51,10 @@
         },
         methods: {
             loginAction() {
+                const baseURL = conf.API_URL
+                const loginUrl = baseURL + '/login'
                 axios
-                    .post("http://localhost:5042/login", {
+                    .post(loginUrl, {
                         email: this.form.email,
                         password: this.form.password
                     })

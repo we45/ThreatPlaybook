@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Navbar></Navbar>
     <div>
       <network
         class="network"
@@ -22,10 +23,15 @@
   </div>
 </template>
 <script>
+  import Navbar from "./Navbar.vue";
 import gql from "graphql-tag";
 import { Network } from "vue2vis";
 export default {
   props: ["projectName"],
+  components: {
+    Navbar,
+    Network
+  },
   data() {
     return {
       projectActual: atob(this.projectName),
@@ -55,9 +61,7 @@ export default {
       nodeCaption: ""
     };
   },
-  components: {
-    Network
-  },
+
   methods: {
     setClickEvent: function() {
       this.$refs.network.$on("click", e => {
@@ -198,7 +202,7 @@ export default {
 </script>
 <style>
 .network {
-  height: 600px;
+  height: 500px;
   border: 1px solid #ccc;
   margin: 5px 0;
 }

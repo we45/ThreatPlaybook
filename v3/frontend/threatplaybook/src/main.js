@@ -9,6 +9,7 @@ import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import VueApollo from "vue-apollo";
 import { setContext } from "apollo-link-context";
+import conf from '../../configure'
 
 Vue.config.productionTip = false;
 Vue.use(Buefy);
@@ -20,8 +21,10 @@ const router = new VueRouter({
   mode: "history"
 });
 
+const baseURL = conf.API_URL
+const graphURL = baseURL + '/graph'
 const httpLink = new HttpLink({
-  uri: `http://localhost:5042/graph`
+  uri: graphURL
 });
 
 const authLink = setContext((_, { headers }) => {
