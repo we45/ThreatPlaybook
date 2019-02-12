@@ -4,7 +4,7 @@ import namesgenerator
 from uuid import uuid4
 
 def random_scan_name():
-    return "{}-{}".format(namesgenerator.get_random_name(), str(uuid4()))
+    return "{}-{}".format(namesgenerator.get_random_name(sep="-"), str(uuid4()))
 
 class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
