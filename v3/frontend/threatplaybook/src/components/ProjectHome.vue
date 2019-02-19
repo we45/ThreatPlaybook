@@ -1,46 +1,97 @@
 <template>
-  <div>
-    <nav-bar></nav-bar>
-    <div class="column is-narrow"></div>
-    <div class="column">
-      <h1 class="has-text-left has-text-weight-semibold" style="font-size: 20px;">Projects</h1>
-      <hr>
-      <div class="columns is-multiline">
-        <template v-for="item in projectQuery">
-          <div class="column is-3">
-            <div class="tile">
-              <div class="tile is-parent is-vertical">
-                <article class="tile is-child notification is-primary">
-                  <a href="#" @click="goToProject(item.name)" class="title" style="text-decoration: none;">
-                    {{ item.name }}
-                  </a>
-                  <br>
-                  <br>
-                  <a @click="goToProjectMap(item.name)">
-                  <p class="has-text-right">Threat Map</p>
-                  </a>
-                </article>
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
+    <div>
+        <nav-bar></nav-bar>
+        <br>
+        <b-container fluid>
+            <h3>Projects</h3>
+            <hr>
+            <br>
+            <b-row>
+                <b-col md="6" class="my-1">
+                    <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+                        <b-input-group>
+                            <b-form-input v-model="filter" placeholder="Type to Search"/>
+                            <b-input-group-append>
+                                <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                </b-col>
+                <b-col md="6" class="my-1">
+                    <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
+                        <b-form-select :options="pageOptions" v-model="perPage"/>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <br>
+                <b-col md="6" class="my-1">
+                </b-col>
+                <br>
+                <br>
+                <b-col md="6" class="my-1">
+                    <br>
+                    <b-pagination
+                            :total-rows="totalRows"
+                            :per-page="perPage"
+                            v-model="currentPage"
+                            style="float: right;"/>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-table
+                        striped hover
+                        show-empty
+                        stacked="md"
+                        :items="projectQuery"
+                        :fields="fields"
+                        :current-page="currentPage"
+                        :per-page="perPage"
+                        :filter="filter"
+                >
+                    <template slot="name" slot-scope="row">
+                        <a @click="goToProject(row.value)" style="cursor: pointer;">
+                            {{ row.value }}
+                        </a>
+                    </template>
+
+                    <template slot="actions" slot-scope="row">
+                        <b-button size="sm" @click="goToProjectMap(row.item.name)" class="btn-purple">
+                            Threat Map
+                        </b-button>
+                    </template>
+
+                </b-table>
+            </b-row>
+        </b-container>
     </div>
-  </div>
 </template>
 <script>
-import Navbar from "./Navbar.vue";
-import gql from "graphql-tag";
-export default {
-  components: {
-    "nav-bar": Navbar
-  },
-  data() {
-    return {};
-  },
-  apollo: {
-    projectQuery: {
-      query: gql`
+    import Navbar from "./Navbar.vue";
+    import gql from "graphql-tag";
+
+    const items = []
+    export default {
+        components: {
+            "nav-bar": Navbar
+        },
+        data() {
+            return {
+                items: items,
+                fields: [
+                    {key: 'name', label: 'Project Name'},
+                    {key: 'actions', label: 'Actions', class: 'text-right'}
+                ],
+                currentPage: 1,
+                perPage: 5,
+                totalRows: items.length,
+                pageOptions: [5, 10, 15, 25, 50],
+                filter: null
+            };
+        },
+        apollo: {
+            projectQuery: {
+                query: gql`
         query {
           projects {
             id
@@ -48,16 +99,49 @@ export default {
           }
         }
       `,
-      update: result => result.projects
-    }
-  },
-  methods: {
-    goToProject(item_name) {
-      this.$router.push("/project/" + btoa(item_name));
-    },
-    goToProjectMap(item_name) {
-      this.$router.push("/map/" + btoa(item_name));
-    }
-  }
-};
+                update: result => result.projects
+            }
+        },
+        methods: {
+            goToProject(item_name) {
+                this.$router.push("/project/" + btoa(item_name));
+            },
+            goToProjectMap(item_name) {
+                this.$router.push("/map/" + btoa(item_name));
+            }
+        }
+    };
 </script>
+
+<style scoped>
+    .btn-purple {
+        color: #FFFFFF;
+        background-color: #7957d5;
+        border-color: #7957d5;
+        border-radius: 14px;
+        padding: 3px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+    .btn-purple:focus,
+    .btn-purple.focus {
+        color: #FFFFFF;
+        background-color: #7957d5;
+        border-color: #FFFFFF;
+        border-radius: 14px;
+        padding: 3px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+    .btn-purple:hover {
+        color: #7957d5;
+        background-color: #FFFFFF;
+        border-color: #7957d5;
+        border-radius: 14px;
+        padding: 3px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+</style>

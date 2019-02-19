@@ -1,28 +1,29 @@
 <template>
     <div>
-        <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item" href="/projects">
-                    <img src="../assets/tp-logo.png" alt="ThreatPlayBook" width="112" height="28">
-                </a>
-            </div>
-            <div class="navbar-end">
-                <div class="navbar-item has-dropdown is-hoverable is-right">
-                    <a class="navbar-link">
-                        USER
-                    </a>
-                    <div class="navbar-dropdown">
-                        <!--<a class="navbar-item">-->
-                            <!--Profile-->
-                        <!--</a>-->
-                        <hr class="navbar-divider">
-                        <div class="navbar-item" @click="logOut">
-                            Logout
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        <b-navbar toggleable="lg" type="dark" style="background-color: #7957d5;color: #FFFFFF;">
+    <b-navbar-brand href="/home">
+        <img src="../assets/tp-logo.png" alt="ThreatPlayBook" width="112" height="28">
+    </b-navbar-brand>
+
+    <b-navbar-toggle target="nav_collapse" />
+
+    <b-collapse is-nav id="nav_collapse">
+      <b-navbar-nav>
+        <b-nav-item href="#" @click="goToProject">Projects</b-nav-item>
+      </b-navbar-nav>
+
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto">
+
+        <b-nav-item-dropdown right>
+          <!-- Using button-content slot -->
+          <template slot="button-content"><em>User</em></template>
+          <b-dropdown-item href="#">Profile</b-dropdown-item>
+          <b-dropdown-item @click="logOut">Signout</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
     </div>
 </template>
 <script>
@@ -32,7 +33,10 @@ export default {
         logOut() {
             localStorage.removeItem('token')
             this.$router.push("/");
-        }
+        },
+        goToProject() {
+              this.$router.push("/projects");
+            }
     }
 }
 </script>

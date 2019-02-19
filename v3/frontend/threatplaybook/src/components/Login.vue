@@ -1,38 +1,38 @@
 <template>
     <div>
-        <div class="task-container columns is-multiline" style="margin-top: 5%;text-align: center">
-            <div class="card column is-half is-offset-one-quarter">
-                <img alt="ThreatPlaybook Logo" src="../assets/tp-logo.png"/>
-                <hr>
-                <form @submit.prevent="loginAction">
-                <div class="card-content" align="left">
-                    <b-field label="Email">
-                        <b-input
-                                placeholder="Enter Email"
-                                type="email"
-                                value="john@"
-                                v-model="form.email"
-
-                        >
-                        </b-input>
-                    </b-field>
+        <loading :active.sync="isLoading" :can-cancel="true"></loading>
+        <b-row>
+            <b-col cols="3"></b-col>
+            <b-col cols="6">
+                <b-card style="margin-top: 10%;">
+                    <img src="../assets/tp-logo.png" alt="ThreatPlaybook Logo"
+                         class="img-center">
                     <br>
-                    <b-field label="Password">
-                        <b-input
-                                placeholder="Enter Password"
-                                value="123"
-                                type="password"
-                                v-model="form.password"
-                        ></b-input>
-                    </b-field>
                     <br>
-                    <button class="button is-primary is-large is-fullwidth"
-                            @click="loginAction">Login
-                    </button>
-                </div>
-            </form>
-            </div>
-        </div>
+                  <p class="text-center error" v-if="inValidCredentials"> * Invalid Email or Password</p>
+                    <br>
+                  <form @submit.prevent="loginAction">
+                    <b-form-input v-model="form.email"
+                        type="email" placeholder="Email"
+                        class="form-control"></b-form-input>
+                    <br>
+                    <br>
+                    <b-form-input v-model="form.password"
+                        type="password"
+                        placeholder="Password"
+                        class="form-control"></b-form-input>
+                    <br>
+                    <br>
+                    <br>
+                    <button class="login-button"
+                        v-if="!form.email || !form.password"
+                        disabled="disabled">Login</button>
+                    <button class="login-button" v-if="form.email && form.password">Login</button>
+                </form>
+                </b-card>
+            </b-col>
+            <b-col cols="3"></b-col>
+        </b-row>
 
     </div>
 </template>
@@ -46,11 +46,14 @@
                 form: {
                     email: "",
                     password: ""
-                }
+                },
+                inValidCredentials: false,
+                isLoading: false
             };
         },
         methods: {
             loginAction() {
+                this.isLoading = true
                 const baseURL = conf.API_URL
                 const loginUrl = baseURL + '/login'
                 axios
@@ -59,20 +62,78 @@
                         password: this.form.password
                     })
                     .then(response => {
-                        localStorage.removeItem('token')
-                        localStorage.setItem('token', response.data.token)
-                        this.$router.push("/projects");
+                        if(response.data.token !== undefined){
+                            localStorage.removeItem('token')
+                            localStorage.setItem('token', response.data.token)
+                            this.$router.push("/home");
+                        } else{
+                            localStorage.removeItem('token')
+                            this.inValidCredentials = true
+                        }
+                        this.isLoading = false
                     })
                     .catch(error => {
                         localStorage.removeItem('token')
+                        this.inValidCredentials = true
                         this.$toast.open({
                             duration: 7000,
                             message: "Invalid Credentials",
                             position: "is-top",
                             type: "is-danger"
                         });
+                        this.isLoading = false
                     });
             }
         }
     };
 </script>
+
+<style scoped>
+    .login-button {
+        position: relative;
+        background-color: #7957d5;
+        border: none;
+        font-size: 24px;
+        color: #FFFFFF;
+        padding: 16px;
+        width: 100%;
+        text-align: center;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        text-decoration: none;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: 8px;
+    }
+    .login-button:after {
+        content: "";
+        background: #7957d5;
+        display: block;
+        position: absolute;
+        padding-top: 300%;
+        padding-left: 350%;
+        margin-left: -20px!important;
+        margin-top: -120%;
+        opacity: 0;
+        transition: all 0.8s
+    }
+    .login-button:active:after {
+        padding: 0;
+        margin: 0;
+        opacity: 1;
+        transition: 0s
+    }
+    .error{
+        color: #F04E23;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .img-center{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        border-style:none;
+        border: none;
+    }
+</style>

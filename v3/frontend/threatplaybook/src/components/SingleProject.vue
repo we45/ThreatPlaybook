@@ -2,65 +2,60 @@
     <div>
         <nav-bar></nav-bar>
         <br>
-        <div class="column is-narrow"></div>
-         <div class="column">
-             <button class="button is-primary" slot="trigger" style="float: right" @click="goToProjectMap">Threat Map</button>
-        <h2 class="title">Project: {{ projectActual }}</h2>
-             <br>
-        <b-tabs v-model="activeTab">
-
-            <b-tab-item label="Feature/User Stories">
-                <template v-for="item in singleProjectQuery">
-                    <b-collapse class="panel" :open.sync="isOpen">
-                        <div slot="trigger" class="panel-heading">
-                            <strong>{{ item.shortName }}</strong>
-                        </div>
-                        <div class="panel-block">
-                            {{ item.description }}
-                        </div>
-                    </b-collapse>
-                </template>
-            </b-tab-item>
-
-            <b-tab-item label="Abuser Stories">
-                <template v-for="item in singleProjectQuery">
-                <template v-for="single_item in item.abuses">
-                    <b-collapse class="panel" :open.sync="isOpen">
-                        <div slot="trigger" class="panel-heading">
-                            <strong>{{ single_item.shortName }}</strong>
-                        </div>
-                        <div class="panel-block">
-                            {{ single_item.description }}
-                        </div>
-                    </b-collapse>
-                </template>
-                </template>
-            </b-tab-item>
-
-            <b-tab-item label="Threat Scenarios">
-                <template v-for="item in singleProjectQuery">
-                <template v-for="single_item in item.abuses">
-                <template v-for="single_scene in single_item.models">
-                    <b-collapse class="panel" :open.sync="isOpen">
-                        <div slot="trigger" class="panel-heading">
-                            <strong>{{ single_scene.name }}</strong>
-                            <span class="label-high" v-if="single_scene.severity === 3" style="float: right;">High</span>
-                            <span class="label-medium" v-if="single_scene.severity === 2" style="float: right;">Medium</span>
-                            <span class="label-low" v-if="single_scene.severity === 1" style="float: right;">Low</span>
-                            <span style="float: right;font-size: 14px;color: #000000;margin-right: 3%;">CWE: {{ single_scene.cwe }}</span>
-                        </div>
-                        <div class="panel-block">
-                            <p>{{ single_scene.description }}</p>
-                        </div>
-                    </b-collapse>
-                </template>
-                </template>
-                </template>
-            </b-tab-item>
-
-        </b-tabs>
-
-         </div>
+        <b-container fluid>
+            <h4>Project : {{ projectActual }}</h4>
+            <hr>
+            <br>
+            <b-card no-body>
+                <b-tabs pills card>
+                    <b-tab title="Feature/User Stories" active>
+                        <template v-for="(item, index) in singleProjectQuery">
+                            <b-card no-body class="mb-1">
+                              <b-card-header header-tag="header" class="p-1" role="tab">
+                                <b-button block href="#" v-b-toggle="'feature-'+index"
+                                          style="text-align: left;background-color: #CCCCCC;color: #7957d5">Feature/User Stories - {{ item.shortName }}</b-button>
+                              </b-card-header>
+                              <b-collapse :id="'feature-'+index" visible accordion="my-accordion" role="tabpanel">
+                                <b-card-body>
+                                  <p class="card-text" style="margin-left: 4%;">{{ item.description }}</p>
+                                     <template v-for="(single_item,sl) in item.abuses">
+                                <b-card no-body class="mb-1">
+                                  <b-card-header header-tag="header" class="p-1" role="tab" style="margin-left: 4%;">
+                                    <b-button block href="#" v-b-toggle="'hello-'+sl+item.shortName"
+                                              style="text-align: left;background-color: #CCCCCC;color: #7957d5">Abuser Stories - {{ single_item.shortName }}</b-button>
+                                  </b-card-header>
+                                  <b-collapse :id="'hello-'+sl+item.shortName" visible accordion="my-accordionss" role="tabpanel">
+                                    <b-card-body>
+                                      <p class="card-text" style="margin-left: 6%;">{{ single_item.description }}</p>
+                                        <template v-for="(single_scene,count) in single_item.models">
+                                <b-card no-body class="mb-1" style="margin-left: 6%;">
+                                  <b-card-header header-tag="header" class="p-1" role="tab" >
+                                    <b-button block href="#" v-b-toggle="'Threat-'+count+item.shortName+single_item.shortName"
+                                              style="text-align: left;background-color: #CCCCCC;color: #7957d5">
+                                        Threat Scenarios - {{ single_scene.name }} <span class="label-high" v-if="single_scene.severity === 3" style="float: right;">High</span>
+                                      <span class="label-medium" v-if="single_scene.severity === 2" style="float: right;">Medium</span>
+                                      <span class="label-low" v-if="single_scene.severity === 1" style="float: right;">Low</span>
+                                    </b-button>
+                                  </b-card-header>
+                                  <b-collapse :id="'Threat-'+count+item.shortName+single_item.shortName" visible accordion="my-accordions" role="tabpanel">
+                                    <b-card-body>
+                                      <p class="card-text">{{ single_scene.description }}</p>
+                                    </b-card-body>
+                                  </b-collapse>
+                                </b-card>
+                                </template>
+                                    </b-card-body>
+                                  </b-collapse>
+                                </b-card>
+                            </template>
+                                </b-card-body>
+                              </b-collapse>
+                            </b-card>
+                        </template>
+                    </b-tab>
+                </b-tabs>
+            </b-card>
+        </b-container>
     </div>
 </template>
 <script>
