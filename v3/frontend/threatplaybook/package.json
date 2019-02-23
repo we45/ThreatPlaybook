@@ -7,16 +7,23 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "apexcharts": "^3.4.1",
     "apollo-boost": "^0.1.27",
     "apollo-link-context": "^1.0.14",
     "axios": "^0.18.0",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.12",
     "buefy": "^0.7.2",
+    "diagram-vue": "^0.1.9",
     "graphql": "^14.1.1",
     "highlight.js": "^9.14.2",
     "vue": "^2.5.22",
+    "vue-apexcharts": "^1.2.9",
     "vue-apollo": "^3.0.0-beta.28",
     "vue-highlight.js": "^3.0.1",
+    "vue-loading-overlay": "^3.1.1",
     "vue-router": "^3.0.2",
+    "vue-tree-chart": "^1.2.4",
     "vue2vis": "0.0.16"
   },
   "devDependencies": {
