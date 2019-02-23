@@ -36,6 +36,7 @@ import pyjq
 from glob import glob
 from tabulate import tabulate
 import textwrap
+from getpass import getpass
 
 def verify_host_port():
     db = pickledb.load('.cred', False)
@@ -55,7 +56,8 @@ def _make_request(query):
     db = pickledb.load('.cred', False)
     if verify_host_port():
         baseUrl = "{}:{}/graph".format(db.get('host'), db.get('port'))
-        r = requests.post(baseUrl, json = {'query': query})
+        token = db.get('token')
+        r = requests.post(baseUrl, headers = {"Authorization": token}, json = {'query': query})
         return r.json()
 
 def configure_server():
@@ -467,6 +469,8 @@ if __name__ == '__main__':
 
         if arguments.get('--table'):
             table_var = True
+        else:
+            table_var = False
 
         if arguments.get('feature'):
             if get_json_var and name_val:
@@ -504,6 +508,30 @@ if __name__ == '__main__':
         else:
             print(bold(red("Unknown Option")))
             exit(1)
+
+    if arguments.get('login'):
+        if verify_host_port():
+            email = input("Please enter your email: ")
+            password = getpass('Please enter your password: ')
+            db = pickledb.load('.cred', False)
+            login_url = "{}:{}/login".format(db.get('host'), db.get('port'))
+            r = requests.post(
+                login_url,
+                json={'email': email, 'password': password}
+            )
+            if r.status_code == 200 and 'token' in r.json():
+                print(good("Successfully logged in"))
+                db.set('token',r.json()['token'])
+                db.dump()
+            else:
+                print(bold(red("Invalid credentials")))
+
+        else:
+            print(bold(red("No host and port configured for API. Please run `configure` first")))
+
+
+
+
 
 
 

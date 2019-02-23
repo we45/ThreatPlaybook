@@ -1,5 +1,5 @@
 *** Settings ***
-Library  ThreatPlaybook  ${PROJECT}  ${TARGET}  ${ThreatPlaybook_API}
+Library  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/v3/robot/threat_playbook/ThreatPlaybook.py  ${PROJECT}  ${TARGET}  ${ThreatPlaybook_API}
 
 
 *** Variables ***
@@ -7,27 +7,22 @@ Library  ThreatPlaybook  ${PROJECT}  ${TARGET}  ${ThreatPlaybook_API}
 # ThreatPlaybook
 
 ${ThreatPlaybook_API}  http://127.0.0.1:5042
-${EMAIL}  email@test.com
-${PASSWORD}  Test@1234
-${PROJECT}  TestProjects
+${EMAIL}  semma@mass.com
+${PASSWORD}  semma
+${PROJECT}  test_pro
 ${TARGET}  TestTargets
+${TEST_PATH}  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/v3/robot/test/scan_reports/
 ${TARGET_URL}  104.236.85.150
-${BANDIT_FILE}  scan_reports/bandit.json
-${NODEJSSCAN_FILE}  scan_reports/nodejsscan.json
-${NPM_AUDIT_FILE}  scan_reports/npm_audit.json
-${ZAP_FILE}  scan_reports/zap_wecare.json
-${BRAKEMAN_FILE}  scan_reports/brakeman.json
+${BANDIT_FILE}  ${TEST_PATH}bandit.json
+${NODEJSSCAN_FILE}  ${TEST_PATH}nodejsscan.json
+${NPM_AUDIT_FILE}  ${TEST_PATH}npm_audit.json
+${ZAP_FILE}  ${TEST_PATH}zap_wecare.json
+${BRAKEMAN_FILE}  ${TEST_PATH}brakeman.json
 
 *** Test Cases ***
 
-Create User
-   create user  ${EMAIL}  ${PASSWORD}
-
 Login
     login  ${EMAIL}  ${PASSWORD}
-
-Create Project
-    create project
 
 Target
     create target  ${TARGET_URL}

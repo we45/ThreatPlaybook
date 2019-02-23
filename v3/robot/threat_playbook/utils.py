@@ -58,10 +58,9 @@ def config_file():
     Creates a ThreatPlaybook config file to store Authorization Token
     :return: Path of config file
     """
-    directory = expanduser(path='~/.threatplaybook')
-    config_file_path = '{}/config'.format(directory)
-    if not os.path.exists(path=directory):
-        os.makedirs(path=directory)
+    # directory = expanduser(path='~/.threatplaybook')
+    config_file_path = 'config'
+    open(config_file_path,'a').close()
     return config_file_path
 
 
