@@ -95,25 +95,25 @@ def _post_req(url, email, password):
         return {'error': 'Unable to contact Threatplaybook API server'}
 
 
-def _post_query(threatplaybook, query):
+def _post_query(**kwargs):
     """
     Posts GraphQL requests to ThreatPlaybook API Server.
     :param threatplaybook: URL of ThreatPlaybook API Server
+    :param token: authorization token
     :param query: GraphQL Query
     :return: Returns with response
     """
+    threatplaybook = kwargs.get('threatplaybook')
+    token = kwargs.get('token')
+    query = kwargs.get('query')
     url = '{}/graph'.format(threatplaybook)
-    config_file_path = config_file()
-    token = json.load(open(config_file_path, 'r')).get('token')
     if token:
         headers = {'content-type': 'application/json', 'authorization': token}
         try:
             r = requests.post(url=url, json={'query': query}, headers=headers)
-            if r.status_code == 500:
-                return {'error': 'Server Error'}
             return r.json()
-        except ConnectionError:
-            return {'error': 'Unable to contact ThreatPlaybook API server'}
+        except Exception as e:
+            return {'error': e.message}
     else:
         return {'error': 'Token not found in config file'}
 

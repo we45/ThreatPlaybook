@@ -24,8 +24,8 @@ ${BRAKEMAN_FILE}  ${TEST_PATH}brakeman.json
 Login
     login  ${EMAIL}  ${PASSWORD}
 
-Target
-    create target  ${TARGET_URL}
+#Target
+#    create target  ${TARGET_URL}
 
 Bandit
     manage bandit results  ${BANDIT_FILE}

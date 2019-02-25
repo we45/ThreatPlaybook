@@ -3,8 +3,8 @@ from robot.api import logger
 import json
 from sys import exit
 from validations import validate_project_response, validate_target_response, validate_scan_response
-from parsers import parse_bandit_file, parse_nodejsscan_file, parse_npmaudit_file, parse_zap_file,\
-                    parse_brakeman_file
+from parsers import parse_bandit_file, parse_nodejsscan_file, parse_npmaudit_file, parse_zap_file, \
+    parse_brakeman_file
 from utils import threatplaybook_con, _post_req, _post_query, config_file, create_scan
 
 
@@ -27,7 +27,7 @@ class ThreatPlaybook(object):
             exit(1)
         if ' ' in project:
             logger.warn(msg='You have whitespaces in your project name, it will be substituted with '
-                        '`_` values and lower cased')
+                            '`_` values and lower cased')
             project = project.replace(' ', '_').lower()
         else:
             logger.warn(msg='Your project name will be lower cased')
@@ -58,9 +58,7 @@ class ThreatPlaybook(object):
             response = _post_req(url=url, email=email, password=password)
             if response:
                 if response.get('success'):
-                    config_file_path = config_file()
-                    login_data = {"token": response.get('token'), "threatplaybook": self.threatplaybook}
-                    json.dump(obj=login_data, fp=open(file=config_file_path, mode='w'))
+                    self.token = response.get('token')
                     logger.info(msg='Login Success: {}'.format(response.get("token")))
                 elif response.get('error'):
                     raise Exception("Invalid response while attempting to login: {}".format(response.get('error')))
@@ -81,7 +79,7 @@ class ThreatPlaybook(object):
                                 }
                             }
                         }""" % self.project
-        response = _post_query(threatplaybook=self.threatplaybook, query=create_project_query)
+        response = _post_query(threatplaybook=self.threatplaybook, token=self.token, query=create_project_query)
         if response:
             cleaned_response = validate_project_response(content=response)
             if cleaned_response:
@@ -106,7 +104,7 @@ class ThreatPlaybook(object):
                     }
                 }
             }""" % (self.target, self.project, url)
-        response = _post_query(threatplaybook=self.threatplaybook, query=create_target_query)
+        response = _post_query(threatplaybook=self.threatplaybook, token=self.token, query=create_target_query)
         if response:
             cleaned_response = validate_target_response(content=response)
             logger.info(cleaned_response)
@@ -120,17 +118,18 @@ class ThreatPlaybook(object):
             raise Exception("Invalid response while attempting to create target")
 
     def manage_bandit_results(self, result_file):
-        logger.info('in manage_bandit_results')
         results = json.load(open(result_file, 'r'))
         if results:
             create_scan_query = create_scan(self.target)
             if create_scan_query:
-                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, token=self.token,
+                                                   query=create_scan_query)
                 scan = validate_scan_response(content=create_scan_response)
                 if scan:
                     for vul_result in results.get('results', []):
                         bandit_results = parse_bandit_file(threatplaybook=self.threatplaybook, vul_result=vul_result,
-                                                           project=self.project, target=self.target, scan=scan)
+                                                           project=self.project, target=self.target, scan=scan,
+                                                           token=self.token)
                         if bandit_results:
                             logger.info(msg=bandit_results)
                         else:
@@ -148,7 +147,8 @@ class ThreatPlaybook(object):
         if results:
             create_scan_query = create_scan(self.target)
             if create_scan_query:
-                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, token=self.token,
+                                                   query=create_scan_query)
                 scan = validate_scan_response(content=create_scan_response)
                 if scan:
                     for vul_type, vul_list in results.get('sec_issues').items():
@@ -156,7 +156,7 @@ class ThreatPlaybook(object):
                             nodejsscan_results = parse_nodejsscan_file(threatplaybook=self.threatplaybook,
                                                                        vul_result=individual_vul_details,
                                                                        project=self.project, target=self.target,
-                                                                       scan=scan)
+                                                                       scan=scan, token=self.token)
                             if nodejsscan_results:
                                 logger.info(msg=nodejsscan_results)
                             else:
@@ -174,13 +174,15 @@ class ThreatPlaybook(object):
         if results:
             create_scan_query = create_scan(self.target)
             if create_scan_query:
-                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, token=self.token,
+                                                   query=create_scan_query)
                 scan = validate_scan_response(content=create_scan_response)
                 if scan:
                     all_advisories = results.get('advisories')
                     for key, advisory in all_advisories.items():
                         npmaudit_results = parse_npmaudit_file(threatplaybook=self.threatplaybook, vul_result=advisory,
-                                                               project=self.project, target=self.target, scan=scan)
+                                                               project=self.project, target=self.target, scan=scan,
+                                                               token=self.token)
                         if npmaudit_results:
                             logger.info(msg=npmaudit_results)
                         else:
@@ -198,7 +200,8 @@ class ThreatPlaybook(object):
         if results:
             create_scan_query = create_scan(self.target)
             if create_scan_query:
-                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, token=self.token,
+                                                   query=create_scan_query)
                 scan = validate_scan_response(content=create_scan_response)
                 if scan:
                     alerts = None
@@ -216,7 +219,8 @@ class ThreatPlaybook(object):
                         if isinstance(alerts, list):
                             for alert in alerts:
                                 zap_results = parse_zap_file(threatplaybook=self.threatplaybook, vul_result=alert,
-                                                             project=self.project, target=self.target, scan=scan)
+                                                             project=self.project, target=self.target, scan=scan,
+                                                             token=self.token)
                                 if zap_results:
                                     logger.info(msg=zap_results)
                                 else:
@@ -236,13 +240,15 @@ class ThreatPlaybook(object):
         if results:
             create_scan_query = create_scan(self.target)
             if create_scan_query:
-                create_scan_response = _post_query(threatplaybook=self.threatplaybook, query=create_scan_query)
+                create_scan_response = _post_query(threatplaybook=self.threatplaybook, token=self.token,
+                                                   query=create_scan_query)
                 scan = validate_scan_response(content=create_scan_response)
                 if scan:
                     vuls = results.get('warnings', [])
                     for vul in vuls:
                         brakeman_results = parse_brakeman_file(threatplaybook=self.threatplaybook, vul_result=vul,
-                                                               project=self.project, target=self.target, scan=scan)
+                                                               project=self.project, target=self.target, scan=scan,
+                                                               token=self.token)
                         if brakeman_results:
                             logger.info(msg=brakeman_results)
                         else:
