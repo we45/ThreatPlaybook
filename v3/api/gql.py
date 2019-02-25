@@ -404,6 +404,7 @@ class CreateVulnerability(graphene.Mutation):
                                                  severity=vuln_attributes.get('severity', 1), project=ref_project,
                                                  target = ref_target,remediation=vuln_attributes.get('remediation', '')
                                                  ).save()
+                        print(new_vuln.name)                                                 
                         ref_scan.update(add_to_set__vulnerabilities = new_vuln.id)
                     except DoesNotExist:
                         return "Project OR Target or Scan not found"
