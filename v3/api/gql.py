@@ -530,6 +530,7 @@ class Query(graphene.ObjectType):
     repo_by_name = graphene.Field(Repository, short_name = graphene.String())
     user_story_by_project = graphene.List(UserStory, project = graphene.String())
     abuser_story_by_project = graphene.List(AbuserStory, project = graphene.String())
+    target_by_project = graphene.List(Target, project = graphene.String())
 
 
     def resolve_vulns(self, info):
@@ -606,6 +607,14 @@ class Query(graphene.ObjectType):
             if 'project' in kwargs:
                 ref_project = Proj.objects.get(name=kwargs.get('project'))
                 return AbuseCase.objects(project = ref_project.id)
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_target_by_project(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'project' in kwargs:
+                ref_project = Proj.objects.get(name=kwargs.get('project'))
+                return Target.objects(project = ref_project.id)
         else:
             raise Exception("Unauthorized to perform action")
 
