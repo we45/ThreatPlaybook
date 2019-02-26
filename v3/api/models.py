@@ -96,21 +96,6 @@ class UseCase(Document):
     abuses = ListField(ReferenceField(AbuseCase))
     scenarios = ListField(ReferenceField(ThreatModel))
 
-class Target(Document):
-    name = StringField(unique=True)
-    url = StringField()
-    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
-
-
-class Recon(Document):
-    tool = StringField(max_length=100)
-    options = StringField(max_length=100)
-    created_on = DateTimeField(default=datetime.datetime.utcnow)
-    result = StringField()
-    models = ListField(ReferenceField(ThreatModel))
-    target = ReferenceField(Target)
-
-
 class VulnerabilityEvidence(Document):
     name = StringField()
     log = StringField()
@@ -132,15 +117,30 @@ class Vulnerability(Document):
     remediation = StringField()
     evidences = ListField(ReferenceField(VulnerabilityEvidence))
     project = ReferenceField(Project)
-    target = ReferenceField(Target)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
 
 
 class Scan(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     name = StringField(default = random_scan_name)
-    target = ReferenceField(Target)
     vulnerabilities = ListField(ReferenceField(Vulnerability))
+
+class Target(Document):
+    name = StringField(unique=True)
+    url = StringField()
+    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
+    scans = ListField(ReferenceField(Scan))
+
+# class Recon(Document):
+#     tool = StringField(max_length=100)
+#     options = StringField(max_length=100)
+#     created_on = DateTimeField(default=datetime.datetime.utcnow)
+#     result = StringField()
+#     models = ListField(ReferenceField(ThreatModel))
+#     scan = ReferenceField(Scan)
+
+
+
 
 class User(Document):
     user_type_choices = (('super', "superuser"), ('user', "user"))

@@ -10,10 +10,6 @@ from utils import connect_db, _validate_jwt
 
 connect_db()
 
-class VulScan(MongoengineObjectType):
-    class Meta:
-        model = Scan
-
 class Vuln(MongoengineObjectType):
     class Meta:
         model = Vulnerability
@@ -49,9 +45,13 @@ class RepositoryTestCase(MongoengineObjectType):
     class Meta:
         model = RepoTestCase
 
-class Target(MongoengineObjectType):
+class Tgt(MongoengineObjectType):
     class Meta:
         model = Target
+
+class VulScan(MongoengineObjectType):
+    class Meta:
+        model = Scan
 
 class NewProject(graphene.ObjectType):
     name = graphene.String()
@@ -372,14 +372,13 @@ class CreateScan(graphene.Mutation):
         if _validate_jwt(info.context['request'].headers):
             try:
                 ref_target = Target.objects.get(name = target)
-                new_scan = Scan(target = ref_target).save()
+                new_scan = Scan().save()
+                ref_target.update(add_to_set__scans = new_scan.id)
             except DoesNotExist:
                 raise Exception("Target matching query does not exist")
             return CreateScan(scan = new_scan)
         else:
             raise Exception("Unauthorized to perform action")
-
-
 
 class CreateVulnerability(graphene.Mutation):
     class Arguments:
@@ -394,21 +393,19 @@ class CreateVulnerability(graphene.Mutation):
             if not vuln_attributes:
                 raise Exception("You need to specify a vuln key")
             else:
-                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "target", "scan")):
+                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project", "scan")):
                     raise Exception("Mandatory fields not in Vulnerability Definition")
                 else:
                     try:
                         ref_project = Proj.objects.get(name=vuln_attributes.get('project'))
-                        ref_target = Target.objects.get(name = vuln_attributes.get('target'))
                         ref_scan = Scan.objects.get(name = vuln_attributes.get('scan'))
                         new_vuln = Vulnerability(name=vuln_attributes['name'], tool=vuln_attributes['tool'],
                                                  description=vuln_attributes['description'],
                                                  cwe=vuln_attributes.get('cwe', 0),
                                                  observation=vuln_attributes.get('observation', ''),
                                                  severity=vuln_attributes.get('severity', 1), project=ref_project,
-                                                 target = ref_target,remediation=vuln_attributes.get('remediation', '')
+                                                 remediation=vuln_attributes.get('remediation', '')
                                                  ).save()
-                        print(new_vuln.name)                                                 
                         ref_scan.update(add_to_set__vulnerabilities = new_vuln.id)
                     except DoesNotExist:
                         return "Project OR Target or Scan not found"
@@ -534,7 +531,7 @@ class Query(graphene.ObjectType):
     repo_by_name = graphene.Field(Repository, short_name = graphene.String())
     user_story_by_project = graphene.List(UserStory, project = graphene.String())
     abuser_story_by_project = graphene.List(AbuserStory, project = graphene.String())
-    target_by_project = graphene.List(Target, project = graphene.String())
+    tgt_by_project = graphene.List(Tgt, project = graphene.String())
 
 
     def resolve_vulns(self, info):
@@ -614,7 +611,7 @@ class Query(graphene.ObjectType):
         else:
             raise Exception("Unauthorized to perform action")
 
-    def resolve_target_by_project(self, info, **kwargs):
+    def resolve_tgt_by_project(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
             if 'project' in kwargs:
                 ref_project = Proj.objects.get(name=kwargs.get('project'))
