@@ -5,7 +5,7 @@ from validations import validate_vulnerability_response_name, validate_vulnerabi
     validate_evidence_response
 
 
-def parse_bandit_file(threatplaybook, vul_result, project, target, scan):
+def parse_bandit_file(threatplaybook, vul_result, project, target, scan, token):
     severity_dict = {'LOW': 1, 'MEDIUM': 2, 'HIGH': 3}
 
     vul_dict = {
@@ -22,7 +22,7 @@ def parse_bandit_file(threatplaybook, vul_result, project, target, scan):
     }
     create_vulnerability_query = create_vulnerability(vul_dict=vul_dict)
     if create_vulnerability_query:
-        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query)
+        response = _post_query(threatplaybook=threatplaybook, token=token, query=create_vulnerability_query)
         if response:
             cleaned_response_name = validate_vulnerability_response_name(content=response)
             vulnId = validate_vulnerability_response_id(content=response)
@@ -31,11 +31,11 @@ def parse_bandit_file(threatplaybook, vul_result, project, target, scan):
                                                                        vul_result.get('line_number')))),
                 'url': str(clean_string(vul_result.get('filename'))),
                 'vulnId': str(vulnId),
-                'log': str(clean_string(vul_result.get('code')))
+                'log': b64encode(str(clean_string(vul_result.get('code'))))
             }
             create_evidence_query = create_evidence(evidence=evidence)
             if create_evidence_query:
-                evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query)
+                evidence_response = _post_query(threatplaybook=threatplaybook, token=token, query=create_evidence_query)
                 if evidence_response:
                     cleaned_evidence_response = validate_evidence_response(content=evidence_response)
                     if cleaned_evidence_response:
@@ -52,7 +52,7 @@ def parse_bandit_file(threatplaybook, vul_result, project, target, scan):
         return {'error': 'Error while creating Vulnerability Query'}
 
 
-def parse_nodejsscan_file(threatplaybook, vul_result, project, target, scan):
+def parse_nodejsscan_file(threatplaybook, vul_result, project, target, scan, token):
     vul_dict = {
         'name': str(vul_result.get('title')),
         'tool': 'NodeJsScan',
@@ -66,7 +66,7 @@ def parse_nodejsscan_file(threatplaybook, vul_result, project, target, scan):
     }
     create_vulnerability_query = create_vulnerability(vul_dict=vul_dict)
     if create_vulnerability_query:
-        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query)
+        response = _post_query(threatplaybook=threatplaybook, token=token, query=create_vulnerability_query)
         if response:
             cleaned_response_name = validate_vulnerability_response_name(content=response)
             vulnId = validate_vulnerability_response_id(content=response)
@@ -76,10 +76,10 @@ def parse_nodejsscan_file(threatplaybook, vul_result, project, target, scan):
                 'url': str(clean_string(vul_result.get('filename'))),
                 'vulnId': str(vulnId),
                 'log': str(clean_string(vul_result.get('lines'))),
-                }
+            }
             create_evidence_query = create_evidence(evidence=evidence)
             if create_evidence_query:
-                evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query)
+                evidence_response = _post_query(threatplaybook=threatplaybook, token=token, query=create_evidence_query)
                 if evidence_response:
                     cleaned_evidence_response = validate_evidence_response(content=evidence_response)
                     if cleaned_evidence_response:
@@ -95,7 +95,7 @@ def parse_nodejsscan_file(threatplaybook, vul_result, project, target, scan):
         return {'error': 'Error while creating Vulnerability Query'}
 
 
-def parse_npmaudit_file(threatplaybook, vul_result, project, target, scan):
+def parse_npmaudit_file(threatplaybook, vul_result, project, target, scan, token):
     severity_dict = {'moderate': 2, 'low': 1, 'critical': 3}
 
     vul_dict = {
@@ -112,7 +112,7 @@ def parse_npmaudit_file(threatplaybook, vul_result, project, target, scan):
     }
     create_vulnerability_query = create_vulnerability(vul_dict=vul_dict)
     if create_vulnerability_query:
-        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query)
+        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query, token=token)
         if response:
             cleaned_response_name = validate_vulnerability_response_name(content=response)
             vulnId = validate_vulnerability_response_id(content=response)
@@ -125,7 +125,8 @@ def parse_npmaudit_file(threatplaybook, vul_result, project, target, scan):
                     }
                     create_evidence_query = create_evidence(evidence=evidence)
                     if create_evidence_query:
-                        evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query)
+                        evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query,
+                                                        token=token)
                         if evidence_response:
                             cleaned_evidence_response = validate_evidence_response(content=evidence_response)
                             if cleaned_evidence_response:
@@ -141,7 +142,7 @@ def parse_npmaudit_file(threatplaybook, vul_result, project, target, scan):
         return {'error': 'Error while creating Vulnerability Query'}
 
 
-def parse_zap_file(threatplaybook, vul_result, project, target, scan):
+def parse_zap_file(threatplaybook, vul_result, project, target, scan, token):
     severity_dict = {'High': 3, 'Medium': 2, 'Low': 1}
     vul_dict = {
         'name': str(clean_string(vul_result.get('Alert'))),
@@ -157,7 +158,7 @@ def parse_zap_file(threatplaybook, vul_result, project, target, scan):
     }
     create_vulnerability_query = create_vulnerability(vul_dict=vul_dict)
     if create_vulnerability_query:
-        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query)
+        response = _post_query(threatplaybook=threatplaybook, token=token, query=create_vulnerability_query)
         if response:
             cleaned_response_name = validate_vulnerability_response_name(content=response)
             vulnId = validate_vulnerability_response_id(content=response)
@@ -170,16 +171,17 @@ def parse_zap_file(threatplaybook, vul_result, project, target, scan):
                     'vulnId': str(vulnId),
                     'param': str(clean_string(item.get('Param'))),
                     'log': str(b64encode('RequestHeader: {}  RequestBody: {}  ResponseHeader: {}'.format(
-                                        item.get('RequestHeader', ''),
-                                        item.get('RequestBody', ''),
-                                        item.get('ResponseHeader', '')).encode('UTF-8'))),
+                        item.get('RequestHeader', ''),
+                        item.get('RequestBody', ''),
+                        item.get('ResponseHeader', '')).encode('UTF-8'))),
                     'attack': str(clean_string(item.get('Attack'))),
                     'otherInfo': str(clean_string(item.get('OtherInfo'))),
                     'evidence': str(clean_string(item.get('Evidence'))),
-                    }
+                }
                 create_evidence_query = create_evidence(evidence=evidence)
                 if create_evidence_query:
-                    evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query)
+                    evidence_response = _post_query(threatplaybook=threatplaybook, token=token,
+                                                    query=create_evidence_query)
                     cleaned_evidence_response = validate_evidence_response(content=evidence_response)
                     if cleaned_evidence_response:
                         print('Evidence Created: {}'.format(cleaned_evidence_response))
@@ -194,7 +196,7 @@ def parse_zap_file(threatplaybook, vul_result, project, target, scan):
         return {'error': 'Error while creating Vulnerability Query'}
 
 
-def parse_brakeman_file(threatplaybook, vul_result, project, target, scan):
+def parse_brakeman_file(threatplaybook, vul_result, project, target, scan, token):
     confidence_dict = {"High": 3, "Medium": 2, "Low": 1}
     vul_dict = {
         'name': str(clean_string(vul_result.get('warning_type', 'Unknown'))),
@@ -210,7 +212,8 @@ def parse_brakeman_file(threatplaybook, vul_result, project, target, scan):
     }
     create_vulnerability_query = create_vulnerability(vul_dict=vul_dict)
     if create_vulnerability_query:
-        response = _post_query(threatplaybook=threatplaybook, query=create_vulnerability_query)
+        response = _post_query(threatplaybook=threatplaybook, token=token,
+                               query=create_vulnerability_query)
         if response:
             cleaned_response_name = validate_vulnerability_response_name(content=response)
             vulnId = validate_vulnerability_response_id(content=response)
@@ -228,10 +231,10 @@ def parse_brakeman_file(threatplaybook, vul_result, project, target, scan):
                 'url': str(file),
                 'vulnId': str(vulnId),
                 'log': str(clean_string(code))
-                }
+            }
             create_evidence_query = create_evidence(evidence=evidence)
             if create_evidence_query:
-                evidence_response = _post_query(threatplaybook=threatplaybook, query=create_evidence_query)
+                evidence_response = _post_query(threatplaybook=threatplaybook, token=token, query=create_evidence_query)
                 cleaned_evidence_response = validate_evidence_response(content=evidence_response)
                 if cleaned_evidence_response:
                     print('Evidence Created: {}'.format(cleaned_evidence_response))

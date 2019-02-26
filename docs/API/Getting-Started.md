@@ -5,7 +5,7 @@
     * [Responder Web Framework](https://python-responder.org/en/latest/)
     * [Graphene-Python](https://graphene-python.org/) for GraphQL. ThreatPlaybook is nearly 100% GraphQL
     * Frontend: VueJS 2.9.6
-        * Buefy => Bulma VueJS Framework
+        * Bootstrap4
         * VisJS => Visualization Framework
     * Docopt => CLI framework for the API
     * MongoDB => Primary Backend Database

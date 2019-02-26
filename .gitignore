@@ -40,6 +40,8 @@ v3/api/.env
 .idea/vcs.xml
 .idea/*
 v3/threatplaybook_db/
+v3/robot/test/log.html
+v3/robot/test/report.html
 v3/.DS_Store
 v3/frontend/.DS_Store
 .DS_Store

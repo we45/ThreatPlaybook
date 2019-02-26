@@ -112,10 +112,10 @@ class Recon(Document):
 
 
 class VulnerabilityEvidence(Document):
-    name = StringField(max_length=100)
+    name = StringField()
     log = StringField()
     url = StringField()
-    param = StringField(max_length=100)
+    param = StringField()
     attack = StringField()
     other_info = StringField()
     evidence = StringField()
@@ -123,8 +123,8 @@ class VulnerabilityEvidence(Document):
 
 class Vulnerability(Document):
     severity_choices = ((3, "High"), (2, "Medium"), (1, "Low"), (0, "Info"))
-    tool = StringField(max_length=100)
-    name = StringField(max_length=100)
+    tool = StringField()
+    name = StringField()
     cwe = IntField()
     severity = IntField(choices=severity_choices)
     description = StringField()
