@@ -7,53 +7,70 @@
             <b-row>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="dash-box dash-box-color-1">
                                 <div class="dash-box-icon">
                                     <i class="glyphicon glyphicon-cloud"></i>
                                 </div>
                                 <div class="dash-box-body">
-                                    <span class="dash-box-count">8,252</span>
+                                    <span class="dash-box-count">{{ dashboardQuery.projects.length }}</span>
                                     <span class="dash-box-title">Projects</span>
                                 </div>
 
-                                <div class="dash-box-action">
-                                    <button @click="goToProject">More Info</button>
-                                </div>
+                                <!--<div class="dash-box-action">-->
+                                    <!--<button @click="goToProject">More Info</button>-->
+                                <!--</div>-->
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="dash-box dash-box-color-2">
                                 <div class="dash-box-icon">
                                     <i class="glyphicon glyphicon-download"></i>
                                 </div>
                                 <div class="dash-box-body">
-                                    <span class="dash-box-count">100</span>
-                                    <span class="dash-box-title">Threats</span>
+                                    <span class="dash-box-count">{{ dashboardQuery.userStories.length }}</span>
+                                    <span class="dash-box-title">Features/User Stories</span>
                                 </div>
 
-                                <div class="dash-box-action">
-                                    <button>More Info</button>
-                                </div>
+                                <!--<div class="dash-box-action">-->
+                                    <!--<button>More Info</button>-->
+                                <!--</div>-->
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="dash-box dash-box-color-3">
                                 <div class="dash-box-icon">
                                     <i class="glyphicon glyphicon-heart"></i>
                                 </div>
                                 <div class="dash-box-body">
-                                    <span class="dash-box-count">2502</span>
-                                    <span class="dash-box-title">Test Cases</span>
+                                    <span class="dash-box-count">{{ dashboardQuery.scenarios.length }}</span>
+                                    <span class="dash-box-title">Threat Scenarios</span>
                                 </div>
 
-                                <div class="dash-box-action">
-                                    <button>More Info</button>
+                                <!--<div class="dash-box-action">-->
+                                    <!--<button>More Info</button>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="dash-box dash-box-color-4">
+                                <div class="dash-box-icon">
+                                    <i class="glyphicon glyphicon-heart"></i>
                                 </div>
+                                <div class="dash-box-body">
+                                    <span class="dash-box-count">{{ dashboardQuery.scans.length }}</span>
+                                    <span class="dash-box-title">Scans</span>
+                                </div>
+
+                                <!--<div class="dash-box-action">-->
+                                    <!--<button>More Info</button>-->
+                                <!--</div>-->
                             </div>
                         </div>
                     </div>
                 </div>
+            </b-row>
+            <b-row>
             </b-row>
             <b-row>
                 <b-col>
@@ -62,9 +79,10 @@
                     <apexchart type="donut" :options="donutOptions" :series="donutSeries" height="300"></apexchart>
                 </b-col>
                 <b-col>
-                    <p class="title">Threat to vulnerability</p>
+                    <p class="title">Vulnerabilities by Severity</p>
                     <hr>
-                    <apexchart type="bar" :options="options" :series="series" height="300"></apexchart>
+                    <apexchart type="pie" :options="pieOptions" :series="pieSeries" height="300"></apexchart>
+                    <!--<apexchart type="bar" :options="options" :series="series" height="300"></apexchart>-->
                 </b-col>
             </b-row>
         </b-container>
@@ -74,6 +92,7 @@
 
 <script>
     import Navbar from "./Navbar.vue";
+    import gql from "graphql-tag";
 
     export default {
         name: "Home",
@@ -82,32 +101,111 @@
         },
         data() {
             return {
-                options: {
-                    chart: {
-                        id: 'vuechart-example'
-                    },
-                    xaxis: {
-                        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-                    }
-                },
-                series: [{
-                    name: 'series-1',
-                    data: [30, 40, 45, 50, 49, 60, 70, 91]
-                }],
+                // options: {
+                //     chart: {
+                //         id: 'vuechart-example'
+                //     },
+                //     xaxis: {
+                //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+                //     }
+                // },
+                // series: [{
+                //     name: 'series-1',
+                //     data: [30, 40, 45, 50, 49, 60, 70, 91]
+                // }],
                 isLoading: false,
-                donutOptions: {},
-                donutSeries: [44, 55, 41, 17, 15]
+                donutOptions: {
+                    labels: ['High', 'Medium', 'Low'],
+                    colors: ['#d11d55', '#ff9c2c', '#008b8f']
+                },
+                donutSeries: [],
+                pieOptions: {
+                    labels: ['High', 'Medium', 'Low'],
+                    colors: ['#d11d55', '#ff9c2c', '#008b8f']
+                },
+                pieSeries: [],
+                isData: false,
+
             }
         },
         mounted() {
-            this.token = localStorage.getItem('token')
+            // this.token = localStorage.getItem('token')
+            this.token = sessionStorage.getItem('token')
             this.fetchData()
+        },
+        updated() {
+            this.$nextTick(() => {
+                if(this.isData){
+                if(this.dashboardQuery.scenarios){
+                    const highCount = []
+                    const mediumCount = []
+                    const lowCount = []
+                    for(const a of this.dashboardQuery.scenarios){
+                        if(a.severity===3){
+                            highCount.push(a.severity)
+                        }else if(a.severity===2){
+                            mediumCount.push(a.severity)
+                        }else{
+                            lowCount.push(a.severity)
+                        }
+                    }
+                    this.donutSeries.push(highCount.length)
+                    this.donutSeries.push(mediumCount.length)
+                    this.donutSeries.push(lowCount.length)
+                    this.isData = false
+                }
+                if(this.dashboardQuery.scans){
+                     const highPieCount = []
+                    const mediumPieCount = []
+                    const lowPieCount = []
+                    for (const scan of this.dashboardQuery.scans){
+                        for (const vulSev of scan.vulnerabilities){
+                            if(vulSev.severity===3){
+                            highPieCount.push(vulSev.severity)
+                        }else if(vulSev.severity===2){
+                            mediumPieCount.push(vulSev.severity)
+                        }else{
+                            lowPieCount.push(vulSev.severity)
+                        }
+                        }
+                    }
+                    this.pieSeries.push(highPieCount.length)
+                    this.pieSeries.push(mediumPieCount.length)
+                    this.pieSeries.push(lowPieCount.length)
+                }
+                }
+
+            })
+        },
+        apollo: {
+            dashboardQuery: {
+                query: gql`
+            query {
+              projects{
+              name
+            }
+              userStories{
+                id
+              }
+              scenarios{
+                severity
+              }
+              scans {
+                name
+                vulnerabilities{
+                  severity
+                }
+              }
+        }
+      `,
+                update: result => result
+                // update: result => result.userStories
+            }
         },
         methods: {
             fetchData() {
-                if (this.token) {
+                this.isData = true
 
-                }
             },
             goToProject() {
                 this.$router.push("/projects");
@@ -248,6 +346,25 @@
 
     .dash-box-color-3 .dash-box-icon > i {
         background: #8150e4;
+    }
+    .dash-box.dash-box-color-4 {
+        background: rgb(183, 71, 247);
+        background: -moz-linear-gradient(top, rgba(0,128,0) 0%, rgba(0, 255, 64) 100%);
+        background: -webkit-linear-gradient(top, rgba(0,128,0) 0%, rgba(0, 255, 128, 1) 100%);
+        background: linear-gradient(to bottom, rgba(0,128,0) 0%, rgba(0, 255, 128, 1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b747f7', endColorstr='#6c53dc', GradientType=0);
+    }
+
+    .dash-box-color-4 .dash-box-icon:after {
+        background: rgba(191, 255, 0, 0.76);
+    }
+
+    .dash-box-color-4 .dash-box-icon:before {
+        background: rgba(64, 255, 0 , 0.66);
+    }
+
+    .dash-box-color-4 .dash-box-icon > i {
+        background: #00ff00;
     }
 
 </style>

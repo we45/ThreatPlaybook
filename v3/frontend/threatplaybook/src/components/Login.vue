@@ -63,17 +63,21 @@
                     })
                     .then(response => {
                         if(response.data.token !== undefined){
-                            localStorage.removeItem('token')
-                            localStorage.setItem('token', response.data.token)
+                            // localStorage.removeItem('token')
+                            // localStorage.setItem('token', response.data.token)
+                            sessionStorage.removeItem('token')
+                            sessionStorage.setItem('token', response.data.token)
                             this.$router.push("/home");
                         } else{
-                            localStorage.removeItem('token')
+                            sessionStorage.removeItem('token')
+                            // localStorage.removeItem('token')
                             this.inValidCredentials = true
                         }
                         this.isLoading = false
                     })
                     .catch(error => {
-                        localStorage.removeItem('token')
+                        sessionStorage.removeItem('token')
+                        // localStorage.removeItem('token')
                         this.inValidCredentials = true
                         this.$toast.open({
                             duration: 7000,
