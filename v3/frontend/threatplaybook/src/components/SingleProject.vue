@@ -9,7 +9,7 @@
             <b-card no-body>
                 <b-tabs pills card>
                     <b-tab title="Feature/User Stories" active>
-                        <template v-for="(item, index) in singleProjectQuery">
+                        <template v-for="(item, index) in singleProjectQuery.userStoryByProject">
                             <b-card no-body class="mb-1">
                               <b-card-header header-tag="header" class="p-1" role="tab">
                                 <b-button block href="#" v-b-toggle="'feature-'+index"
@@ -34,7 +34,7 @@
                                               style="text-align: left;background-color: #CCCCCC;color: #7957d5">
                                         Threat Scenarios - {{ single_scene.name }} <span class="label-high" v-if="single_scene.severity === 3" style="float: right;">High</span>
                                       <span class="label-medium" v-if="single_scene.severity === 2" style="float: right;">Medium</span>
-                                      <span class="label-low" v-if="single_scene.severity === 1" style="float: right;">Low</span>
+                                      <span class="label-low" v-if="single_scene.severity === 1 || single_scene.severity === 0" style="float: right;">Low</span>
                                     </b-button>
                                   </b-card-header>
                                   <b-collapse :id="'Threat-'+count+item.shortName+single_item.shortName" visible accordion="my-accordions" role="tabpanel">
@@ -54,7 +54,99 @@
                         </template>
                     </b-tab>
                     <b-tab title="Vulnerabilities">
-                        <h3>Hello!!!!</h3>
+                        <template v-for="(target, index) in singleProjectQuery.tgtByProject">
+                            <b-card no-body class="mb-1">
+                                <b-card-header header-tag="header" class="p-1" role="tab">
+                                <b-button block href="#" v-b-toggle="'target-'+index"
+                                          style="text-align: left;background-color: #CCCCCC;color: #7957d5">Target - {{ target.name }}</b-button>
+                              </b-card-header>
+                                <b-collapse :id="'target-'+index" visible accordion="my-accordion" role="tabpanel">
+                                    <template v-for="(scan,sl) in target.scans">
+                                        <b-card no-body class="mb-1">
+                                            <b-card-header header-tag="header" class="p-1" role="tab" style="margin-left: 4%;">
+                                                <b-button block href="#" v-b-toggle="'scan-'+sl+target.name"
+                                              style="text-align: left;background-color: #CCCCCC;color: #7957d5">Scan - {{ scan.name }}</b-button>
+                                            </b-card-header>
+                                  <b-collapse :id="'scan-'+sl+target.name" visible accordion="my-accordionss" role="tabpanel">
+                                    <b-card-body>
+                                        <template v-for="(vul,count) in scan.vulnerabilities">
+                                            <b-card no-body class="mb-1">
+                                                <b-card-header header-tag="header" class="p-1" role="tab" style="margin-left: 4%;">
+                                                    <b-button block href="#" v-b-toggle="'vul-'+count+scan.name"
+                                              style="text-align: left;background-color: #CCCCCC;color: #7957d5">Vulnerability - {{ vul.name }}
+                                                        <span class="label-high" v-if="vul.severity === 3" style="float: right;">High</span>
+                                                        <span class="label-medium" v-if="vul.severity === 2" style="float: right;">Medium</span>
+                                                        <span class="label-low" v-if="vul.severity === 1 || vul.severity === 0" style="float: right;">Low</span>
+                                                    </b-button>
+                                                </b-card-header>
+                                                <b-collapse :id="'vul-'+count+scan.name" visible accordion="my-accordions" role="tabpanels">
+                                                    <b-row style="margin-left: 5%;margin-top: 5%;">
+                                                        <b-col cols="2">
+                                                            <p v-if="vul.name">Name : </p>
+                                                            <p v-if="vul.tool">Tool : </p>
+
+                                                        </b-col>
+                                                        <b-col cols="4">
+                                                            <p v-if="vul.name">{{ vul.name }}</p>
+                                                            <p v-if="vul.tool">{{ vul.tool }}</p>
+                                                        </b-col>
+                                                        <b-col cols="2">
+                                                            <p v-if="vul.cwe">cwe :</p>
+                                                        </b-col>
+                                                        <b-col cols="4">
+                                                            <p v-if="vul.cwe">{{ vul.cwe }}</p>
+                                                        </b-col>
+                                                        <br>
+                                                        <b-col>
+                                                            <p><span>Description : </span>{{ vul.description }}</p>
+                                                            <p><span>Remediation : </span>{{ vul.remediation }}</p>
+                                                            <p><span>Observation : </span>{{ vul.observation }}</p>
+                                                        </b-col>
+                                                    </b-row>
+                                                    <!--<template v-if="vul.evidences.length > 0">-->
+                                                    <!--<template v-for="(evid,num) in vul.evidences">-->
+                                                        <!--<b-button block href="#" v-b-toggle="'evi-'+num+vul.name+scan.name"-->
+                                              <!--style="text-align: left;background-color: #CCCCCC;color: #7957d5;margin-left: 4%;">Evidences-->
+                                                        <!--</b-button>-->
+                                                        <!--{{ evid }}-->
+                                                        <!--<b-collapse :id="'evi-'+num+vul.name+scan.name" visible accordion="my-accordionses" role="tabpanelses" style="margin-left: 12%;">-->
+                                                           <!--<b-row style="margin-top: 5%">-->
+                                                               <!--<b-col cols="2">-->
+                                                                   <!--<p>Attack : </p>-->
+                                                                   <!--<p>Evidence : </p>-->
+                                                                   <!--<p>OtherInfo : </p>-->
+                                                                   <!--<p>URL : </p>-->
+                                                               <!--</b-col>-->
+                                                               <!--<b-col cols="4">-->
+                                                                   <!--<p>{{ evid.attack }}</p>-->
+                                                                   <!--<p>{{ evid.evidence }}</p>-->
+                                                                   <!--<p>{{ evid.otherInfo }}</p>-->
+                                                                   <!--<p>{{ evid.url }}</p>-->
+                                                               <!--</b-col>-->
+                                                               <!--<b-col cols="2">-->
+                                                                   <!--<p>Log : </p>-->
+                                                                   <!--<p>Name : </p>-->
+                                                                   <!--<p>Param : </p>-->
+                                                               <!--</b-col>-->
+                                                               <!--&lt;!&ndash;<b-col cols="4">&ndash;&gt;-->
+                                                                   <!--<p>{{ evid.log | decode }}</p>-->
+                                                                   <!--&lt;!&ndash;<p>{{ evid.name }}</p>&ndash;&gt;-->
+                                                                   <!--&lt;!&ndash;<p>{{ evid.param }}</p>&ndash;&gt;-->
+                                                               <!--&lt;!&ndash;</b-col>&ndash;&gt;-->
+                                                           <!--</b-row>-->
+                                                        <!--</b-collapse>-->
+                                                    <!--</template>-->
+                                                        <!--</template>-->
+                                                </b-collapse>
+                                            </b-card>
+                                        </template>
+                                    </b-card-body>
+                                  </b-collapse>
+                                        </b-card>
+                                    </template>
+                                </b-collapse>
+                            </b-card>
+                        </template>
                     </b-tab>
                 </b-tabs>
             </b-card>
@@ -104,6 +196,30 @@
               }
             }
           }
+          tgtByProject(project: $pname) {
+            name
+                scans{
+                  name
+                  vulnerabilities{
+                    name
+                    description
+                    cwe
+                    observation
+                    remediation
+                    severity
+                    tool
+                    evidences{
+                      attack
+                      evidence
+                      log
+                      name
+                      otherInfo
+                      param
+                      url
+                    }
+                  }
+                }
+           }
         }
       `,
                 variables() {
@@ -111,7 +227,7 @@
                         pname: atob(this.projectName)
                     };
                 },
-                update: result => result.userStoryByProject
+                update: result => result
             }
         }
     };

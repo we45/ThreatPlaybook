@@ -53,6 +53,11 @@ const apolloProvider = new VueApollo({
     defaultClient: apolloClient
 });
 
+Vue.filter('decode', function (value) {
+  if (!value) return ''
+  return atob(value)
+})
+
 new Vue({
   el: "#app",
   router,

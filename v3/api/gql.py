@@ -14,6 +14,10 @@ class Vuln(MongoengineObjectType):
     class Meta:
         model = Vulnerability
 
+class VulEvidence(MongoengineObjectType):
+    class Meta:
+        model = VulnerabilityEvidence
+
 class Project(MongoengineObjectType):
     class Meta:
         model = Proj
