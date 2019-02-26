@@ -31,7 +31,8 @@ export default {
     name: "Navbar",
     methods: {
         logOut() {
-            localStorage.removeItem('token')
+            this.token = sessionStorage.getItem('token')
+            // localStorage.removeItem('token')
             this.$router.push("/");
         },
         goToProject() {

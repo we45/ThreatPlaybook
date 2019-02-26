@@ -53,6 +53,9 @@
                             </b-card>
                         </template>
                     </b-tab>
+                    <b-tab title="Vulnerabilities">
+                        <h3>Hello!!!!</h3>
+                    </b-tab>
                 </b-tabs>
             </b-card>
         </b-container>
