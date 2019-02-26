@@ -49,6 +49,10 @@ class RepositoryTestCase(MongoengineObjectType):
     class Meta:
         model = RepoTestCase
 
+class Target(MongoengineObjectType):
+    class Meta:
+        model = Target
+
 class NewProject(graphene.ObjectType):
     name = graphene.String()
 
