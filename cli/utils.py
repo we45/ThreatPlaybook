@@ -134,3 +134,36 @@ def template_user_story_full():
     }
     """
     return query
+
+
+def template_user_story_mutation():
+    query = """
+    mutation {
+      createOrUpdateUserStory(userstory: {
+      {% for key, value in mutation_vars.items() %}
+        {{ key }}: "{{ value }}"
+      {% endfor %}
+      }) {
+        userStory {
+          shortName
+        }
+      }
+    }
+    """
+    return Template(query)
+
+def template_interaction_mutation():
+    query = """
+    mutation {
+      createInteraction(newInteraction: {
+        {% for key, value in mutation_vars.items() %}
+        {{ key }}: "{{ value }}"
+        {% endfor %}
+      }) {
+        interaction {
+          nature
+        }
+      }
+    }
+    """
+    return Template(query)

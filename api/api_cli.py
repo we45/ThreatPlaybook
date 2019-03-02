@@ -136,6 +136,3 @@ if __name__ == '__main__':
         db = connect_db()
         load_reload_repo_db()
         print (good("Data loaded successfully!!!"))
-
-
-

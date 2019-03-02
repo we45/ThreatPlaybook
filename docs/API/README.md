@@ -1,5 +1,13 @@
 # Getting Started - ThreatPlaybook API
 
+Previously, ThreatPlaybook was a pure-play CLI. While it was easier to run, it was not easy for multiple folks to collaborate across projects, features and threat models. 
+
+Now ThreatPlaybook has an API component that can be deployed within your environment and accessed using the front-end or the CLI, based on the specific operations required. 
+
+> The new architecture and set of components for ThreatPlaybook looks like this: 
+
+![ThreatPlaybook Components](components.png)
+
 ## Technology (Built with)
 * ThreatPlaybook's API has been primarily built with the following: 
     * [Responder Web Framework](https://python-responder.org/en/latest/)
@@ -32,6 +40,7 @@
 * elif `docker` (recommended): 
     * Git clone repo
     * Run `docker-compose up` to bring up the stack
+    * Read the [Docker Compose Instructions](/API/docker-compose.md)
 * else: 
     * `print("There's no othert option left")`
 

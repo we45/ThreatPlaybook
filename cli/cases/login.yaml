@@ -34,8 +34,11 @@ abuse_cases:
         description: Attacker attempts to compromise auth token by gaining access to the end user's auth token by performing Man in the Middle Attacks
         reference: {name: plaintext-transmission, severity: 3}
 
-#
-#connections:
-#- manage_expenses: https
-#- approve_expense: https
-#- view_user_profile: https
+internal_interactions:
+- create_expense: "HTTP GET Request"
+- upload_expense: "HTTP GET Request"
+- logout: "HTTP GET Request"
+external_interactions:
+- user: "credentials"
+part_of: core_webservice
+

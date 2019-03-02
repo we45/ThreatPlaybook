@@ -56,6 +56,7 @@ abuse_cases:
       reference: {name: idor_pk, severity: 3}
       description: Perform Authorization Bypass through IDOR or Mass Assignment style vulnerabilities to get unauthorized expenses approved
 
-connections:
-- create_expense: https PUT
-- delete_expense: https delete
+internal_interactions:
+- upload_expense: "HTTP POST Request"
+- logout: "HTTP GET Request"
+part_of: core_webservice

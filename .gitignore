@@ -45,3 +45,4 @@ v3/robot/test/report.html
 v3/.DS_Store
 v3/frontend/.DS_Store
 .DS_Store
+api/.env

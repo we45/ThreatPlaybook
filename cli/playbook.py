@@ -1,4 +1,4 @@
-"""ThreatPlaybook Controller
+"""ThreatPlaybook Client v 1.0.0
 
 Usage:
     playbook init <project_name>
@@ -6,7 +6,6 @@ Usage:
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
     playbook get feature [--name=<name>] [--json | --table] [--fields=<fieldlist>]
-    playbook report <project_name>
     playbook configure
     playbook (-h | --help)
     playbook --version
@@ -38,12 +37,14 @@ from tabulate import tabulate
 import textwrap
 from getpass import getpass
 
+
 def verify_host_port():
     db = pickledb.load('.cred', False)
     if db.get('host') and db.get('port'):
         return True
 
     return False
+
 
 def verify_project():
     db = pickledb.load('.cred', False)
@@ -52,13 +53,15 @@ def verify_project():
 
     return False
 
+
 def _make_request(query):
     db = pickledb.load('.cred', False)
     if verify_host_port():
         baseUrl = "{}:{}/graph".format(db.get('host'), db.get('port'))
         token = db.get('token')
-        r = requests.post(baseUrl, headers = {"Authorization": token}, json = {'query': query})
+        r = requests.post(baseUrl, headers={"Authorization": token}, json={'query': query})
         return r.json()
+
 
 def configure_server():
     """
@@ -70,7 +73,7 @@ def configure_server():
     port = int(input("Enter port information, port defaults to 5042 if nothing is entered ") or 5042)
     base_url = "{}:{}/graph".format(host, port)
     if requests.get(base_url).status_code == 200:
-        db = pickledb.load('.cred',False)
+        db = pickledb.load('.cred', False)
         db.set('host', host)
         db.set('port', port)
         db.dump()
@@ -78,6 +81,7 @@ def configure_server():
     else:
         print(bad("Unable to connect to host and port on given parameters. Please try again"))
         exit(1)
+
 
 def create_project(project_name):
     """
@@ -91,11 +95,12 @@ def create_project(project_name):
     """
     db = pickledb.load('.cred', False)
     if not verify_host_port():
-       print(bad("There's no host and port configured. Please run the `playbook configure` option first."))
-       exit(1)
+        print(bad("There's no host and port configured. Please run the `playbook configure` option first."))
+        exit(1)
     else:
         if verify_project():
-            project_input = input("There's already a project here. Are you sure you want to re-initialize? It will overwrite existing project info ")
+            project_input = input(
+                "There's already a project here. Are you sure you want to re-initialize? It will overwrite existing project info ")
             if any(project_input == word for word in ['no', 'n', 'N', 'NO']):
                 print(info("Project will not be overwritten. Current action ignored"))
             else:
@@ -132,7 +137,8 @@ def create_project(project_name):
                 except Exception as e:
                     print(bad(e.message))
 
-def parse_threat_models(content, user_story, abuser_story = None):
+
+def parse_threat_models(content, user_story, abuser_story=None):
     if isinstance(content, list):
         for single in content:
             if not 'name' in single and not 'type' in single:
@@ -169,10 +175,10 @@ def parse_threat_models(content, user_story, abuser_story = None):
                             """ % single['reference']['name']
                             res = _make_request(repo_gql_query)
                             if utils.validate_repo_query(res):
-                                cwe = pyjq.first('.data.repoByName.cwe',res) or 0
-                                vul_name = pyjq.first('.data.repoByName.name',res) or "Unknown Vulnerability"
-                                mitigations = list(pyjq.first('.data.repoByName.mitigations',res))
-                                categories = list(pyjq.first('.data.repoByName.categories',res))
+                                cwe = pyjq.first('.data.repoByName.cwe', res) or 0
+                                vul_name = pyjq.first('.data.repoByName.name', res) or "Unknown Vulnerability"
+                                mitigations = list(pyjq.first('.data.repoByName.mitigations', res))
+                                categories = list(pyjq.first('.data.repoByName.categories', res))
 
                                 mutation_vars = {
                                     "name": {"name": name, "type": "string"},
@@ -193,7 +199,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                 if user_story:
                                     mutation_vars['userStory'] = {'name': user_story, "type": "string"}
 
-                                final_query = utils.template_threat_model_mutation().render(mutation_vars = mutation_vars)
+                                final_query = utils.template_threat_model_mutation().render(mutation_vars=mutation_vars)
                                 tm_res = _make_request(final_query)
                                 if tm_res:
                                     cleaned_data = utils.validate_threat_model_query(tm_res)
@@ -204,7 +210,8 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                             if all_tests:
                                                 for one_test in all_tests:
                                                     test_name = one_test.get('name', 'Unknown Test Case')
-                                                    test_case = one_test.get('testCase', 'Unknown Test Case Description')
+                                                    test_case = one_test.get('testCase',
+                                                                             'Unknown Test Case Description')
                                                     test_type = one_test.get('type', 'discovery')
                                                     tools = list(one_test.get('tools'))
 
@@ -218,12 +225,12 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                                     if len(tools) > 0:
                                                         t_mutation_vars['tools'] = {"name": tools, "type": "list"}
 
-                                                    final_mutation = utils.template_test_case_mutation().\
-                                                        render(mutation_vars = t_mutation_vars)
+                                                    final_mutation = utils.template_test_case_mutation(). \
+                                                        render(mutation_vars=t_mutation_vars)
                                                     test_case_res = _make_request(final_mutation)
                                                     if test_case_res:
                                                         if utils.validate_test_case_query(test_case_res):
-                                                            print("\t",good(
+                                                            print("\t", good(
                                                                 "Created/Updated Test Case:`{}`".format(
                                                                     test_name)))
                                                         else:
@@ -258,8 +265,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                         inline_mutation_vars['userStory'] = {'name': user_story, "type": "string"}
 
                     inline_final_query = utils.template_threat_model_mutation().render(mutation_vars=
-                                                                                             inline_mutation_vars)
-
+                                                                                       inline_mutation_vars)
 
                     inline_res = _make_request(inline_final_query)
                     if inline_res:
@@ -281,7 +287,7 @@ def parse_threat_models(content, user_story, abuser_story = None):
                                     final_test_mutation['tools'] = {"name": tools, "type": "list"}
 
                                 final_test_mute = utils.template_test_case_mutation().render(
-                                    mutation_vars = final_test_mutation)
+                                    mutation_vars=final_test_mutation)
                                 test_case_res = _make_request(final_test_mute)
                                 if test_case_res:
                                     if utils.validate_test_case_query(test_case_res):
@@ -298,8 +304,27 @@ def parse_threat_models(content, user_story, abuser_story = None):
                         print(bold(red("Request for Loading Threat Scenario: {} failed".format(name))))
 
                 else:
-                    print(bold(red("Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either.")))
+                    print(bold(red(
+                        "Your Threat Scenario must either be of type `repo` or `inline`. This doesn't seem to be either.")))
                     pass
+
+
+def parse_interactions(user_story_short_name, all_interaction, type):
+    for single_interaction in all_interaction:
+        if isinstance(single_interaction, dict):
+            int_mutation_vars = {"userStoryName": user_story_short_name, "nature": type,
+                                 "dataFlow": list(single_interaction.values())[0],
+                                 "endpoint": list(single_interaction.keys())[0]}
+            ii_mutation = utils.template_interaction_mutation().render(
+                mutation_vars=int_mutation_vars)
+            ii_res = _make_request(ii_mutation)
+            if ii_res:
+                if 'data' in ii_res:
+                    print(good("Added interaction with {}".format(
+                        list(single_interaction.keys())[0])))
+                else:
+                    print(bad(ii_res))
+
 
 def parse_spec_file(case_content):
     """
@@ -315,7 +340,7 @@ def parse_spec_file(case_content):
     :param fileval:
     :return:
     """
-    #pre-processing ops
+    # pre-processing ops
     db = pickledb.load('.cred', False)
     if not verify_host_port():
         print(bad("You dont seem to have a project set. Please set/create project first"))
@@ -323,29 +348,32 @@ def parse_spec_file(case_content):
     else:
         if verify_project():
             project_name = db.get('project')
-            if pyjq.first('.objectType',case_content) == 'Feature':
-                user_story_fields = pyjq.all('.name, .description',case_content)
-                if isinstance(user_story_fields, list) and user_story_fields and len(user_story_fields) == 2:
-                    user_story_mutation = """
-                    mutation {
-                      createOrUpdateUserStory(
-                        description: "%s",
-                        shortName: "%s",
-                        project: "%s"
-                      ) {
-                        userStory {
-                          shortName
-                        }
-                      }
-                    }
-                    """ % (user_story_fields[1], user_story_fields[0], project_name)
+            if pyjq.first('.objectType', case_content) == 'Feature':
+                user_story_fields = pyjq.all('.name, .description', case_content)
 
+                if isinstance(user_story_fields, list) and user_story_fields and len(user_story_fields) == 2:
+                    if 'part_of' in case_content:
+                        part_of = case_content['part_of']
+                        mutation_vars = {"description": user_story_fields[1], "shortName": user_story_fields[0],
+                                         "partOf": part_of, "project": project_name}
+                    else:
+                        mutation_vars = {"description": user_story_fields[1], "shortName": user_story_fields[0],
+                                         "project": project_name}
+
+                    user_story_mutation = utils.template_user_story_mutation().render(mutation_vars=mutation_vars)
                     res = _make_request(user_story_mutation)
                     if res:
                         cleaned_response = utils.validate_user_story(res)
                         if cleaned_response:
                             user_story_short_name = cleaned_response
                             print(good("Created/Updated Feature/UserStory: `{}`".format(user_story_short_name)))
+
+                            if 'internal_interactions' in case_content:
+                                parse_interactions(user_story_short_name, case_content['internal_interactions'], "I")
+
+                            if 'external_interactions' in case_content:
+                                parse_interactions(user_story_short_name, case_content['external_interactions'], "E")
+
                         else:
                             print(bad(res))
                     else:
@@ -355,7 +383,7 @@ def parse_spec_file(case_content):
                     if 'abuse_cases' in case_content:
                         all_abuses = case_content['abuse_cases']
                         for single in all_abuses:
-                            if 'name' in single  and 'description' in single:
+                            if 'name' in single and 'description' in single:
                                 abuser_mutation_query = """
                                 mutation {
                                   createOrUpdateAbuserStory(
@@ -369,7 +397,7 @@ def parse_spec_file(case_content):
                                     }
                                   }
                                 }
-                                """ % (single['name'], single['description'], user_story_short_name, db.get('project'))
+                                """ % (single['name'], single['description'], user_story_fields[0], db.get('project'))
                                 res = _make_request(abuser_mutation_query)
                                 if res:
                                     cleaned_abuser_response = utils.validate_abuser_story(res)
@@ -377,19 +405,21 @@ def parse_spec_file(case_content):
                                         print(good("Created/Updated Abuser Story: `{}`".format(single['name'])))
 
                                         if 'threat_scenarios' in single:
-                                            parse_threat_models(single['threat_scenarios'], user_story_short_name,
-                                                                abuser_story = single['name'])
+                                            parse_threat_models(single['threat_scenarios'], user_story_fields[0],
+                                                                abuser_story=single['name'])
                                     else:
                                         print(bad(res))
                     if 'threat_scenarios' in case_content:
                         parse_threat_models(case_content['threat_scenarios'], user_story_short_name)
 
             else:
-                print(bad("objectType not defined or not a Feature objectType. objectType has to be set to feature, `objectType: Feature`"))
+                print(bad(
+                    "objectType not defined or not a Feature objectType. objectType has to be set to feature, `objectType: Feature`"))
         else:
             print(bad("you dont have a project set. Please set/create project first"))
 
-def get_user_stories(nameval = None, table = False):
+
+def get_user_stories(nameval=None, table=False):
     """
     This function queries the single query or the joint query to find the feature/user story(stories).
     * The function queries the GraphQL server for the details
@@ -425,8 +455,9 @@ def get_user_stories(nameval = None, table = False):
         else:
             print(bold(red("Unable to make request to fetch user stories")))
 
+
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version = "ThreatPlaybook Controller v 1.0.0")
+    arguments = docopt(__doc__, version="ThreatPlaybook Client v 1.0.0")
     if arguments.get('configure'):
         configure_server()
     if arguments.get('init'):
@@ -466,7 +497,6 @@ if __name__ == '__main__':
         if arguments.get('--name'):
             name_val = arguments.get('--name')
 
-
         if arguments.get('--table'):
             table_var = True
         else:
@@ -479,15 +509,16 @@ if __name__ == '__main__':
                 get_user_stories()
             elif name_val and table_var:
                 table_dict = get_user_stories(nameval=name_val, table=True)
-                abuser_story_string = '\n'.join(pyjq.all('.data.userStoryByName.abuses[] | .shortName',table_dict))
-                threat_model_strings = '\n'.join(pyjq.all('.data.userStoryByName.abuses[].models[] | .name',table_dict))
-                feature_short_name = pyjq.first('.data.userStoryByName.shortName',table_dict)
+                abuser_story_string = '\n'.join(pyjq.all('.data.userStoryByName.abuses[] | .shortName', table_dict))
+                threat_model_strings = '\n'.join(
+                    pyjq.all('.data.userStoryByName.abuses[].models[] | .name', table_dict))
+                feature_short_name = pyjq.first('.data.userStoryByName.shortName', table_dict)
                 print(tabulate([["Feature/User Story", "Abuser Story Names", "Threat Scenarios"], [feature_short_name,
                                                                                                    abuser_story_string,
                                                                                                    threat_model_strings]]
-                               ,headers="firstrow", tablefmt="fancy_grid"))
+                               , headers="firstrow", tablefmt="fancy_grid"))
             elif table_var and not get_json_var and not name_val:
-                all_table_dict = get_user_stories(table = True)
+                all_table_dict = get_user_stories(table=True)
                 feature_list = []
                 abuser_story_list = []
                 threat_model_list = []
@@ -521,7 +552,7 @@ if __name__ == '__main__':
             )
             if r.status_code == 200 and 'token' in r.json():
                 print(good("Successfully logged in"))
-                db.set('token',r.json()['token'])
+                db.set('token', r.json()['token'])
                 db.dump()
             else:
                 print(bold(red("Invalid credentials")))
@@ -529,28 +560,23 @@ if __name__ == '__main__':
         else:
             print(bold(red("No host and port configured for API. Please run `configure` first")))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if arguments.get('set'):
+        if arguments.get('project'):
+            if arguments.get('<project_name>'):
+                project_name = arguments.get('<project_name>')
+                query = """
+                query {
+                  projectByName(name: "%s") {
+                    name
+                  }
+                }
+                """ % project_name
+                res = _make_request(query)
+                if res:
+                    if 'data' in res:
+                        db = pickledb.load('.cred', False)
+                        db.set('project', project_name)
+                        db.dump()
+                        print(good("Project {} has been set successfully".format(project_name)))
+                    else:
+                        print(bad(res))

@@ -14,20 +14,11 @@ class Project(Document):
 #     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 
-class Entity(Document):
-    short = StringField(max_length=50, unique = True)
-    shape = StringField(max_length=50)
-    description = StringField()
-    caption = StringField()
-    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
-
-
-class EntityMapping(Document):
-    start = ReferenceField(Entity)
-    end = ReferenceField(Entity)
-    link_text = StringField(max_length=50)
-    subgraph = StringField(max_length=30)
-    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
+class Interaction(Document):
+    nature_choices = (("I", "Internal"), ("E", "External"))
+    nature = StringField(choices=nature_choices)
+    endpoint = StringField()
+    data_flow = StringField()
 
 class Test(Document):
     name = StringField()
@@ -95,6 +86,9 @@ class UseCase(Document):
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     abuses = ListField(ReferenceField(AbuseCase))
     scenarios = ListField(ReferenceField(ThreatModel))
+    boundary = StringField()
+    internal_interactions = ListField(ReferenceField(Interaction))
+    external_interactions = ListField(ReferenceField(Interaction))
 
 class VulnerabilityEvidence(Document):
     name = StringField()
