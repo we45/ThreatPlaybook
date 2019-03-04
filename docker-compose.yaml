@@ -1,19 +1,19 @@
 version: '3'
 services:
-  frontend:
-    image: we45/threatplaybook-frontend
-    expose:
-      - "5000"
-    ports:
-      - "5000:5000"
-    environment:
-      - API_URL=http://192.168.1.24:5042
-    links:
-      - api
-    depends_on:
-      - api
+  # frontend:
+    # image: we45/threatplaybook-frontend
+    # expose:
+    #   - "5000"
+    # ports:
+    #   - "5000:5000"
+    # environment:
+    #   - API_URL=http://192.168.1.24:5042
+    # links:
+    #   - api
+    # depends_on:
+    #   - api
   api:
-    image: we45/threatplaybook-api
+    image: threatplaybook-api
     expose:
       - "5042"
     ports:
@@ -24,6 +24,7 @@ services:
       - MONGO_PASS=password123
       - MONGO_PORT=27017
       - MONGO_DB=threat_playbook
+      - SUPERUSER_EMAIL=abhay@we45.com
       - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
     links:
       - mongo_db

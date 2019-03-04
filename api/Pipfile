@@ -19,10 +19,10 @@ graphene-mongo = "*"
 schema = "*"
 "argon2-cffi" = "*"
 pyjwt = "*"
-python-dotenv = "*"
 prompt-toolkit = "*"
-huepy = "*"
 namesgenerator = "*"
+docopt = "*"
+huepy = "*"
 
 
 [requires]

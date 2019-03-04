@@ -5,6 +5,7 @@ name = "pypi"
 
 [dev-packages]
 ipython = "*"
+twine = "*"
 
 [packages]
 docopt = "*"

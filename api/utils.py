@@ -1,16 +1,14 @@
 from schema import Schema, Regex
 from mongoengine import *
 from models import User
-from dotenv import load_dotenv, find_dotenv
 import os
 from huepy import *
 import jwt
 
 
-load_dotenv(find_dotenv())
 jwt_pass = os.environ.get('JWT_PASS',None)
 
-def _validate_jwt(http_headers):
+def _validate_jwt(http_headers, role = "user"):
     if not jwt_pass:
         raise Exception("JWT Password is not set. Cannot authenticate user to system")
     else:
@@ -19,8 +17,10 @@ def _validate_jwt(http_headers):
                 validated = jwt.decode(http_headers['authorization'], key = jwt_pass, algorithms=['HS256'])
                 print(validated)
                 ref_user = User.objects.get(email = validated['email'])
-                print(ref_user)
-                return True
+                if ref_user.default_password == False and ref_user.user_type == role:
+                    return True
+                else:
+                    return False
             except DoesNotExist:
                 return False
             except Exception:

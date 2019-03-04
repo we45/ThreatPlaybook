@@ -33,6 +33,7 @@ services:
       - MONGO_PASS=password123
       - MONGO_PORT=27017
       - MONGO_DB=threat_playbook
+      - SUPERUSER_EMAIL=user@gmail.com
       - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
       #these options are initialized as env-vars that are used by the server
       # please use a strong JWT Password, as someone can easily bruteforce weak JWT passwords and bypass authentication

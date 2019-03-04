@@ -1,5 +1,5 @@
 *** Settings ***
-Library  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/v3/robot/threat_playbook/ThreatPlaybook.py  ${PROJECT}  ${TARGET}  ${ThreatPlaybook_API}
+Library  Playbot  ${PROJECT}  ${TARGET}  ${ThreatPlaybook_API}
 
 
 *** Variables ***
@@ -7,11 +7,11 @@ Library  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/v3/robot/threa
 # ThreatPlaybook
 
 ${ThreatPlaybook_API}  http://127.0.0.1:5042
-${EMAIL}  semma@mass.com
-${PASSWORD}  semma
-${PROJECT}  test_pro
+${EMAIL}  abhay@we45.com
+${PASSWORD}  hegemony86
+${PROJECT}  test project
 ${TARGET}  TestTargets
-${TEST_PATH}  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/v3/robot/test/scan_reports/
+${TEST_PATH}  /Users/abhaybhargav/Documents/Code/Python/ThreatPlaybook/robot/test/scan_reports/
 ${TARGET_URL}  104.236.85.150
 ${BANDIT_FILE}  ${TEST_PATH}bandit.json
 ${NODEJSSCAN_FILE}  ${TEST_PATH}nodejsscan.json
@@ -24,8 +24,8 @@ ${BRAKEMAN_FILE}  ${TEST_PATH}brakeman.json
 Login
     login  ${EMAIL}  ${PASSWORD}
 
-#Target
-#    create target  ${TARGET_URL}
+Target
+    create target  ${TARGET_URL}
 
 Bandit
     manage bandit results  ${BANDIT_FILE}

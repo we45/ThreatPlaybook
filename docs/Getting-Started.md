@@ -1,51 +1,51 @@
-# ThreatPlaybook Client
+# Getting Started with ThreatPlaybook
 
-## Installation
-* (Recommended) create virtualenv
-* Use `pip` with `pip install ThreatPlaybook-Client`
-* You should now be able to run the client with the `playbook` command
+### Understanding the "Why?"
+ThreatPlaybook allows you to do these things: 
+* Perform Story-Driven Threat Modeling for multiple applications(projects). You can go right from the Feature --> Abuser Story --> Threat Scenario --> Mitigations and Security Test Cases
+* Codify these threat models in YAML files
+* Load and Reload them into the system (ThreatPlaybook server) like you would, a Kubernetes Pod
+* Finally, ThreatPlaybook has an automation library that allows you to run and integrate various tools. This allows you to: 
+    * Run a completely automated Application-Security Automation Pipeline, as we have support for many SAST, DAST and SCA tools. 
+    * Combine a view of the world, in which Threat Models can be seen with Vulnerabilities (correlated). Why? you ask: 
+        * It finally answers the question - "What is the coverage of your Threat Model?"
+        * It helps you understand - "Which Threat Scenarios have actually come to life (in the form of vulnerabilities)?"
+* Finally, it allows you to push results (threat models and vulnerabilities/scans) into Orchestron, our powerful Vulnerability Correlation and Management System
 
-## Key Operations - ThreatPlaybook Client
-The Client is a CLI tool that interacts with the ThreatPlaybook API. It currently supports the following functionality: 
-* Creating Users (not Super-User)
-* Loading Story-Driven Threat Models from YAML files (or directories)
-* Displaying Template Vulnerabilities in the Repo 
-* Displaying current Use-Cases in a table. 
+Please consider watching my talk from OWASP AppSecUSA 2018 to understand the need and motivation behind this work
 
-> For more views and advanced visualizations, you can use the Web UI
+[ThreatPlaybook Talk at AppSecUSA](https://www.youtube.com/embed/fT2-JuvK428 ':include :type=iframe')
 
-### CLI Help Screen
+### Setting up the Server
+We highly recommend that you use the Docker Compose file given in the repo. Its easier than every other type of deployment. Please check out the [Docker Compose Docs](/API/docker-compose.md) to get an understanding of all the components and the env-vars, etc.
+
+Once you're ready. You can run `docker-compose up`. This will load the stack for you. 
+
+Your server should be running on `http://localhost:5042` unless you've changed the options for this. 
+
+Once your server is up and running, you'll need to download and run the client. The client is a CLI app that you can `pip install` and get running with
+
+### Setting up the Client and getting it work with the server
+* `mkdir <some folder for your project and its files>`
+* create virtualenv here. You can use either `pipenv` or standard `virtualenv`. Be advised that you'll need Python 3.6 and above for this
+* Run: `pip install ThreatPlaybook-Client` or `pipenv install ThreatPlaybook-Client` if you use `pipenv`
+* Now, your allows you to run the `playbook` command to interact with the cli
+
 ```bash
-playbook -h
-ThreatPlaybook Controller
-
+$ playbook
 Usage:
     playbook init <project_name>
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
-    playbook get feature [--name=<name>] [--json | --table] [--fields=<fieldlist>]
+    playbook get feature [--name=<name>] [--json | --table]
     playbook configure
+    playbook change-password
     playbook (-h | --help)
     playbook --version
-
-Options:
-    -h --help   Show this screen
-    --version   Show version
-    --file=<tm_file>    YAML File to import information from
-    --dir=<tm_dir>      Directory with YAML files to parse from
-    --attribute=<get_kv>    attribute Key value pair based search. typically name or short_name
-    --json      Show information in json dump
-    --table     Show information in asciitable view
 ```
 
-Certain variables required to run the Client is stored in a `.cred` file that is generated when you launch the Client. This stores variables like your JWT after authentication, project information and so on. **DO NOT DELETE THIS FILE** unless you want to reset your client.
-
-## Usage of Client
-### Configure (DO THIS FIRST)
-This setting allows you to configure the client to talk to the right server etc. 
-* You'll need to set the location to the ThreatPlaybook API Server
-* You'll need to set the port
+* You'll have to first configure the client to talk to the right server
 
 ```bash
 $ python playbook.py configure
@@ -54,22 +54,31 @@ Enter port information, port defaults to 5042 if nothing is entered
 [+] Successfully set host to: http://localhost and port to: 5042
 ```
 
+* You'll have to change the default password for your superadmin, which is `pl@yb00k1234`
 
-### Login
-
-You'll need to login 
+> Please note: You can't do anything without changing the default password. This applies to all users. Not just superusers
 
 ```bash
-$ python playbook.py login
-Please enter your email: abhay@we45.com
+playbook change-password
+Email: <whatever's in your SUPERUSER_EMAIL in docker compose file>
+Enter old/default password:
+Enter new password:
+Verify new password:
+```
+
+* Now, you can login and start performing actions on ThreatPlaybook's API
+
+```bash
+$ playbook login
+Please enter your email: someuser@gmail.com
 Please enter your password:
 [+] Successfully logged in
 ```
-* Once you login, your JWT is stored in the `.cred` file and is valid for 24 hours, after which you'll have to reauthenticate. 
 
-### Initialize a New Project
-
+## Let's create a Project. 
 If you want to create a new project to start threat modeling and vulnerability assessing, you'll need to initialize a project. 
+
+A `Project` is the `Application` you are threat modeling
 
 > Initializing a project, will automatically set that project in context. All threat models that you load, etc will be tagged to that project. If you want to change project, you'll need to `set project <project_name>` for that
 
@@ -187,5 +196,3 @@ python playbook.py create --dir=/Users/abhaybhargav/Documents/Code/Python/Threat
 [+] Created/Updated Threat Scenario: `end user default password`
 	 [+] Created/Updated Security Test Case:`automated-vulnerability-scanning`
 ```
-
-### 

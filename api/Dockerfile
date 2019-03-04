@@ -10,4 +10,6 @@ RUN pip3 install --upgrade pip && pip3 install pipenv setuptools cffi
 
 RUN pipenv install --system --deploy
 
-CMD ["/usr/local/bin/python3.6", "/threatplaybook/app.py"]
+ENTRYPOINT ["/usr/local/bin/python3.6"]
+
+CMD ["/threatplaybook/app.py"]

@@ -8,11 +8,11 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='ThreatPlaybook',
-    version='rel3',
+    name='Playbot',
+    version='3.0.3',
     packages=[''],
     package_dir={'': 'threat_playbook'},
-    url='https://we45.gitbook.io/threatplaybook/',
+    url='https://we45.github.io/threatplaybook/',
     license='MIT License',
     author='we45',
     author_email='info@we45.com',
@@ -24,7 +24,7 @@ setup(
         'lxml==4.3.0',
         'requests==2.21.0'
     ],
-    description='Threat-Models-as Code, An Action-Oriented Threat Modeling and Automation Framework',
+    description='ThreatPlaybook Robot Framework Library',
     long_description = long_description,
     long_description_content_type='text/markdown',
     include_package_data=True

@@ -46,3 +46,10 @@ v3/.DS_Store
 v3/frontend/.DS_Store
 .DS_Store
 api/.env
+threatplaybook_db/*
+robot/test/log.html
+robot/test/report.html
+robot/test/log.html
+robot/test/report.html
+robot/test/log.html
+*.html

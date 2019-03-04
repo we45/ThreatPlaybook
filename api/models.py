@@ -118,6 +118,7 @@ class Scan(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     name = StringField(default = random_scan_name)
     vulnerabilities = ListField(ReferenceField(Vulnerability))
+    synced = BooleanField(default = False)
 
 class Target(Document):
     name = StringField(unique=True)
@@ -141,4 +142,5 @@ class User(Document):
     email = StringField(max_length=100, unique=True)
     password = StringField(max_length=100)
     user_type = StringField(choices=user_type_choices, max_length=6, default = "user")
+    default_password = BooleanField(default = True)
 

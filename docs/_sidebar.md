@@ -1,4 +1,5 @@
 * [Home](README.md)
+* [Getting Started](Getting-Started.md)
 * ThreatPlaybook API
 
     * [Getting Started](/API/README.md)

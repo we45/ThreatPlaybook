@@ -5,8 +5,9 @@ Usage:
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
-    playbook get feature [--name=<name>] [--json | --table] [--fields=<fieldlist>]
+    playbook get feature [--name=<name>] [--json | --table]
     playbook configure
+    playbook change-password
     playbook (-h | --help)
     playbook --version
 
@@ -18,8 +19,6 @@ Options:
     --attribute=<get_kv>    attribute Key value pair based search. typically name or short_name
     --json      Show information in json dump
     --table     Show information in asciitable view
-    --fields=<fieldlist>    query specific fields in the CLI with comma separated list value. Only works with JSON
-    --name=<name>   This refers to a specific name or shortName of that particular object.
 """
 
 from docopt import docopt
@@ -29,12 +28,11 @@ import json
 import pickledb
 import requests
 from sys import exit
-import utils
+from . import utils
 import yaml
 import pyjq
 from glob import glob
 from tabulate import tabulate
-import textwrap
 from getpass import getpass
 
 
@@ -127,11 +125,11 @@ def create_project(project_name):
                         db.dump()
                         print(good("Project: {} successfully created in API".format(project_name)))
                         # create boilerplate directories
-                        list_of_directories = ["cases", "robot"]
+                        list_of_directories = ["cases"]
                         for dir in list_of_directories:
                             if not path.exists(dir):
                                 makedirs(dir)
-                        print(good("Boilerplate directories `cases` and `robot` generated"))
+                        print(good("Boilerplate directories `cases` generated"))
                     else:
                         print(bad(res))
                 except Exception as e:
@@ -456,7 +454,7 @@ def get_user_stories(nameval=None, table=False):
             print(bold(red("Unable to make request to fetch user stories")))
 
 
-if __name__ == '__main__':
+def main():
     arguments = docopt(__doc__, version="ThreatPlaybook Client v 1.0.0")
     if arguments.get('configure'):
         configure_server()
@@ -580,3 +578,20 @@ if __name__ == '__main__':
                         print(good("Project {} has been set successfully".format(project_name)))
                     else:
                         print(bad(res))
+
+    if arguments.get('change-password'):
+        if verify_host_port():
+            email = input("Email: ")
+            old_password = getpass("Enter old/default password: ")
+            new_password = getpass("Enter new password: ")
+            verify_password = getpass("Verify new password: ")
+            baseUrl = "{}:{}/change-password".format(db.get('host'), db.get('port'))
+            pass_req = requests.post(baseUrl, json={
+                "email": email,
+                "old_password": old_password,
+                "new_password": new_password,
+                "verify_password": verify_password
+            })
+            if pass_req.status_code == 200:
+                if 'success' in pass_req.json():
+                    print(good("Password for user changed successfully. Please login"))

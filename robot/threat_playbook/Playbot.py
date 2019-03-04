@@ -8,7 +8,7 @@ from parsers import parse_bandit_file, parse_nodejsscan_file, parse_npmaudit_fil
 from utils import threatplaybook_con, _post_req, _post_query, config_file, create_scan
 
 
-class ThreatPlaybook(object):
+class Playbot(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 

@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+twine = "*"
+playbot = "==3.0.1"
 
 [packages]
 robotframework = "*"
