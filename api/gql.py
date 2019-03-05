@@ -71,6 +71,7 @@ class NewProject(graphene.ObjectType):
 class NewScan(graphene.ObjectType):
     created_on = graphene.String()
     name = graphene.String()
+    synced = graphene.Boolean()
 
 
 class NewUserStory(graphene.ObjectType):
@@ -579,6 +580,25 @@ class CreateOrUpdateTestCase(graphene.Mutation):
             raise Exception("Unauthorized to perform action")
 
 
+class MarkScanSynced(graphene.Mutation):
+    class Arguments:
+        scan_name = graphene.String()
+
+    scan = graphene.Field(lambda: NewScan)
+
+    def mutate(self, info, scan_name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                ref_scan = Scan.objects.get(name=scan_name)
+                if not ref_scan.synced:
+                    ref_scan.update(synced=True)
+                    return MarkScanSynced(scan = ref_scan)
+            except DoesNotExist:
+                raise Exception("Scan does not exist")
+        else:
+            raise Exception("Unauthorized to perform action")
+
+
 # declarations of Mutations and Queries
 
 class ThreatPlaybookMutations(graphene.ObjectType):
@@ -592,6 +612,7 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     create_vulnerability_evidence = CreateVulnerabilityEvidence.Field()
     create_scan = CreateScan.Field()
     create_interaction = CreateOrUpdateInteraction.Field()
+    mark_scan_synced = MarkScanSynced.Field()
 
 
 class Query(graphene.ObjectType):
@@ -614,6 +635,7 @@ class Query(graphene.ObjectType):
     user_story_by_project = graphene.List(UserStory, project=graphene.String())
     abuser_story_by_project = graphene.List(AbuserStory, project=graphene.String())
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
+    vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
 
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
@@ -723,5 +745,13 @@ class Query(graphene.ObjectType):
     def resolve_repo_by_name(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
             return Repo.objects.get(short_name=kwargs.get('short_name'))
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_vuls_by_scan(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'scan_name' in kwargs:
+                ref_scan = Scan.objects.get(name=kwargs.get('scan_name'))
+                return ref_scan
         else:
             raise Exception("Unauthorized to perform action")

@@ -4,7 +4,7 @@ import graphene
 from gql import Query, ThreatPlaybookMutations
 import json
 import logging
-from utils import validation_dictionary, connect_db, _validate_jwt
+from utils import validation_dictionary, connect_db, _validate_jwt, _validate_jwt_super
 from schema import Schema, Regex, SchemaMissingKeyError
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -116,7 +116,7 @@ async def create_user(req, resp):
                 resp.media = {'error': validated_data['error']}
                 return resp
             else:
-                if _validate_jwt(req.headers, role = "super"):
+                if _validate_jwt_super(req.headers):
                     hash_pass = ph.hash(validated_data['password'])
                     User(email=validated_data['email'], password=hash_pass).save()
                     resp.media = {'success': validated_data['email'],

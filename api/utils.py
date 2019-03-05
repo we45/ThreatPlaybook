@@ -8,7 +8,7 @@ import jwt
 
 jwt_pass = os.environ.get('JWT_PASS',None)
 
-def _validate_jwt(http_headers, role = "user"):
+def _validate_jwt(http_headers):
     if not jwt_pass:
         raise Exception("JWT Password is not set. Cannot authenticate user to system")
     else:
@@ -17,7 +17,7 @@ def _validate_jwt(http_headers, role = "user"):
                 validated = jwt.decode(http_headers['authorization'], key = jwt_pass, algorithms=['HS256'])
                 print(validated)
                 ref_user = User.objects.get(email = validated['email'])
-                if ref_user.default_password == False and ref_user.user_type == role:
+                if ref_user.default_password == False:
                     return True
                 else:
                     return False
@@ -28,6 +28,25 @@ def _validate_jwt(http_headers, role = "user"):
         else:
             return False
 
+def _validate_jwt_super(http_headers):
+    if not jwt_pass:
+        raise Exception("JWT Password is not set. Cannot authenticate user to system")
+    else:
+        if 'authorization' in http_headers:
+            try:
+                validated = jwt.decode(http_headers['authorization'], key = jwt_pass, algorithms=['HS256'])
+                print(validated)
+                ref_user = User.objects.get(email = validated['email'])
+                if ref_user.default_password == False and ref_user.user_type == "super":
+                    return True
+                else:
+                    return False
+            except DoesNotExist:
+                return False
+            except Exception:
+                return False
+        else:
+            return False
 
 
 def connect_db():

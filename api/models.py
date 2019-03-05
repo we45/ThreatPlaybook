@@ -8,11 +8,7 @@ def random_scan_name():
 
 class Project(Document):
     name = StringField(max_length=100, required = True, unique=True)
-
-    # class Session(Document):
-#     created_on = DateTimeField(default=datetime.datetime.utcnow)
-#     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
-
+    orchy_webhook = StringField(required=False)
 
 class Interaction(Document):
     nature_choices = (("I", "Internal"), ("E", "External"))
@@ -126,16 +122,6 @@ class Target(Document):
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     scans = ListField(ReferenceField(Scan))
 
-# class Recon(Document):
-#     tool = StringField(max_length=100)
-#     options = StringField(max_length=100)
-#     created_on = DateTimeField(default=datetime.datetime.utcnow)
-#     result = StringField()
-#     models = ListField(ReferenceField(ThreatModel))
-#     scan = ReferenceField(Scan)
-
-
-
 
 class User(Document):
     user_type_choices = (('super', "superuser"), ('user', "user"))
@@ -144,3 +130,8 @@ class User(Document):
     user_type = StringField(choices=user_type_choices, max_length=6, default = "user")
     default_password = BooleanField(default = True)
 
+
+class Settings(Document):
+    orchy_url = StringField()
+    orchy_user = StringField()
+    orchy_password = StringField()
