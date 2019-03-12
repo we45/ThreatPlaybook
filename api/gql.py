@@ -35,7 +35,6 @@ class TModel(MongoengineObjectType):
 class UserStory(MongoengineObjectType):
     class Meta:
         model = UseCase
-        # interfaces = (Node,)
 
 
 class AbuserStory(MongoengineObjectType):
@@ -62,6 +61,10 @@ class Tgt(MongoengineObjectType):
 class VulScan(MongoengineObjectType):
     class Meta:
         model = Scan
+
+class Relations(MongoengineObjectType):
+    class Meta:
+        model = Interaction
 
 
 class NewProject(graphene.ObjectType):
@@ -282,11 +285,12 @@ class CreateOrUpdateInteraction(graphene.Mutation):
                 attrs = kwargs['new_interaction']
                 ref_user_story = UseCase.objects.get(short_name=attrs['user_story_name'])
                 new_interaction = Interaction(nature=attrs['nature'],
-                                              data_flow=attrs['data_flow'], endpoint=attrs['endpoint']).save()
+                                              data_flow=attrs['data_flow'], endpoint=attrs['endpoint'],
+                                              project=ref_user_story.project).save()
                 if attrs['nature'] == 'I':
-                    ref_user_story.update(add_to_set__internal_interactions=new_interaction)
+                    ref_user_story.update(add_to_set__relations=new_interaction)
                 elif attrs['nature'] == 'E':
-                    ref_user_story.update(add_to_set__external_interactions=new_interaction)
+                    ref_user_story.update(add_to_set__relations=new_interaction)
                 else:
                     raise Exception("Invalid type of Interaction")
             except DoesNotExist:
@@ -592,7 +596,7 @@ class MarkScanSynced(graphene.Mutation):
                 ref_scan = Scan.objects.get(name=scan_name)
                 if not ref_scan.synced:
                     ref_scan.update(synced=True)
-                    return MarkScanSynced(scan = ref_scan)
+                    return MarkScanSynced(scan=ref_scan)
             except DoesNotExist:
                 raise Exception("Scan does not exist")
         else:
@@ -636,6 +640,7 @@ class Query(graphene.ObjectType):
     abuser_story_by_project = graphene.List(AbuserStory, project=graphene.String())
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
+    relations = graphene.List(Relations)
 
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
@@ -753,5 +758,11 @@ class Query(graphene.ObjectType):
             if 'scan_name' in kwargs:
                 ref_scan = Scan.objects.get(name=kwargs.get('scan_name'))
                 return ref_scan
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_relations(self, info):
+        if _validate_jwt(info.context['request'].headers):
+            return list(Interaction.objects.all())
         else:
             raise Exception("Unauthorized to perform action")

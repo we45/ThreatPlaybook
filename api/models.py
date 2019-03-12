@@ -15,6 +15,7 @@ class Interaction(Document):
     nature = StringField(choices=nature_choices)
     endpoint = StringField()
     data_flow = StringField()
+    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
 
 class Test(Document):
     name = StringField()
@@ -82,9 +83,8 @@ class UseCase(Document):
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     abuses = ListField(ReferenceField(AbuseCase))
     scenarios = ListField(ReferenceField(ThreatModel))
+    relations = ListField(ReferenceField(Interaction))
     boundary = StringField()
-    internal_interactions = ListField(ReferenceField(Interaction))
-    external_interactions = ListField(ReferenceField(Interaction))
 
 class VulnerabilityEvidence(Document):
     name = StringField()

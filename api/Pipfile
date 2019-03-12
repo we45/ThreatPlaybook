@@ -8,6 +8,7 @@ name = "pypi"
 [dev-packages]
 
 recommonmark = "*"
+"boto3" = "*"
 
 
 [packages]
