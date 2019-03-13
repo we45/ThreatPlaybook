@@ -6,7 +6,7 @@ from huepy import *
 import jwt
 
 
-jwt_pass = os.environ.get('JWT_PASS',None)
+jwt_pass = os.environ.get('JWT_PASS','JbuLZIt2B2x4Iw')
 
 def _validate_jwt(http_headers):
     if not jwt_pass:
@@ -51,15 +51,15 @@ def _validate_jwt_super(http_headers):
 
 def connect_db():
     if not 'MONGO_USER' in os.environ:
-        db = connect(os.environ['MONGO_DB'])
+        db = connect(os.environ.get('MONGO_DB', 'threat_playbook'))
     else:
         try:
             db = connect(
-                username = os.environ['MONGO_USER'],
-                password = os.environ['MONGO_PASS'],
-                host = os.environ['MONGO_HOST'],
-                db = os.environ['MONGO_DB'],
-                port = int(os.environ['MONGO_PORT'])
+                username = os.environ.get('MONGO_USER'),
+                password = os.environ.get('MONGO_PASS'),
+                host = os.environ.get('MONGO_HOST', '127.0.0.1'),
+                db = os.environ.get('MONGO_DB', 'threat_playbook'),
+                port = int(os.environ.get('MONGO_PORT', 27017))
             )
         except Exception as e:
             print(bold(red(e)))

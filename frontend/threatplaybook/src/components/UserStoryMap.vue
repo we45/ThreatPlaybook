@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar></Navbar>
-    <h5 class="text-center">Threat Map of <b>{{ projectActual }}</b></h5>
+    <h5 class="text-center">User Story Map of <b>{{ projectActual }}</b></h5>
       <b-row>
 
         <b-col cols="12">
@@ -38,6 +38,7 @@
   const uuidv1 = require('uuid/v1');
 
 export default {
+    name: 'UserStoryMap',
   props: ["projectName"],
   components: {
     Navbar,
@@ -61,9 +62,10 @@ export default {
             heightConstraint: { valign: 'middle' }
           },
           layout: {
-            improvedLayout:true,
+            improvedLayout:false,
             hierarchical: {
-              direction: "UD",
+              // direction: "UD",
+              direction: "LR",
               sortMethod: "directed",
               // sortMethod: "hubsize",
               // levelSeparation: 150,
@@ -88,8 +90,8 @@ export default {
   methods: {
     setClickEvent: function() {
       this.$refs.network.$on("click", e => {
-        console.log("Selected Node ID : " + e.nodes.toString());
-        console.log(this.getSelectedNodeObject(e.nodes.toString()));
+        // console.log("Selected Node ID : " + e.nodes.toString());
+        // console.log(this.getSelectedNodeObject(e.nodes.toString()));
       });
     },
     getSelectedNodeObject: function(inNodeID) {
@@ -110,20 +112,10 @@ export default {
             userStoryByProject(project: $pname) {
               shortName
               description
-              abuses {
-                shortName
-                description
-                models {
-                  name
-                  description
-                  cwe
-                  severity
-                  tests {
-                    name
-                    testCase
-                    testType
-                  }
-                }
+              relations{
+                dataFlow
+                endpoint
+                nature
               }
             }
           }
@@ -138,6 +130,7 @@ export default {
         label: `Project: ${this.projectActual}`
       });
       for (let singleFeature of result.data.userStoryByProject) {
+        // let featureRandom = Math.floor(Math.random() * 100000);
         let featureRandom = uuidv1()
         this.network.nodes.push({
           id: featureRandom,
@@ -147,6 +140,7 @@ export default {
             background: "#3399ff"
           }
         });
+        // let edgeFeatureRandom = Math.floor(Math.random() * 100000);
         let edgeFeatureRandom = uuidv1()
         this.network.edges.push({
           id: edgeFeatureRandom,
@@ -156,16 +150,18 @@ export default {
             highlight: "#3399ff"
           }
         });
-        for (let singleAbuse of singleFeature.abuses) {
+        for (let singleAbuse of singleFeature.relations) {
+          // let abuseRandom = Math.floor(Math.random() * 100000);
           let abuseRandom = uuidv1()
           this.network.nodes.push({
             id: abuseRandom,
-            label: singleAbuse.shortName,
-            title: singleAbuse.description,
+            label: singleAbuse.endpoint,
+            title: singleAbuse.dataFlow,
             color: {
               background: "#ffb99d"
             }
           });
+          // let edgeAbuseRandom = Math.floor(Math.random() * 100000);
           let edgeAbuseRandom = uuidv1()
           this.network.edges.push({
             id: edgeAbuseRandom,
@@ -176,52 +172,50 @@ export default {
             }
           });
 
-          for (let singleScenario of singleAbuse.models) {
-            let sceneRandom = Math.floor(Math.random() * 1000);
-            this.network.nodes.push({
-              id: sceneRandom,
-              label: singleScenario.name,
-              title: singleScenario.description,
-              color: {
-                background: "#FF6122"
-              }
-            });
-            let sceneEdgeRandom = uuidv1()
-            this.network.edges.push({
-              id: sceneEdgeRandom,
-              from: abuseRandom,
-              to: sceneRandom,
-              color: {
-                highlight: "#FF6122"
-              }
-            });
+          // for (let singleScenario of singleAbuse.models) {
+          //   let sceneRandom = Math.floor(Math.random() * 1000);
+          //   this.network.nodes.push({
+          //     id: sceneRandom,
+          //     label: singleScenario.name,
+          //     title: singleScenario.description,
+          //     color: {
+          //       background: "#FF6122"
+          //     }
+          //   });
+          //   let sceneEdgeRandom = Math.floor(Math.random() * 100000);
+          //   this.network.edges.push({
+          //     id: sceneEdgeRandom,
+          //     from: abuseRandom,
+          //     to: sceneRandom,
+          //     color: {
+          //       highlight: "#FF6122"
+          //     }
+          //   });
 
-            for (let singleTest of singleScenario.tests) {
-              let testRandom = uuidv1()
-              this.network.nodes.push({
-                id: testRandom,
-                label: singleTest.name,
-                title: singleTest.testCase,
-                color: {
-                  background: "#16fd1a"
-                }
-
-              });
-              let testEdgeRandom = uuidv1()
-              this.network.edges.push({
-                id: testEdgeRandom,
-                from: sceneRandom,
-                to: testRandom,
-                color: {
-                  highlight: "#16fd1a"
-                }
-              });
+            // for (let singleTest of singleScenario.tests) {
+            //   let testRandom = Math.floor(Math.random() * 100000);
+            //   this.network.nodes.push({
+            //     id: testRandom,
+            //     label: singleTest.name,
+            //     title: singleTest.testCase,
+            //     color: {
+            //       background: "#16fd1a"
+            //     }
+            //
+            //   });
+            //   let testEdgeRandom = Math.floor(Math.random() * 100000);
+            //   this.network.edges.push({
+            //     id: testEdgeRandom,
+            //     from: sceneRandom,
+            //     to: testRandom,
+            //     color: {
+            //       highlight: "#16fd1a"
+            //     }
+            //   });
             }
           }
         }
-      }
-    }
-  },
+      },
   created() {
     this.fetchGraphData();
     // this.projectName = this.$router.params.projectName

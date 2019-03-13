@@ -53,3 +53,16 @@ robot/test/log.html
 robot/test/report.html
 robot/test/log.html
 *.html
+v3/frontend/threatplaybook/node_modules/
+v3/frontend/threatplaybook/dist/
+v3/frontend/threatplaybook/npm-debug.log*
+v3/frontend/threatplaybook/yarn-debug.log*
+v3/frontend/threatplaybook/yarn-error.log*
+v3/frontend/threatplaybook/package-lock.json
+frontend/threatplaybook/node_modules/
+frontend/threatplaybook/npm-debug.log*
+frontend/threatplaybook/yarn-debug.log*
+frontend/threatplaybook/yarn-error.log*
+frontend/threatplaybook/package-lock.json
+Pipfile.lock
+Pipfile

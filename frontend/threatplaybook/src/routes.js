@@ -3,6 +3,7 @@ import ProjectHome from "./components/ProjectHome.vue";
 import SingleProject from "./components/SingleProject";
 import ThreatMap from './components/ThreatMap'
 import Home from './components/Home'
+import UserStoryMap from './components/UserStoryMap'
 
 export const routes = [
   { path: "/", component: Login },
@@ -16,6 +17,11 @@ export const routes = [
   {
     path: "/map/:projectName",
     component: ThreatMap,
+    props: route => ({ projectName: route.params.projectName })
+  },
+  {
+    path: "/story/:projectName",
+    component: UserStoryMap,
     props: route => ({ projectName: route.params.projectName })
   }
 ];

@@ -59,6 +59,9 @@
                         <b-button size="sm" @click="goToProjectMap(row.item.name)" class="btn-purple">
                             Threat Map
                         </b-button>
+                        <b-button size="sm" @click="goToUserStoryMap(row.item.name)" class="btn-purple">
+                            User Story Map
+                        </b-button>
                     </template>
 
                 </b-table>
@@ -108,6 +111,9 @@
             },
             goToProjectMap(item_name) {
                 this.$router.push("/map/" + btoa(item_name));
+            },
+            goToUserStoryMap(item_name) {
+                this.$router.push("/story/" + btoa(item_name));
             }
         }
     };

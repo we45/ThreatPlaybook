@@ -145,7 +145,7 @@ async def login(req, resp):
                 user_present = User.objects.get(email=login_data['email'])
                 pass_verified = ph.verify(user_present.password, login_data['password'])
                 if pass_verified:
-                    token = jwt.encode({'email': user_present.email}, key=os.environ['JWT_PASS'],
+                    token = jwt.encode({'email': user_present.email}, key=os.environ.get('JWT_PASS', 'JbuLZIt2B2x4Iw'),
                                        algorithm="HS256").decode()
                     resp.media = {"success": "login", "token": token}
                     return resp

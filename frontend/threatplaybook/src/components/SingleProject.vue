@@ -3,13 +3,14 @@
         <nav-bar></nav-bar>
         <br>
         <b-container fluid>
+            <loading :active.sync="isLoading" :can-cancel="true"></loading>
             <h4>Project : {{ projectActual }}</h4>
             <hr>
             <br>
             <b-card no-body>
                 <b-tabs pills card>
                     <b-tab title="Feature/User Stories" active>
-                        <template v-for="(item, index) in singleProjectQuery">
+                        <template v-for="(item, index) in singleProjectQuery.userStoryByProject">
                             <b-card no-body class="mb-1">
                               <b-card-header header-tag="header" class="p-1" role="tab">
                                 <b-button block href="#" v-b-toggle="'feature-'+index"
@@ -54,7 +55,71 @@
                         </template>
                     </b-tab>
                     <b-tab title="Vulnerabilities">
-                        <h3>Hello!!!!</h3>
+                        <template v-for="(vul, index) in singleProjectQuery.vulns">
+                            <b-card no-body class="mb-1">
+                                <b-card-header header-tag="header" class="p-1" role="tab">
+                                <b-button block href="#" v-b-toggle="'scan_vul-'+index"
+                                          style="text-align: left;background-color: #CCCCCC;color: #7957d5">{{ vul.name }}
+                                    <span class="label-high" v-if="vul.severity === 3" style="float: right;">High</span>
+                                      <span class="label-medium" v-if="vul.severity === 2" style="float: right;">Medium</span>
+                                      <span class="label-low" v-if="vul.severity === 1" style="float: right;">Low</span>
+                                </b-button>
+                                </b-card-header>
+                                <b-collapse :id="'scan_vul-'+index" visible accordion="my-accordion" role="tabpanel">
+                                    <br>
+                                    <br>
+                                    <b-container fluid>
+                                        <b-row>
+                                            <b-col cols="6">
+                                                <p class="text-left">
+                                                    <span >CWE</span>
+                                                    <span>:</span>
+                                                    <span>{{ vul.cwe }}</span>
+                                                </p>
+                                            </b-col>
+                                            <b-col cols="6">
+                                                 <p class="text-left">
+                                                    <span >Severity</span>
+                                                    <span>:</span>
+                                                    <span>
+                                                        <span class="label-high" v-if="vul.severity === 3" >High</span>
+                                      <span class="label-medium" v-if="vul.severity === 2" >Medium</span>
+                                      <span class="label-low" v-if="vul.severity === 1" >Low</span>
+                                                    </span>
+                                                </p>
+                                            </b-col>
+                                        </b-row>
+                                        <b-row v-if="vul.description">
+                                            <b-col>
+                                                <h6>Description</h6>
+                                                <p class="text-justify">
+                                                    {{ vul.description }}
+                                                </p>
+                                            </b-col>
+                                            <br>
+                                        </b-row>
+                                        <b-row v-if="vul.remediation">
+                                            <b-col>
+                                                <h6>Remediation</h6>
+                                                <p class="text-justify">
+                                                    {{ vul.remediation }}
+                                                </p>
+                                            </b-col>
+                                            </b-row>
+                                            <br>
+                                        <b-row v-if="vul.observation">
+                                            <b-col>
+                                                <h6>Observation</h6>
+                                                <p class="text-justify">
+                                                    {{ vul.observation }}
+                                                </p>
+                                            </b-col>
+
+                                        </b-row>
+                                    </b-container>
+                                </b-collapse>
+                            </b-card>
+                        </template>
                     </b-tab>
                 </b-tabs>
             </b-card>
@@ -64,17 +129,26 @@
 <script>
     import Navbar from "./Navbar.vue";
     import gql from "graphql-tag";
+    import Loading from 'vue-loading-overlay'
 
     export default {
         props: ["projectName"],
         components: {
-            "nav-bar": Navbar
+            "nav-bar": Navbar,
+            Loading
         },
         data() {
             return {
                 projectActual: atob(this.projectName),
-                isOpen: false
+                isOpen: false,
+                isLoading: false
             };
+        },
+        created() {
+            this.isLoading = true
+            setTimeout(() => {
+                this.isLoading = false
+            },2000)
         },
         methods:{
             goToProjectMap() {
@@ -104,6 +178,17 @@
               }
             }
           }
+          vulns {
+          name
+            cwe
+            description
+            observation
+            severity
+            remediation
+            project{
+              name
+            }
+          }
         }
       `,
                 variables() {
@@ -111,7 +196,7 @@
                         pname: atob(this.projectName)
                     };
                 },
-                update: result => result.userStoryByProject
+                update: result => result
             }
         }
     };
