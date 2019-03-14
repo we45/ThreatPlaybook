@@ -14,7 +14,28 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import ApexCharts from 'apexcharts'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSync } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from 'vue-apexcharts'
+import VueFilterDateFormat from 'vue-filter-date-format';
+
+library.add(faSync)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.use(VueFilterDateFormat, {
+  monthNames: [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ],
+  monthNamesShort: [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ]
+});
+
+
 Vue.config.productionTip = false;
 // Vue.use(Buefy);
 Vue.use(VueApexCharts)

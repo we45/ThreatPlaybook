@@ -90,7 +90,6 @@ export default {
   methods: {
     setClickEvent: function() {
       this.$refs.network.$on("click", e => {
-        // console.log("Selected Node ID : " + e.nodes.toString());
         this.getSelectedNodeObject(e.nodes.toString());
       });
     },

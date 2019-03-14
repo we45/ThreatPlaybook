@@ -7,6 +7,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
     "apexcharts": "^3.4.1",
     "apollo-boost": "^0.1.27",
     "apollo-link-context": "^1.0.14",
@@ -21,6 +24,7 @@
     "vue": "^2.5.22",
     "vue-apexcharts": "^1.2.9",
     "vue-apollo": "^3.0.0-beta.28",
+    "vue-filter-date-format": "^1.2.0",
     "vue-highlight.js": "^3.0.1",
     "vue-loading-overlay": "^3.2.0",
     "vue-router": "^3.0.2",

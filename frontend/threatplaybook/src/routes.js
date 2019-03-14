@@ -4,6 +4,7 @@ import SingleProject from "./components/SingleProject";
 import ThreatMap from './components/ThreatMap'
 import Home from './components/Home'
 import UserStoryMap from './components/UserStoryMap'
+import Scan from './components/Scan'
 
 export const routes = [
   { path: "/", component: Login },
@@ -23,5 +24,10 @@ export const routes = [
     path: "/story/:projectName",
     component: UserStoryMap,
     props: route => ({ projectName: route.params.projectName })
+  },
+  {
+    path: "/scan/:scanName",
+    component: Scan,
+    props: route => ({ scanName: route.params.scanName })
   }
 ];
