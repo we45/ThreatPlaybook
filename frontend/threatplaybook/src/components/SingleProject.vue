@@ -303,7 +303,7 @@
     }
 
     .card .card-body.card-padding {
-    / padding: 23 px 27 px;
+    padding: 23 px 27 px;
     }
 
     .streamline .sl-item .sl-content {
