@@ -9,26 +9,27 @@
                          class="img-center">
                     <br>
                     <br>
-                  <p class="text-center error" v-if="inValidCredentials"> * Invalid Email or Password</p>
+                    <p class="text-center error" v-if="inValidCredentials"> * Invalid Email or Password</p>
                     <br>
-                  <form @submit.prevent="loginAction">
-                    <b-form-input v-model="form.email"
-                        type="email" placeholder="Email"
-                        class="form-control"></b-form-input>
-                    <br>
-                    <br>
-                    <b-form-input v-model="form.password"
-                        type="password"
-                        placeholder="Password"
-                        class="form-control"></b-form-input>
-                    <br>
-                    <br>
-                    <br>
-                    <button class="login-button"
-                        v-if="!form.email || !form.password"
-                        disabled="disabled">Login</button>
-                    <button class="login-button" v-if="form.email && form.password">Login</button>
-                </form>
+                    <form @submit.prevent="loginAction">
+                        <b-form-input v-model="form.email"
+                                      type="email" placeholder="Email"
+                                      class="form-control"></b-form-input>
+                        <br>
+                        <br>
+                        <b-form-input v-model="form.password"
+                                      type="password"
+                                      placeholder="Password"
+                                      class="form-control"></b-form-input>
+                        <br>
+                        <br>
+                        <br>
+                        <button class="login-button"
+                                v-if="!form.email || !form.password"
+                                disabled="disabled">Login
+                        </button>
+                        <button class="login-button" v-if="form.email && form.password">Login</button>
+                    </form>
                 </b-card>
             </b-col>
             <b-col cols="3"></b-col>
@@ -62,22 +63,18 @@
                         password: this.form.password
                     })
                     .then(response => {
-                        if(response.data.token !== undefined){
-                            // localStorage.removeItem('token')
-                            // localStorage.setItem('token', response.data.token)
+                        if (response.data.token !== undefined) {
                             sessionStorage.removeItem('token')
                             sessionStorage.setItem('token', response.data.token)
                             this.$router.push("/home");
-                        } else{
+                        } else {
                             sessionStorage.removeItem('token')
-                            // localStorage.removeItem('token')
                             this.inValidCredentials = true
                         }
                         this.isLoading = false
                     })
                     .catch(error => {
                         sessionStorage.removeItem('token')
-                        // localStorage.removeItem('token')
                         this.inValidCredentials = true
                         this.$toast.open({
                             duration: 7000,
@@ -109,6 +106,7 @@
         cursor: pointer;
         border-radius: 8px;
     }
+
     .login-button:after {
         content: "";
         background: #7957d5;
@@ -116,28 +114,31 @@
         position: absolute;
         padding-top: 300%;
         padding-left: 350%;
-        margin-left: -20px!important;
+        margin-left: -20px !important;
         margin-top: -120%;
         opacity: 0;
         transition: all 0.8s
     }
+
     .login-button:active:after {
         padding: 0;
         margin: 0;
         opacity: 1;
         transition: 0s
     }
-    .error{
+
+    .error {
         color: #F04E23;
         font-size: 16px;
         font-weight: bold;
     }
-    .img-center{
+
+    .img-center {
         display: block;
         margin-left: auto;
         margin-right: auto;
         width: 50%;
-        border-style:none;
+        border-style: none;
         border: none;
     }
 </style>
