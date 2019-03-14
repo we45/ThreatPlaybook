@@ -102,9 +102,7 @@ def initialize_superuser():
 load_reload_repo_db()  # check if repos are not loaded, then loads them
 initialize_superuser()  # adds superuser with default password if there's no superuser
 
-
 # Regular API Views
-
 @api.route('/create-user')
 async def create_user(req, resp):
     if req.method == 'post':
@@ -202,6 +200,7 @@ async def change_password(req, resp):
 
 # Additional Routes for API - GraphQL
 api.add_route('/graph', view)
+api.add_route('/', static=True)
 
 if __name__ == '__main__':
     api.run(address='0.0.0.0')

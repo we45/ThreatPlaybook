@@ -66,3 +66,4 @@ frontend/threatplaybook/yarn-error.log*
 frontend/threatplaybook/package-lock.json
 Pipfile.lock
 Pipfile
+cli/dist/ThreatPlaybook-Client-3.0.3.tar.gz

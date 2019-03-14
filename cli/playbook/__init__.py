@@ -581,6 +581,7 @@ def main():
 
     if arguments.get('change-password'):
         if verify_host_port():
+            db = pickledb.load('.cred', False)
             email = input("Email: ")
             old_password = getpass("Enter old/default password: ")
             new_password = getpass("Enter new password: ")
