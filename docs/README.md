@@ -1,8 +1,13 @@
-# ThreatPlaybook
+# ThreatPlaybook - Version 3
 
->> We are making pre-release changes to V3 of ThreatPlaybook. They should be done by 03/08/2019. Please bear with us till then. Thanks!
-
+### Then:
 A (relatively) Unopinionated framework that faciliates Threat Modeling as Code married with Application Security Automation on a single Fabric
+
+### Now:
+A unified DevSecOps Framework that allows you to go from iterative, collaborative Threat Modeling to Application Security Test Orchestration
+
+> Wait! Weren't you V1 previously, why move to V3 (Version 3)?
+The product has changed entirely and is actually three "things" now, so we skipped over a version and it is now Version 3
 
 [![Black Hat Arsenal USA](https://rawgit.com/toolswatch/badges/master/arsenal/usa/2018.svg)](https://www.blackhat.com/us-18/arsenal/schedule/index.html#threatplaybook-11697)
 
