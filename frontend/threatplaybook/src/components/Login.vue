@@ -68,7 +68,7 @@
                         if (response.data.token !== undefined) {
                             sessionStorage.removeItem('token')
                             sessionStorage.setItem('token', response.data.token)
-                            this.$router.push("/home");
+                            this.$router.go("/home");
                         } else {
                             sessionStorage.removeItem('token')
                             this.inValidCredentials = true
