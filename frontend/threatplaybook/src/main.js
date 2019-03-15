@@ -48,7 +48,7 @@ const router = new VueRouter({
   mode: "history"
 });
 
-const baseURL = conf.VUE_APP_API_URL
+const baseURL = process.env.VUE_APP_API_URL
 const graphURL = baseURL + '/graph'
 const httpLink = new HttpLink({
   uri: graphURL

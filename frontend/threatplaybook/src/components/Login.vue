@@ -55,8 +55,10 @@
         methods: {
             loginAction() {
                 this.isLoading = true
-                const baseURL = conf.VUE_APP_API_URL
+                const baseURL = process.env.VUE_APP_API_URL
+                console.log("baseURL", baseURL)
                 const loginUrl = baseURL + '/login'
+                console.log("loginUrl", loginUrl)
                 axios
                     .post(loginUrl, {
                         email: this.form.email,
