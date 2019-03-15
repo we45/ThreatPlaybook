@@ -1,6 +1,7 @@
 <template>
     <div>
         <Navbar></Navbar>
+        <loading :active.sync="isLoading" :can-cancel="true" :is-full-page="isLoading"></loading>
         <h5 class="text-center">User Story Map of <b>{{ projectActual }}</b></h5>
         <b-row>
 
@@ -35,6 +36,9 @@
     import gql from "graphql-tag";
     import {Network} from "vue2vis";
     import "vue2vis/dist/vue2vis.css";
+    import Loading from 'vue-loading-overlay'
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import axios from '@/utils/auth'
 
     const uuidv1 = require('uuid/v1');
 
@@ -43,11 +47,13 @@
         props: ["projectName"],
         components: {
             Navbar,
-            Network
+            Network,
+            Loading
         },
         data() {
             return {
                 projectActual: atob(this.projectName),
+                isLoading: false,
                 network: {
                     nodes: [],
                     edges: [],
@@ -83,7 +89,11 @@
                 nodeLabel: ""
             };
         },
-
+        created() {
+            this.project_name = this.$route.params.projectName
+            this.actual_project_name = atob(this.$route.params.projectName)
+            this.fetchGraphData();
+        },
         methods: {
             setClickEvent: function () {
                 this.$refs.network.$on("click", e => {
@@ -101,31 +111,31 @@
                 }
                 return null;
             },
-            async fetchGraphData() {
-                const result = await this.$apollo.query({
-                    query: gql`
-          query singleProjectQuery($pname: String!) {
-            userStoryByProject(project: $pname) {
-              shortName
-              description
-              relations{
-                dataFlow
-                endpoint
-                nature
-              }
-            }
-          }
-        `,
-                    variables: {
-                        pname: this.projectActual
-                    }
-                });
+            fetchGraphData() {
+                this.isLoading = true
+                console.log("projectActual", this.projectActual)
+                const projName = `"${this.projectActual}"`
+                axios.post('/graph', {
+                    query: '{\n' +
+                        'userStoryByProject(project:' + projName + '){\n' +
+                            'shortName\n'+
+                            'description\n'+
+                        'relations{ \n' +
+                        'dataFlow\n' +
+                        'endpoint\n' +
+                        'nature\n' +
+                        '}\n' +
+                        '}\n' +
+                        '}'
+                })
+                    .then(res => {
+                        this.isLoading = false
                 //Code to push data into the nodes
                 this.network.nodes.push({
                     id: 1,
                     label: `Project: ${this.projectActual}`
                 });
-                for (let singleFeature of result.data.userStoryByProject) {
+                for (let singleFeature of res.data.data.userStoryByProject) {
                     let featureRandom = uuidv1()
                     this.network.nodes.push({
                         id: featureRandom,
@@ -165,11 +175,13 @@
                         });
                     }
                 }
+                 })
+                    .catch(error => {
+                        this.isLoading = false
+                    })
             }
-        },
-        created() {
-            this.fetchGraphData();
         }
+
     };
 </script>
 <style>

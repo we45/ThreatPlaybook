@@ -92,11 +92,14 @@
 <script>
     import Navbar from "./Navbar.vue";
     import gql from "graphql-tag";
+    import Loading from 'vue-loading-overlay'
+    import 'vue-loading-overlay/dist/vue-loading.css';
 
     export default {
         name: "Home",
         components: {
-            "nav-bar": Navbar
+            "nav-bar": Navbar,
+            Loading
         },
         data() {
             return {
