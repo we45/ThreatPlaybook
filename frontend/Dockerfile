@@ -8,4 +8,4 @@ COPY threatplaybook/ /usr/src/app/
 #CMD serve -s dist
 ADD docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD serve -s dist
+CMD npm run serve

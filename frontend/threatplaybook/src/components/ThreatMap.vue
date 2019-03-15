@@ -33,7 +33,6 @@
 </template>
 <script>
     import Navbar from "./Navbar.vue";
-    import gql from "graphql-tag";
     import {Network} from "vue2vis";
     import "vue2vis/dist/vue2vis.css";
     import Loading from 'vue-loading-overlay'
@@ -113,7 +112,7 @@
                 }
                 return null;
             },
-            fetchGraphData() {
+            async fetchGraphData() {
                 this.isLoading = true
                 const projName = `"${this.projectActual}"`
                 axios.post('/graph', {

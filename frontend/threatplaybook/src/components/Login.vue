@@ -56,6 +56,7 @@
             loginAction() {
                 this.isLoading = true
                 const baseURL = process.env.VUE_APP_API_URL
+                // const baseURL = 'http://127.0.0.1:5042'
                 const loginUrl = baseURL + '/login'
                 axios
                     .post(loginUrl, {
@@ -76,12 +77,12 @@
                     .catch(error => {
                         sessionStorage.removeItem('token')
                         this.inValidCredentials = true
-                        this.$toast.open({
-                            duration: 7000,
-                            message: "Invalid Credentials",
-                            position: "is-top",
-                            type: "is-danger"
-                        });
+                        // this.$toast.open({
+                        //     duration: 7000,
+                        //     message: "Invalid Credentials",
+                        //     position: "is-top",
+                        //     type: "is-danger"
+                        // });
                         this.isLoading = false
                     });
             }

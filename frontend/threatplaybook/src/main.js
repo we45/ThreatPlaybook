@@ -49,6 +49,7 @@ const router = new VueRouter({
 });
 
 const baseURL = process.env.VUE_APP_API_URL
+// const baseURL = 'http://127.0.0.1:5042'
 const graphURL = baseURL + '/graph'
 const httpLink = new HttpLink({
   uri: graphURL

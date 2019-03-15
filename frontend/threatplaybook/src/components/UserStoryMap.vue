@@ -2,7 +2,7 @@
     <div>
         <Navbar></Navbar>
         <loading :active.sync="isLoading" :can-cancel="true" :is-full-page="isLoading"></loading>
-        <h5 class="text-center">User Story Map of <b>{{ projectActual }}</b></h5>
+        <h5 class="text-center">User Story Map of <b>{{ actual_project_name }}</b></h5>
         <b-row>
 
             <b-col cols="12">
@@ -33,7 +33,6 @@
 </template>
 <script>
     import Navbar from "./Navbar.vue";
-    import gql from "graphql-tag";
     import {Network} from "vue2vis";
     import "vue2vis/dist/vue2vis.css";
     import Loading from 'vue-loading-overlay'
@@ -52,7 +51,7 @@
         },
         data() {
             return {
-                projectActual: atob(this.projectName),
+                // projectActual: atob(this.projectName),
                 isLoading: false,
                 network: {
                     nodes: [],
@@ -95,25 +94,10 @@
             this.fetchGraphData();
         },
         methods: {
-            setClickEvent: function () {
-                this.$refs.network.$on("click", e => {
-                    this.getSelectedNodeObject(e.nodes.toString());
-                });
-            },
-            getSelectedNodeObject: function (inNodeID) {
-                for (let i = 0; i < Object.keys(this.network.nodes).length; i++) {
-                    if (this.network.nodes[i].id == inNodeID) {
-                        console.log("label", this.network.nodes[i].label)
-                        console.log("title", this.network.nodes[i].title)
-                        this.nodeLabel = this.network.nodes[i].label
-                        this.nodeCaption = this.network.nodes[i].title;
-                    }
-                }
-                return null;
-            },
-            fetchGraphData() {
+            async fetchGraphData() {
                 this.isLoading = true
-                const projName = `"${this.projectActual}"`
+                const projName = `"${this.actual_project_name}"`
+                console.log("Project Name  ==> ", projName)
                 axios.post('/graph', {
                     query: '{\n' +
                         'userStoryByProject(project:' + projName + '){\n' +
@@ -129,6 +113,7 @@
                 })
                     .then(res => {
                         this.isLoading = false
+                        // console.log("Res.data ===>", res.data)
                 //Code to push data into the nodes
                 this.network.nodes.push({
                     id: 1,
@@ -180,6 +165,20 @@
                     .catch(error => {
                         this.isLoading = false
                     })
+            },
+                  setClickEvent: function () {
+                this.$refs.network.$on("click", e => {
+                    this.getSelectedNodeObject(e.nodes.toString());
+                });
+            },
+            getSelectedNodeObject: function (inNodeID) {
+                for (let i = 0; i < Object.keys(this.network.nodes).length; i++) {
+                    if (this.network.nodes[i].id == inNodeID) {
+                        this.nodeLabel = this.network.nodes[i].label
+                        this.nodeCaption = this.network.nodes[i].title;
+                    }
+                }
+                return null;
             }
         }
 
