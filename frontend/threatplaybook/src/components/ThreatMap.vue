@@ -146,6 +146,7 @@
                     id: 1,
                     label: `Project: ${this.projectActual}`
                 });
+                        if (res.data.data.userStoryByProject.length > 0){
                 for (let singleFeature of res.data.data.userStoryByProject) {
                     let featureRandom = uuidv1()
                     this.network.nodes.push({
@@ -228,6 +229,7 @@
                             }
                         }
                     }
+                }
                 }
                     })
                     .catch(error => {
