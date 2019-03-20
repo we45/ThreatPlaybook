@@ -2,7 +2,7 @@ import pyjq
 from jinja2 import Template
 
 def validate_project_response(content):
-    return pyjq.first('.data.createProject.project.name', content)
+    return pyjq.first('.data.createProject.project', content)
 
 def validate_user_story(content):
     return pyjq.first('.data.createOrUpdateUserStory.userStory.shortName',content)

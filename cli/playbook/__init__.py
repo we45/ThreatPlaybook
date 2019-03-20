@@ -1,7 +1,7 @@
 """ThreatPlaybook Client v 1.0.0
 
 Usage:
-    playbook init <project_name>
+    playbook init <projectname>
     playbook set project <project_name>
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
@@ -91,6 +91,7 @@ def create_project(project_name):
     :param project_name:
     :return:
     """
+    print("in init method")
     db = pickledb.load('.cred', False)
     if not verify_host_port():
         print(bad("There's no host and port configured. Please run the `playbook configure` option first."))
@@ -118,6 +119,7 @@ def create_project(project_name):
                 """ % project_name
 
                 res = _make_request(create_project_query)
+                print(res)
                 try:
                     cleaned_response = utils.validate_project_response(res)
                     if cleaned_response:
@@ -134,6 +136,40 @@ def create_project(project_name):
                         print(bad(res))
                 except Exception as e:
                     print(bad(e.message))
+        else:
+            if ' ' in project_name:
+                project_name = project_name.replace(' ', '_').lower()
+            else:
+                project_name = project_name.lower()
+
+            create_project_query = """
+                mutation {
+                  createProject(name: "%s") {
+                    project {
+                      name
+                    }
+                  }
+                }
+            """ % project_name
+
+            res = _make_request(create_project_query)
+            print(res)
+            try:
+                cleaned_response = utils.validate_project_response(res)
+                if cleaned_response:
+                    db.set('project', project_name)
+                    db.dump()
+                    print(good("Project: {} successfully created in API".format(project_name)))
+                    # create boilerplate directories
+                    list_of_directories = ["cases"]
+                    for dir in list_of_directories:
+                        if not path.exists(dir):
+                            makedirs(dir)
+                    print(good("Boilerplate directories `cases` generated"))
+                else:
+                    print(bad(res))
+            except Exception as e:
+                print(bad(e.message))
 
 
 def parse_threat_models(content, user_story, abuser_story=None):
@@ -459,8 +495,8 @@ def main():
     if arguments.get('configure'):
         configure_server()
     if arguments.get('init'):
-        if arguments.get('<project_name>'):
-            create_project(arguments.get('<project_name>'))
+        if arguments.get('<projectname>'):
+            create_project(arguments.get('<projectname>'))
         else:
             print(bad("There seems to be NO Project Name"))
     if arguments.get('create'):
@@ -596,3 +632,6 @@ def main():
             if pass_req.status_code == 200:
                 if 'success' in pass_req.json():
                     print(good("Password for user changed successfully. Please login"))
+
+# if __name__ == '__main__':
+#     main()

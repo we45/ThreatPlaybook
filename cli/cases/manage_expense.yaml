@@ -51,6 +51,18 @@ abuse_cases:
         tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
         type: discovery
 
+    - name: template injection
+      type: inline
+      vul_name: Server-side Template Injection
+      description: Attempt to perform Template Injection Attacks against the NodeJS app and RCE to the backend service
+      cwe: 94
+      severity: 3
+      test-cases:
+      - name: automated-vulnerability-scanning
+        test: run automated vulnerability discovery tools to identify CSRF against the application
+        tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+        type: discovery
+
     - name: authorization bypass
       type: repo
       reference: {name: idor_pk, severity: 3}

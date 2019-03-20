@@ -17,7 +17,7 @@ services:
     expose:
       - "8080"
     environment:
-      - VUE_APP_API_URL=http://192.168.0.218
+      - VUE_APP_API_URL=http://172.20.10.2
     links:
       - api
     depends_on:

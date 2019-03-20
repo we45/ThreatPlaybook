@@ -16,6 +16,9 @@ Please consider watching my talk from OWASP AppSecUSA 2018 to understand the nee
 
 [ThreatPlaybook Talk at AppSecUSA](https://www.youtube.com/embed/fT2-JuvK428 ':include :type=iframe')
 
+### Using ThreatPlaybook
+[Using ThreatPlaybook](https://fast.wistia.net/embed/playlists/qrp35atjad ':include :type=iframe')
+
 ### Setting up the Server
 We highly recommend that you use the Docker Compose file given in the repo. Its easier than every other type of deployment. Please check out the [Docker Compose Docs](/API/docker-compose.md) to get an understanding of all the components and the env-vars, etc.
 

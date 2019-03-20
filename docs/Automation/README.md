@@ -11,8 +11,9 @@ However, with its new GraphQL service, you have the option of using Robot Framew
 If you are using your own Test Orchestration Tooling, all you have to do is post Vulnerability entries to the create Vulnerabilities Mutation in ThreatPlaybook and you are off to the races
 
 ### Automating with Robot Framework
-Please refer to this Github Repo to run the example automation
 Please watch this video to understand how you can use the automation
+
+[Automation with ThreatPlaybook](https://we45.wistia.com/medias/fnjfxqhcio ':include :type=iframe')
 
 ### Automating without Robot Framework
 ThreatPlaybook allows you to automate without the Robot Framework also. ThreatPlaybook provides generic vulnerability data structures that allows you to push vulnerabilities from a CI/CD process directly into ThreatPlaybook over its GraphQL endpoint. You'll have to follow the following workflow to perform this operation
