@@ -186,7 +186,7 @@
                         });
 
                         for (let singleScenario of singleAbuse.models) {
-                            let sceneRandom = Math.floor(Math.random() * 1000);
+                            let sceneRandom = uuidv1()
                             this.network.nodes.push({
                                 id: sceneRandom,
                                 label: singleScenario.name,
