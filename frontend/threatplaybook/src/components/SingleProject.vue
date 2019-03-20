@@ -74,7 +74,8 @@
                     </b-tab>
                     <b-tab title="Scans" @click="getAllScans">
                         <br>
-                        <template v-for="scan in allScans">
+                        <template v-for="tgt in allScans">
+                        <template v-for="scan in tgt.scans">
                             <b-list-group>
                                 <b-list-group-item>
                                     <a @click="individualScan(scan.name)" style="cursor: pointer;">
@@ -84,12 +85,15 @@
                                     <!--<b-badge variant="success" v-if="scan.synced">synced</b-badge>-->
                                     <!--<font-awesome-icon icon="sync" v-else/>-->
                                     <!--</span>-->
+
                                     <span style="float: right;">
                                         {{ scan.createdOn | timeFilter}}
                                     </span>
+                                    <span style="float: right;margin-right: 2%;">{{ tgt.name }}</span>
                                 </b-list-group-item>
                             </b-list-group>
                             <br>
+                        </template>
                         </template>
                     </b-tab>
                 </b-tabs>
@@ -167,18 +171,22 @@
 
             getAllScans() {
                 this.isLoading = true
+                const project = `"${this.projectActual}"`
                 axios.post('/graph', {
                     query: '{\n' +
+                            'tgtByProject(project:' + project + '){\n' +
+                            'name \n'+
                         'scans{\n' +
                         'name\n' +
                         'createdOn\n' +
                         'synced \n' +
                         '}\n' +
+                        '}'+
                         '}'
                 })
                     .then(res => {
                         this.isLoading = false
-                        this.allScans = res.data.data.scans
+                        this.allScans = res.data.data.tgtByProject
                     })
                     .catch(error => {
                         this.isLoading = false

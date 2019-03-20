@@ -1,6 +1,6 @@
 version: '3'
 services:
-  nginx: 
+  nginx:
     image: nginx:latest
     ports:
       - "80:80"
@@ -16,8 +16,10 @@ services:
     image: we45/threatplaybook-frontend
     expose:
       - "8080"
+    ports:
+      - "8080"
     environment:
-      - VUE_APP_API_URL=http://192.168.0.108
+      - VUE_APP_API_URL=http://192.168.1.12
     links:
       - api
     depends_on:
