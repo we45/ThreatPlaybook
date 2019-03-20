@@ -60,7 +60,7 @@ def connect_db():
                 host = os.environ.get('MONGO_HOST', '127.0.0.1'),
                 db = os.environ.get('MONGO_DB', 'threat_playbook'),
                 port = int(os.environ.get('MONGO_PORT', 27017))
-            )
+            )            
         except Exception as e:
             print(bold(red(e)))
             exit(1)
