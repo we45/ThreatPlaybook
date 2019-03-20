@@ -7,6 +7,7 @@ from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
+from orchy_gql import MarkScanSynced, OrchyConfig
 
 connect_db()
 
@@ -600,8 +601,8 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     create_vulnerability_evidence = CreateVulnerabilityEvidence.Field()
     create_scan = CreateScan.Field()
     create_interaction = CreateOrUpdateInteraction.Field()
-    # mark_scan_synced = MarkScanSynced.Field()
-    # orchy_config = OrchyConfig.Field()
+    mark_scan_synced = MarkScanSynced.Field()
+    orchy_config = OrchyConfig.Field()
 
 
 class Query(graphene.ObjectType):
