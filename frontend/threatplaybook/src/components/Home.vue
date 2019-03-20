@@ -3,7 +3,7 @@
         <nav-bar></nav-bar>
         <br>
         <loading :active.sync="isLoading" :can-cancel="true"></loading>
-        <b-container fluid>
+        <b-container fluid v-if="dashboardQuery.projects.length > 0">
             <b-row>
                 <div class="container">
                     <div class="row">
