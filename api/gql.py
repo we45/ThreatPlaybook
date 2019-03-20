@@ -19,7 +19,6 @@ class Vuln(MongoengineObjectType):
 class Project(MongoengineObjectType):
     class Meta:
         model = Proj
-        interfaces = (Node,)
 
 
 class TCase(MongoengineObjectType):
@@ -66,6 +65,9 @@ class Relations(MongoengineObjectType):
     class Meta:
         model = Interaction
 
+class VulEvidence(MongoengineObjectType):
+    class Meta:
+        model = VulnerabilityEvidence
 
 class NewProject(graphene.ObjectType):
     name = graphene.String()

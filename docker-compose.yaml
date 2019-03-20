@@ -17,7 +17,7 @@ services:
     expose:
       - "8080"
     environment:
-      - VUE_APP_API_URL=http://192.168.0.108
+      - VUE_APP_API_URL=http://192.168.0.218
     links:
       - api
     depends_on:
@@ -47,5 +47,7 @@ services:
       - MONGODB_DATABASE=threat_playbook
     expose:
       - "27017"
+    ports:
+      - "27017:27017"
     volumes:
       - ./threatplaybook_db:/bitnami
