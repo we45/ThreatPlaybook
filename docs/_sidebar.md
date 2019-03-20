@@ -8,3 +8,7 @@
 * ThreatPlaybook Client
 
     * [Install and Usage](/Client/README.md)
+
+* Automating with ThreatPlaybook
+
+    * [Automation with ThreatPlaybook](/Automation/README.md)
