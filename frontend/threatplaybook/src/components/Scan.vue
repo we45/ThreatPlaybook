@@ -192,7 +192,7 @@
     import Navbar from "./Navbar.vue";
     import Loading from 'vue-loading-overlay'
     import 'vue-loading-overlay/dist/vue-loading.css';
-    import axios from '@/utils/auth'
+    import axios from '../utils/auth'
     const items = ''
     export default {
         name: 'Scan',

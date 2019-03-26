@@ -37,7 +37,7 @@
     import "vue2vis/dist/vue2vis.css";
     import Loading from 'vue-loading-overlay'
     import 'vue-loading-overlay/dist/vue-loading.css';
-    import axios from '@/utils/auth'
+    import axios from '../utils/auth'
 
     const uuidv1 = require('uuid/v1');
 

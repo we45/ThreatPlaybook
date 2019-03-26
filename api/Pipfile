@@ -5,27 +5,9 @@ verify_ssl = true
 name = "pypi"
 
 
-[dev-packages]
-
-recommonmark = "*"
-"boto3" = "*"
-
-
 [packages]
 
-responder = "*"
-mongoengine = "*"
-graphene = "*"
-graphene-mongo = "*"
-schema = "*"
-"argon2-cffi" = "*"
-pyjwt = "*"
-prompt-toolkit = "*"
-namesgenerator = "*"
-docopt = "*"
-huepy = "*"
 
 
-[requires]
+[dev-packages]
 
-python_version = "3.6"
