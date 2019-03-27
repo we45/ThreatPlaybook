@@ -361,9 +361,10 @@ export default {
               console.log(this.nodeSelectObject);
             });
         }
-      } else {
-          this.nodeSelectObject = {}
       }
+      // else {
+      //     this.nodeSelectObject = {}
+      // }
     }
   },
   filters: {
