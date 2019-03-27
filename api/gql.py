@@ -643,6 +643,7 @@ class Query(graphene.ObjectType):
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
+    vuls_by_cwe = graphene.List(Vuln, cwe = graphene.Int())
 
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
@@ -768,3 +769,12 @@ class Query(graphene.ObjectType):
             return list(Interaction.objects.all())
         else:
             raise Exception("Unauthorized to perform action")
+
+    def resolve_vuls_by_cwe(self,info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'cwe' in kwargs:
+                if isinstance(kwargs['cwe'], int):
+                    return list(Vulnerability.objects(cwe = kwargs['cwe']))
+        else:
+            raise Exception("Unauthorized to perform action")
+
