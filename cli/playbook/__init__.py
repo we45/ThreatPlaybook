@@ -6,6 +6,8 @@ Usage:
     playbook login
     playbook create [--file=<tm_file>] [--dir=<tm_dir>]
     playbook get feature [--name=<name>] [--json | --table]
+    playbook get-scans
+    playbook sync-scan <scan_name>
     playbook configure
     playbook change-password
     playbook (-h | --help)
@@ -28,6 +30,7 @@ import json
 import pickledb
 import requests
 from sys import exit
+#import utils
 from . import utils
 import yaml
 import pyjq
@@ -218,7 +221,8 @@ def parse_threat_models(content, user_story, abuser_story=None):
                                     "name": {"name": name, "type": "string"},
                                     "cwe": {"name": cwe, "type": "integer"},
                                     "description": {"name": description, "type": "string"},
-                                    "vulName": {"name": vul_name, "type": "string"}
+                                    "vulName": {"name": vul_name, "type": "string"},
+                                    "severity": {"name": single['reference']['severity'], "type": "integer"}
                                 }
 
                                 if mitigations:
@@ -632,6 +636,27 @@ def main():
             if pass_req.status_code == 200:
                 if 'success' in pass_req.json():
                     print(good("Password for user changed successfully. Please login"))
+
+    if arguments.get('get-scans'):
+        if verify_host_port():
+            get_all_scans = """
+            query {
+              scans {
+                name
+                synced
+              }
+            }
+            """
+            scan_resp = _make_request(get_all_scans)
+            if scan_resp:
+                if 'data' in scan_resp:
+                    print(json.dumps(scan_resp, indent=2, sort_keys=True))
+        else:
+            print(bad("ERROR: There seems to be no host configured or you you seem to be logged out"))
+
+    #
+    # if arguments.get('sync-scan'):
+    #     if arguments.get('')
 
 # if __name__ == '__main__':
 #     main()

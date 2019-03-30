@@ -265,7 +265,7 @@
                                                         ].cwe,
                                                     icon: "fa-bug",
                                                     type: "mod",
-                                                    title: "Vulnerability"
+                                                    title: "Threat Scenario"
                                                 };
                                                 if (
                                                     responseData[single].abuses[abuserStory].models[
@@ -283,7 +283,7 @@
                                                             name: allTests[singleTest].name,
                                                             icon: "fa fa-check-circle",
                                                             type: "tm",
-                                                            title: "Threat Model",
+                                                            title: "Test Case",
                                                             testCase: allTests[singleTest].testCase,
                                                             testType: allTests[singleTest].testType,
                                                         };
