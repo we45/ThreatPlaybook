@@ -31,7 +31,7 @@
                                     <template v-for="userStory in selectedUserStory">
                                         <b-card :title="userStory.title">
                                             <hr>
-                                            <p><b>Description : </b> {{ userStory.desc }}</p>
+                                            <p v-if="userStory.desc"><b>Description : </b> {{ userStory.desc }}</p>
                                         </b-card>
                                     </template>
                                 </template>
@@ -40,7 +40,7 @@
                                     <template v-for="abuserStory in selectedAbuserStory">
                                         <b-card :title="abuserStory.title">
                                             <hr>
-                                            <p><b>Description : </b> {{ abuserStory.desc }}</p>
+                                            <p v-if="abuserStory.desc"><b>Description : </b> {{ abuserStory.desc }}</p>
                                         </b-card>
                                     </template>
                                 </template>
@@ -51,13 +51,13 @@
                                             <hr>
                                             <b-row>
                                                 <b-col cols="6">
-                                                    <p class="text-left">
+                                                    <p class="text-left" v-if="vul.cwe">
                                                         <b>CWE : </b>
                                                         {{ vul.cwe }}
                                                     </p>
                                                 </b-col>
                                                 <b-col cols="6">
-                                                    <p class="text-left">
+                                                    <p class="text-left" v-if="vul.severity">
                                                         <b>Severity : </b>
                                                         <span class="label-high" v-if="vul.severity === 4">High</span>
                                                         <span class="label-high" v-if="vul.severity === 3">High</span>
@@ -72,25 +72,62 @@
                                             <template v-if="vul.mitigations">
                                                 <p><b>Mitigations : </b></p>
                                                 <hr>
-                                                <p><b>Phase : </b>
+                                                <p v-if="vul.mitigations.phase"><b>Phase : </b>
                                                     <b-badge variant="info">{{ vul.mitigations.phase }}</b-badge>
                                                 </p>
-                                                <p><b>Strategy : </b>
+                                                <p v-if="vul.mitigations.strategy"><b>Strategy : </b>
                                                     <b-badge variant="success" pill>{{ vul.mitigations.strategy }}
                                                     </b-badge>
                                                 </p>
-                                                <p><b>Description : </b>{{ vul.mitigations.description}}</p>
+                                                <p v-if="vul.mitigations.description"><b>Description : </b>{{ vul.mitigations.description }}</p>
                                             </template>
                                         </b-card>
                                     </template>
+                                    <template v-if="selectedRelatedVulDetail.length > 0">
+                                        <template v-for="rel_vul in selectedRelatedVulDetail">
+
+                                            <b-card :title="rel_vul.title">
+                                                <hr>
+                                                <h5 v-if="rel_vul.name">{{ rel_vul.name }}</h5>
+                                                <br>
+                                                <b-row>
+                                                    <b-col cols="6">
+                                                        <p class="text-left" v-if="rel_vul.cwe">
+                                                            <b>CWE : </b>
+                                                            {{ rel_vul.cwe }}
+                                                        </p>
+                                                    </b-col>
+                                                    <b-col cols="6">
+                                                        <p class="text-left" v-if="rel_vul.severity">
+                                                            <b>Severity : </b>
+                                                            <span class="label-high"
+                                                                  v-if="rel_vul.severity === 4">High</span>
+                                                            <span class="label-high"
+                                                                  v-if="rel_vul.severity === 3">High</span>
+                                                            <span class="label-medium" v-if="rel_vul.severity === 2"
+                                                            >Medium</span>
+                                                            <span class="label-low" v-if="rel_vul.severity === 1"
+                                                            >Low</span>
+                                                        </p>
+                                                    </b-col>
+                                                </b-row>
+                                                <p v-if="rel_vul.tool"><b>Tool : </b>
+                                                    {{ rel_vul.tool }}
+                                                </p>
+                                            </b-card>
+                                        </template>
+                                    </template>
+
                                 </template>
 
                                 <template v-if="selectedTestCases.length > 0">
                                     <template v-for="testCase in selectedTestCases">
                                         <b-card :title="testCase.title">
                                             <hr>
-                                            <p><b>Test Case : </b>{{ testCase.testCase }}</p>
-                                            <p><b>Test Type : </b>{{ testCase.testType }}</p>
+                                            <p v-if="testCase.testCase"><b>Test Case : </b>{{ testCase.testCase }}</p>
+                                            <p v-if="testCase.testType"><b>Test Type : </b>{{ testCase.testType }}</p>
+                                            <p v-if="testCase.tools"><b>Test Tools : </b>{{ testCase.tools.toString() }}
+                                            </p>
                                         </b-card>
                                     </template>
                                 </template>
@@ -159,7 +196,8 @@
                 selectedUserStory: [],
                 selectedAbuserStory: [],
                 selectedVulDetail: [],
-                selectedTestCases: []
+                selectedTestCases: [],
+                selectedRelatedVulDetail: []
             }
         },
         created() {
@@ -174,8 +212,8 @@
 
             fetchData() {
                 if (this.projectActual) {
-                    this.isLoading = true;
-                    const project = `"${this.projectActual}"`;
+                    this.isLoading = true
+                    const project = `"${this.projectActual}"`
                     axios
                         .post("/graph", {
                             query:
@@ -185,23 +223,17 @@
                                 "){\n" +
                                 "id \n" +
                                 "shortName \n" +
-                                "description \n" +
                                 "abuses{ \n" +
                                 "id \n" +
                                 "shortName \n" +
-                                "description \n" +
                                 "models{ \n" +
                                 "id \n" +
                                 "name \n" +
-                                "severity \n" +
-                                "description \n" +
-                                "mitigations \n" +
-                                "cwe \n" +
                                 "tests{ \n" +
                                 "id \n" +
                                 "name \n" +
-                                "testCase \n" +
                                 "testType \n" +
+                                "tools \n" +
                                 "} \n" +
                                 "} \n" +
                                 "} \n" +
@@ -209,13 +241,13 @@
                                 "}"
                         })
                         .then(res => {
-                            this.isLoading = false;
+                            this.isLoading = false
                             let responseData = res.data.data.userStoryByProject;
                             for (var single in responseData) {
                                 var singleData = {
                                     id: "us:" + responseData[single].id,
                                     name: responseData[single].shortName,
-                                    desc: responseData[single].description,
+                                    // desc: responseData[single].description,
                                     icon: "fa-cubes",
                                     type: 'us',
                                     title: 'User Story'
@@ -226,7 +258,7 @@
                                         var singleAbuse = {
                                             id: "as:" + responseData[single].abuses[abuserStory].id,
                                             name: responseData[single].abuses[abuserStory].shortName,
-                                            desc: responseData[single].abuses[abuserStory].description,
+                                            // desc: responseData[single].abuses[abuserStory].description,
                                             icon: "fa-warning",
                                             type: "as",
                                             title: "Abuser Story"
@@ -248,21 +280,21 @@
                                                     responseData[single].abuses[abuserStory].models[
                                                         singleModel
                                                         ].name,
-                                                    desc:
-                                                    responseData[single].abuses[abuserStory].models[
-                                                        singleModel
-                                                        ].description,
-                                                    severity:
-                                                    responseData[single].abuses[abuserStory].models[
-                                                        singleModel
-                                                        ].severity,
-                                                    mitigations: responseData[single].abuses[abuserStory].models[
-                                                        singleModel
-                                                        ].mitigations[0],
-                                                    cwe:
-                                                    responseData[single].abuses[abuserStory].models[
-                                                        singleModel
-                                                        ].cwe,
+                                                    // desc:
+                                                    // responseData[single].abuses[abuserStory].models[
+                                                    //     singleModel
+                                                    //     ].description,
+                                                    // severity:
+                                                    // responseData[single].abuses[abuserStory].models[
+                                                    //     singleModel
+                                                    //     ].severity,
+                                                    // mitigations: responseData[single].abuses[abuserStory].models[
+                                                    //     singleModel
+                                                    //     ].mitigations[0],
+                                                    // cwe:
+                                                    // responseData[single].abuses[abuserStory].models[
+                                                    //     singleModel
+                                                    //     ].cwe,
                                                     icon: "fa-bug",
                                                     type: "mod",
                                                     title: "Threat Scenario"
@@ -286,6 +318,7 @@
                                                             title: "Test Case",
                                                             testCase: allTests[singleTest].testCase,
                                                             testType: allTests[singleTest].testType,
+                                                            tools: allTests[singleTest].tools,
                                                         };
                                                         sModel.children.push(sTest);
                                                     }
@@ -297,6 +330,7 @@
                                     }
                                 }
                                 this.featureData.push(singleData);
+
                             }
                         })
                         .catch(error => {
@@ -344,31 +378,147 @@
                     this.selectedAbuserStory = []
                     this.selectedVulDetail = []
                     this.selectedTestCases = []
+                    this.selectedRelatedVulDetail = []
                     this.selectedNode = node.data;
 
                     if (this.selectedNode.type === 'us') {
-                        this.selectedUserStory.push({
-                            title: this.selectedNode.title,
-                            desc: this.selectedNode.desc
-                        })
+                        if (this.projectActual) {
+                            this.isLoading = true
+                            const project = `"${this.projectActual}"`
+                            axios
+                                .post("/graph", {
+                                    query:
+                                        "{\n" +
+                                        "userStoryByProject(project:" +
+                                        project +
+                                        "){\n" +
+                                        "id \n" +
+                                        "shortName \n" +
+                                        "description \n" +
+                                        "}\n" +
+                                        "}"
+                                })
+                                .then(res => {
+                                    const singelresponseData = res.data.data.userStoryByProject
+                                    for (const single of singelresponseData) {
+                                        if (this.selectedNode.name === single.shortName) {
+                                            this.selectedUserStory.push({
+                                                title: this.selectedNode.title,
+                                                desc: single.description
+                                            })
+                                        }
+                                    }
+                                    this.isLoading = false
+                                }).catch(error => {
+                                this.isLoading = false
+                            })
+                        }
                     }
 
                     if (this.selectedNode.type === 'as') {
-                        this.selectedAbuserStory.push({
-                            title: this.selectedNode.title,
-                            desc: this.selectedNode.desc
-                        })
+                        if (this.projectActual) {
+                            this.isLoading = true
+                            const project = `"${this.projectActual}"`
+                            axios
+                                .post("/graph", {
+                                    query:
+                                        "{\n" +
+                                        "abuserStoryByProject(project:" +
+                                        project +
+                                        "){\n" +
+                                        "id \n" +
+                                        "shortName \n" +
+                                        "description \n" +
+                                        "}\n" +
+                                        "}"
+                                })
+                                .then(res => {
+                                    const singelresponseData = res.data.data.abuserStoryByProject
+                                    for (const single of singelresponseData) {
+                                        if (this.selectedNode.name === single.shortName) {
+                                            this.selectedAbuserStory.push({
+                                                title: this.selectedNode.title,
+                                                desc: single.description
+                                            })
+                                        }
+                                    }
+                                    this.isLoading = false
+                                }).catch(error => {
+                                this.isLoading = false
+                            });
+                        }
+                        // this.selectedAbuserStory.push({
+                        //     title: this.selectedNode.title,
+                        //     desc: this.selectedNode.desc
+                        // })
                     }
 
                     if (this.selectedNode.type === 'mod') {
-                        const mitigation = JSON.parse(this.selectedNode.mitigations)
-                        this.selectedVulDetail.push({
-                            title: this.selectedNode.title,
-                            desc: this.selectedNode.desc,
-                            cwe: this.selectedNode.cwe,
-                            severity: this.selectedNode.severity,
-                            mitigations: mitigation,
+                        this.isLoading = true
+                        const vulName = `"${this.selectedNode.name}"`
+                        axios
+                            .post("/graph", {
+                                query:
+                                    "{\n" +
+                                    "searchThreatScenario(name:" +
+                                    vulName +
+                                    "){\n" +
+                                    "name \n" +
+                                    "cwe \n" +
+                                    "severity \n" +
+                                    "mitigations \n" +
+                                    "}\n" +
+                                    "}"
+                            })
+                            .then(res => {
+                                const singelresponseData = res.data.data.searchThreatScenario
+                                for (const single of singelresponseData) {
+                                    const mitigation = JSON.parse(single.mitigations[0])
+                                    this.selectedVulDetail.push({
+                                        title: this.selectedNode.title,
+                                        desc: single.description,
+                                        cwe: single.cwe,
+                                        severity: single.severity,
+                                        mitigations: mitigation,
+                                    })
+                                    if (single.cwe) {
+                                        const cweName = single.cwe
+                                        axios
+                                            .post("/graph", {
+                                                query:
+                                                    "{\n" +
+                                                    "vulsByCwe(cwe:" +
+                                                    cweName +
+                                                    "){\n" +
+                                                    "cwe \n" +
+                                                    "name \n" +
+                                                    "severity \n" +
+                                                    "tool \n" +
+                                                    "}\n" +
+                                                    "}"
+                                            })
+                                            .then(res => {
+                                                const singelresponseVulData = res.data.data.vulsByCwe
+                                                for (const vul of singelresponseVulData) {
+                                                    this.selectedRelatedVulDetail.push({
+                                                        name: vul.name,
+                                                        cwe: vul.cwe,
+                                                        severity: vul.severity,
+                                                        tool: vul.tool,
+                                                        title: 'Vulnerabilities linked with threat scenario'
+                                                    })
+                                                }
+                                                this.isLoading = false
+                                            }).catch(error => {
+                                            this.isLoading = false
+                                        })
+                                    }
+                                }
+                                this.isLoading = false
+                            }).catch(error => {
+                            this.isLoading = false
                         })
+
                     }
 
                     if (this.selectedNode.type === 'tm') {
@@ -376,6 +526,7 @@
                             title: this.selectedNode.title,
                             testCase: this.selectedNode.testCase,
                             testType: this.selectedNode.testType,
+                            tools: this.selectedNode.tools,
                         })
                     }
 

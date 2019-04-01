@@ -97,7 +97,6 @@
             async fetchGraphData() {
                 this.isLoading = true
                 const projName = `"${this.actual_project_name}"`
-                console.log("Project Name  ==> ", projName)
                 axios.post('/graph', {
                     query: '{\n' +
                         'userStoryByProject(project:' + projName + '){\n' +
@@ -113,7 +112,6 @@
                 })
                     .then(res => {
                         this.isLoading = false
-                        // console.log("Res.data ===>", res.data)
                 //Code to push data into the nodes
                 this.network.nodes.push({
                     id: 1,
