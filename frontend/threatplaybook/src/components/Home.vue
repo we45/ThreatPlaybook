@@ -115,6 +115,13 @@
                 },
                 pieSeries: [],
                 isData: false,
+                navItems: [
+                    {
+                        text: 'Home',
+                        href: '/home',
+                        active: true
+                  },
+                ]
 
             }
         },

@@ -5,7 +5,7 @@
             <b-col cols="3"></b-col>
             <b-col cols="6">
                 <b-card style="margin-top: 10%;">
-                    <img src="../assets/tp-logo.png" alt="ThreatPlaybook Logo"
+                    <img src="../assets/threat_logo.png" alt="ThreatPlaybook Logo"
                          class="img-center">
                     <br>
                     <br>
@@ -97,7 +97,7 @@
 <style scoped>
     .login-button {
         position: relative;
-        background-color: #7957d5;
+        background-color: #1C1D21;
         border: none;
         font-size: 24px;
         color: #FFFFFF;
@@ -114,7 +114,7 @@
 
     .login-button:after {
         content: "";
-        background: #7957d5;
+        background: #1C1D21;
         display: block;
         position: absolute;
         padding-top: 300%;

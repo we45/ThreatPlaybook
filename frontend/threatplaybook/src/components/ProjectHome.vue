@@ -56,7 +56,7 @@
                     </template>
 
                     <template slot="actions" slot-scope="row">
-                        <b-button size="sm" @click="goToProjectMap(row.item.name)" class="btn-purple">
+                        <b-button size="sm" @click="goToProjectMap(row.item.name)" class="btn-purple" style="margin-right: 4px;">
                             Threat Map
                         </b-button>
                         <b-button size="sm" @click="goToUserStoryMap(row.item.name)" class="btn-purple">
@@ -121,9 +121,9 @@
 
 <style scoped>
     .btn-purple {
-        color: #FFFFFF;
-        background-color: #7957d5;
-        border-color: #7957d5;
+        color: #f9f2f4;
+        background-color: #1C1D21;
+        border-color: #1C1D21;
         border-radius: 14px;
         padding: 3px 12px;
         margin-bottom: 0;
@@ -132,9 +132,9 @@
 
     .btn-purple:focus,
     .btn-purple.focus {
-        color: #FFFFFF;
-        background-color: #7957d5;
-        border-color: #FFFFFF;
+        color: #1C1D21;
+        background-color: #f9f2f4;
+        border-color: #1C1D21;
         border-radius: 14px;
         padding: 3px 12px;
         margin-bottom: 0;
@@ -142,9 +142,9 @@
     }
 
     .btn-purple:hover {
-        color: #7957d5;
-        background-color: #FFFFFF;
-        border-color: #7957d5;
+        color: #1C1D21;
+        background-color: #f9f2f4;
+        border-color: #1C1D21;
         border-radius: 14px;
         padding: 3px 12px;
         margin-bottom: 0;

@@ -97,15 +97,12 @@
         methods: {
             setClickEvent: function () {
                 this.$refs.network.$on("click", e => {
-                    console.log("Selected Node ID : " + e.nodes.toString());
-                    console.log(this.getSelectedNodeObject(e.nodes.toString()));
+                    this.getSelectedNodeObject(e.nodes.toString())
                 });
             },
             getSelectedNodeObject: function (inNodeID) {
                 for (let i = 0; i < Object.keys(this.network.nodes).length; i++) {
                     if (this.network.nodes[i].id == inNodeID) {
-                        console.log("label", this.network.nodes[i].label)
-                        console.log("title", this.network.nodes[i].title)
                         this.nodeLabel = this.network.nodes[i].label
                         this.nodeCaption = this.network.nodes[i].title;
                     }
