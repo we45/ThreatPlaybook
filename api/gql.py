@@ -61,13 +61,16 @@ class VulScan(MongoengineObjectType):
     class Meta:
         model = Scan
 
+
 class Relations(MongoengineObjectType):
     class Meta:
         model = Interaction
 
+
 class VulEvidence(MongoengineObjectType):
     class Meta:
         model = VulnerabilityEvidence
+
 
 class NewProject(graphene.ObjectType):
     name = graphene.String()
@@ -112,6 +115,15 @@ class NewTarget(graphene.ObjectType):
     name = graphene.String()
     url = graphene.String()
     project = graphene.String()
+
+class AggregateThreatModel(graphene.ObjectType):
+    name = graphene.String()
+    vul_name = graphene.String()
+    description = graphene.String()
+    severity = graphene.Int()
+    cwe = graphene.Int()
+    abuses = graphene.List(AbuserStory)
+    usecases = graphene.List(UserStory)
 
 
 class NewVulnerabilityEvidence(graphene.ObjectType):
@@ -643,7 +655,8 @@ class Query(graphene.ObjectType):
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
-    vuls_by_cwe = graphene.List(Vuln, cwe = graphene.Int())
+    vuls_by_cwe = graphene.List(Vuln, cwe=graphene.Int())
+    # stories_by_cwe = graphene.List(graphene.JSONString, cwe=graphene.Int())
 
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
@@ -770,11 +783,24 @@ class Query(graphene.ObjectType):
         else:
             raise Exception("Unauthorized to perform action")
 
-    def resolve_vuls_by_cwe(self,info, **kwargs):
+    def resolve_vuls_by_cwe(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
             if 'cwe' in kwargs:
                 if isinstance(kwargs['cwe'], int):
-                    return list(Vulnerability.objects(cwe = kwargs['cwe']))
+                    return list(Vulnerability.objects(cwe=kwargs['cwe']))
         else:
             raise Exception("Unauthorized to perform action")
 
+    # def resolve_stories_by_cwe(self, info, **kwargs):
+    #     if _validate_jwt(info.context['request'].headers):
+    #         if 'cwe' in kwargs:
+    #             if isinstance(kwargs['cwe'], int):
+    #                 pipeline = [{"$match": {"cwe": kwargs['cwe']}}, {
+    #                     "$lookup": {"from": "abuse_case", "localField": "_id", "foreignField": "models",
+    #                                 "as": "abuses"}}, {"$lookup": {"from": "use_case", "localField": "_id",
+    #                                                                "foreignField": "scenarios", "as": "usecases"}}]
+    #                 something = list(ThreatModel.objects.aggregate(*pipeline))
+    #                 print(something)
+    #                 return something
+    #     else:
+    #         raise Exception("Unauthorized to perform action")

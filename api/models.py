@@ -52,7 +52,6 @@ class Risk(EmbeddedDocument):
 
 model_type_choices = (("repo", "repo"),
                       ("inline", "inline"))
-
 class ThreatModel(Document):
     # meta = {'collection': 'threat_model'}
     name = StringField(max_length=200, unique=True)
@@ -69,7 +68,6 @@ class ThreatModel(Document):
     mitigations = ListField(DictField())
     # risks = EmbeddedDocumentListField(Risk)
 
-
 class AbuseCase(Document):
     short_name = StringField(max_length=100, unique=True)
     description = StringField()
@@ -85,6 +83,7 @@ class UseCase(Document):
     scenarios = ListField(ReferenceField(ThreatModel))
     relations = ListField(ReferenceField(Interaction))
     boundary = StringField()
+
 
 class VulnerabilityEvidence(Document):
     name = StringField()
