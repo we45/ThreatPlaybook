@@ -210,7 +210,7 @@ def get_story_by_cwe(req, resp, *, cwe):
                         {"$lookup": {"from": "project", "localField": "project",
                                      "foreignField": "_id", "as": "project_model"}},
                         ]
-            cwe_list = dumps(list(ThreatModel.objects.aggregate(*pipeline)))
+            cwe_list = json.loads(dumps(list(ThreatModel.objects.aggregate(*pipeline))))
             resp.media = cwe_list
             return resp
         else:
