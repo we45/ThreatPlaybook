@@ -5,7 +5,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='ThreatPlaybook-Client',
-    version='3.0.6',
+    version='3.0.8',
     packages=['playbook'],
     entry_points={
         'console_scripts': [

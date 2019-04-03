@@ -175,7 +175,7 @@ def create_project(project_name):
                 print(bad(e.message))
 
 
-def parse_threat_models(content, user_story, abuser_story=None):
+def parse_threat_models(content, user_story, project, abuser_story=None):
     if isinstance(content, list):
         for single in content:
             if not 'name' in single and not 'type' in single:
@@ -222,8 +222,10 @@ def parse_threat_models(content, user_story, abuser_story=None):
                                     "cwe": {"name": cwe, "type": "integer"},
                                     "description": {"name": description, "type": "string"},
                                     "vulName": {"name": vul_name, "type": "string"},
-                                    "severity": {"name": single['reference']['severity'], "type": "integer"}
+                                    "severity": {"name": single['reference']['severity'], "type": "integer"},
+                                    "project": {"name": project, "type": "string"}
                                 }
+
 
                                 if mitigations:
                                     mutation_vars["mitigations"] = {"name": mitigations, "type": "list"}
@@ -293,7 +295,7 @@ def parse_threat_models(content, user_story, abuser_story=None):
                         "description": {"name": inline_description, "type": "string"},
                         "vulName": {"name": inline_vul_name, "type": "string"},
                         "severity": {"name": inline_severity, "type": "integer"},
-
+                        "project": {"name": project, "type": "string"}
                     }
 
                     if abuser_story:
@@ -386,6 +388,7 @@ def parse_spec_file(case_content):
     else:
         if verify_project():
             project_name = db.get('project')
+            print(project_name)
             if pyjq.first('.objectType', case_content) == 'Feature':
                 user_story_fields = pyjq.all('.name, .description', case_content)
 
@@ -444,6 +447,7 @@ def parse_spec_file(case_content):
 
                                         if 'threat_scenarios' in single:
                                             parse_threat_models(single['threat_scenarios'], user_story_fields[0],
+                                                                project_name,
                                                                 abuser_story=single['name'])
                                     else:
                                         print(bad(res))

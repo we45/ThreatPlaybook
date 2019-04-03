@@ -13,6 +13,7 @@ import os
 from glob import glob
 import ntpath
 import yaml
+from bson.json_util import dumps
 from sys import exit
 
 api = responder.API(cors=True, cors_params={
@@ -196,6 +197,28 @@ async def change_password(req, resp):
             resp.status_code = api.status_codes.HTTP_400
             resp.media = {'error': "Unable to parse JSON"}
             return resp
+
+@api.route('/feature-by-cwe/{cwe}')
+def get_story_by_cwe(req, resp, *, cwe):
+    if req.method == 'post':
+        if _validate_jwt(req.headers):
+            cwe = int(cwe)
+            pipeline = [{"$match": {"cwe": cwe}}, {
+                "$lookup": {"from": "abuse_case", "localField": "_id", "foreignField": "models",
+                            "as": "abuses_model"}}, {"$lookup": {"from": "use_case", "localField": "_id",
+                                                           "foreignField": "scenarios", "as": "usecases_model"}},
+                        {"$lookup": {"from": "project", "localField": "project",
+                                     "foreignField": "_id", "as": "project_model"}},
+                        ]
+            cwe_list = dumps(list(ThreatModel.objects.aggregate(*pipeline)))
+            resp.media = cwe_list
+            return resp
+        else:
+            resp.status_code = api.status_codes.HTTP_403
+            resp.media = {'error': "Unauthorized to perform action"}
+            return resp
+
+
 
 
 # Additional Routes for API - GraphQL

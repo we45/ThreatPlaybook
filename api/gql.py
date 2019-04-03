@@ -211,6 +211,7 @@ class ThreatModelInput(graphene.InputObjectType):
     user_story = graphene.String()
     mitigations = graphene.List(graphene.JSONString)
     categories = graphene.List(graphene.String)
+    project = graphene.String()
 
 
 class NewVulnerability(graphene.ObjectType):
@@ -367,7 +368,8 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
         if _validate_jwt(info.context['request'].headers):
             if 't_model' in kwargs:
                 model_attribs = kwargs['t_model']
-                if not all(k in model_attribs for k in ("name", "vul_name", "description")):
+                print(model_attribs['project'])
+                if not all(k in model_attribs for k in ("name", "vul_name", "description", "project")):
                     raise Exception("Mandatory parameters are not in the mutation")
                 else:
                     try:
@@ -376,6 +378,8 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                         mitigations = model_attribs.get('mitigations', [])
                         severity = int(model_attribs.get('severity', 1))
                         test_cases = model_attribs.get('tests', [])
+                        project = model_attribs.get('project')
+                        ref_proj = Proj.objects.get(name=project)
                         try:
                             ThreatModel.objects.get(name=model_attribs.get('name'))
                             new_threat_model = ThreatModel.objects(name=model_attribs.get('name')).update_one(
@@ -385,6 +389,7 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                                 related_cwes=related_cwes,
                                 mitigations=mitigations,
                                 description=model_attribs.get('description'),
+                                project = ref_proj,
                                 tests=test_cases, upsert=True
                             )
                             new_threat_model = ThreatModel.objects.get(name=model_attribs.get('name'))
@@ -396,6 +401,7 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                                                            related_cwes=related_cwes,
                                                            mitigations=mitigations,
                                                            description=model_attribs.get('description'),
+                                                           project = ref_proj,
                                                            tests=test_cases
                                                            ).save()
                     except Exception as e:
@@ -657,6 +663,7 @@ class Query(graphene.ObjectType):
     relations = graphene.List(Relations)
     vuls_by_cwe = graphene.List(Vuln, cwe=graphene.Int())
     # stories_by_cwe = graphene.List(graphene.JSONString, cwe=graphene.Int())
+    # count_unique_cwes = graphene.List(graphene.Int(), project = graphene.String())
 
     def resolve_vulns(self, info):
         if _validate_jwt(info.context['request'].headers):
@@ -790,6 +797,15 @@ class Query(graphene.ObjectType):
                     return list(Vulnerability.objects(cwe=kwargs['cwe']))
         else:
             raise Exception("Unauthorized to perform action")
+
+    # def resolve_count_unique_cwes(self, info, **kwargs):
+    #     if _validate_jwt(info.context['request'].headers):
+    #         if 'project' in kwargs:
+    #             if kwargs['project']:
+    #                 return list(ThreatModel.objects.distinct('cwe'))
+    #     else:
+    #         raise Exception("Unauthorized to perform action")
+
 
     # def resolve_stories_by_cwe(self, info, **kwargs):
     #     if _validate_jwt(info.context['request'].headers):
