@@ -8,6 +8,6 @@ RUN apk update && apk add python3-dev libffi-dev openssl-dev build-base
 
 RUN pip3 install --upgrade pip && pip3 install pipenv setuptools cffi
 
-RUN pipenv install --system --deploy
+RUN pip install -r requirements.txt
 
 CMD ["/usr/local/bin/python3.6 /threatplaybook/app.py"]
