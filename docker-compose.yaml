@@ -16,41 +16,36 @@ services:
     image: bitnami/mongodb:latest
     user: root
     environment:
-    - MONGODB_USERNAME=threatplaybook
-    - MONGODB_PASSWORD=password123
-    - MONGODB_DATABASE=threat_playbook
+      - MONGODB_USERNAME=threatplaybook
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=threat_playbook
     expose:
-    - "27017"
-    ports:
-    - "27017:27017"
+      - "27017"
     volumes:
-    - ./threatplaybook_db:/bitnami
-
+      - ./threatplaybook_db:/bitnami
   api:
     image: we45/threatplaybook-api
     expose:
-    - "5042"
+      - "5042"
     environment:
-    - MONGO_HOST=mongo_db
-    - MONGO_USER=threatplaybook
-    - MONGO_PASS=password123
-    - MONGO_PORT=27017
-    - MONGO_DB=threat_playbook
-    - SUPERUSER_EMAIL=abhay@we45.com
-    - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
+      - MONGO_HOST=mongo_db
+      - MONGO_USER=threatplaybook
+      - MONGO_PASS=password123
+      - MONGO_PORT=27017
+      - MONGO_DB=threat_playbook
+      - SUPERUSER_EMAIL=abhay@we45.com
+      - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
     links:
-    - mongo_db
+      - mongo_db
     depends_on:
-    - mongo_db
+      - mongo_db
     command: sh -c "./wait-for mongo_db:27017 -- /usr/local/bin/python3.6 /threatplaybook/app.py"
   frontend:
     image: we45/threatplaybook-frontend
     expose:
       - "8080"
-    ports:
-      - "8080"
     environment:
-      - VUE_APP_API_URL=http://172.20.10.2
+      - VUE_APP_API_URL=http://192.168.1.12
     links:
       - api
     depends_on:
