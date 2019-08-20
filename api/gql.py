@@ -1,12 +1,12 @@
 import graphene
 from graphene_mongo import MongoengineObjectType
-from models import Vulnerability, Target
-from models import Project as Proj
-from models import ThreatModel, Test, Repo, RepoTestCase
-from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
+from api.models import Vulnerability, Target
+from api.models import Project as Proj
+from api.models import ThreatModel, Test, Repo, RepoTestCase
+from api.models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
 from mongoengine import DoesNotExist
 from graphene.relay import Node
-from utils import connect_db, _validate_jwt
+from api.utils import connect_db, _validate_jwt
 
 connect_db()
 
@@ -115,6 +115,7 @@ class NewTarget(graphene.ObjectType):
     name = graphene.String()
     url = graphene.String()
     project = graphene.String()
+
 
 class AggregateThreatModel(graphene.ObjectType):
     name = graphene.String()
@@ -227,6 +228,14 @@ class NewVulnerability(graphene.ObjectType):
     evidences = graphene.List(NewVulnerabilityEvidence)
 
 
+# util functions
+
+def strip_string_for_id(value):
+    value = str(value).lower().strip()
+    value = ''.join(e for e in value if e.isalnum())
+    return value
+
+
 # Mutations
 class CreateProject(graphene.Mutation):
     class Arguments:
@@ -258,18 +267,20 @@ class CreateOrUpdateUserStory(graphene.Mutation):
             try:
                 if 'userstory' in kwargs:
                     attrs = kwargs['userstory']
+                    short_name = str(attrs['short_name']).strip()
                     my_proj = Proj.objects.get(name=attrs['project'])
                     try:
-                        ref_user_story = UseCase.objects.get(short_name=attrs['short_name'])
-                        UseCase.objects(short_name=attrs['short_name']).update_one(short_name=attrs['short_name'],
-                                                                                   description=attrs['description'],
-                                                                                   project=my_proj, upsert=True)
+                        ref_user_story = UseCase.objects.get(short_name=short_name)
+                        UseCase.objects(short_name=short_name).update_one(short_name=short_name,
+                                                                          description=attrs['description'],
+                                                                          project=my_proj, upsert=True)
                         if 'part_of' in attrs:
                             ref_user_story.update(part_of=attrs['part_of'])
+
                         new_user_story = ref_user_story
                     except DoesNotExist:
                         new_user_story = UseCase()
-                        new_user_story.short_name = attrs['short_name']
+                        new_user_story.short_name = short_name
                         new_user_story.description = attrs['description']
                         new_user_story.project = my_proj
                         if 'part_of' in attrs:
@@ -277,11 +288,10 @@ class CreateOrUpdateUserStory(graphene.Mutation):
 
                         new_user_story.save()
 
-                        return CreateOrUpdateUserStory(user_story=new_user_story)
-                    except DoesNotExist as de:
-                        return de.args
                     except Exception as e:
                         return e.args
+
+                    return CreateOrUpdateUserStory(user_story=new_user_story)
             except Exception as me:
                 return me.args
         else:
@@ -298,7 +308,8 @@ class CreateOrUpdateInteraction(graphene.Mutation):
         if _validate_jwt(info.context['request'].headers):
             try:
                 attrs = kwargs['new_interaction']
-                ref_user_story = UseCase.objects.get(short_name=attrs['user_story_name'])
+                short_name = str(attrs['user_story_name']).strip()
+                ref_user_story = UseCase.objects.get(short_name=short_name)
                 new_interaction = Interaction(nature=attrs['nature'],
                                               data_flow=attrs['data_flow'], endpoint=attrs['endpoint'],
                                               project=ref_user_story.project).save()
@@ -332,12 +343,15 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
             except DoesNotExist as de:
                 return de.args
 
+            short_name = str(short_name).strip()
+            user_story = str(user_story).strip()
             try:
                 ref_user_story = UseCase.objects.get(short_name=user_story)
             except DoesNotExist as ude:
                 return ude.args
 
             try:
+
                 AbuseCase.objects.get(short_name=short_name)
                 AbuseCase.objects(short_name=short_name).update_one(short_name=short_name,
                                                                     description=description,
@@ -366,6 +380,7 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
 
     def mutate(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
+            new_threat_model = None
             if 't_model' in kwargs:
                 model_attribs = kwargs['t_model']
                 print(model_attribs['project'])
@@ -380,16 +395,17 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                         test_cases = model_attribs.get('tests', [])
                         project = model_attribs.get('project')
                         ref_proj = Proj.objects.get(name=project)
+                        tm_name = str(model_attribs.get('name')).strip()
                         try:
-                            ThreatModel.objects.get(name=model_attribs.get('name'))
-                            new_threat_model = ThreatModel.objects(name=model_attribs.get('name')).update_one(
-                                name=model_attribs.get('name'),
+                            ThreatModel.objects.get(name=tm_name)
+                            new_threat_model = ThreatModel.objects(name=tm_name).update_one(
+                                name=tm_name,
                                 vul_name=model_attribs.get('vul_name'),
                                 cwe=cwe_val, severity=severity,
                                 related_cwes=related_cwes,
                                 mitigations=mitigations,
                                 description=model_attribs.get('description'),
-                                project = ref_proj,
+                                project=ref_proj,
                                 tests=test_cases, upsert=True
                             )
                             new_threat_model = ThreatModel.objects.get(name=model_attribs.get('name'))
@@ -401,14 +417,14 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                                                            related_cwes=related_cwes,
                                                            mitigations=mitigations,
                                                            description=model_attribs.get('description'),
-                                                           project = ref_proj,
+                                                           project=ref_proj,
                                                            tests=test_cases
                                                            ).save()
                     except Exception as e:
                         return e.args
 
                     if 'abuser_stories' in model_attribs:
-                        abuses = model_attribs.get('abuser_stories')
+                        abuses = str(model_attribs.get('abuser_stories')).strip()
                         for single in abuses:
                             try:
                                 ref_abuse = AbuseCase.objects.get(short_name=single)
@@ -419,7 +435,7 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
 
                     if 'user_story' in model_attribs:
                         try:
-                            features = model_attribs.get('user_story')
+                            features = str(model_attribs.get('user_story')).strip()
                             ref_use = UseCase.objects.get(short_name=features)
                             ref_use.update(add_to_set__scenarios=new_threat_model)
                         except DoesNotExist:
@@ -447,18 +463,20 @@ class CreateOrUpdateTarget(graphene.Mutation):
 
             else:
                 try:
-                    ref_project = Proj.objects.get(name=kwargs['project'])
+                    ref_proj = str(kwargs['project']).strip()
+                    ref_project = Proj.objects.get(name=ref_proj)
                 except DoesNotExist:
                     return "No Project specified"
 
+                ref_target = str(kwargs['name']).strip()
                 try:
-                    Target.objects.get(name=kwargs['name'])
-                    new_target = Target.objects(name=kwargs['name']).update_one(name=kwargs['name'],
-                                                                                url=kwargs['url'],
-                                                                                project=ref_project)
+                    Target.objects.get(name=ref_target)
+                    new_target = Target.objects(name=ref_target).update_one(name=ref_target,
+                                                                            url=kwargs['url'],
+                                                                            project=ref_project)
                     updated = True
                 except DoesNotExist:
-                    new_target = Target(name=kwargs['name'], url=kwargs['url'], project=ref_project).save()
+                    new_target = Target(name=ref_target, url=kwargs['url'], project=ref_project).save()
                     created = True
 
                 return CreateOrUpdateTarget(target=new_target)
@@ -474,6 +492,7 @@ class CreateScan(graphene.Mutation):
 
     def mutate(self, info, target):
         if _validate_jwt(info.context['request'].headers):
+            target = str(target).strip()
             try:
                 ref_target = Target.objects.get(name=target)
                 new_scan = Scan().save()
@@ -580,16 +599,18 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                     executed = case_attrs.get('executed', False)
                     test_type = case_attrs.get('test_type', 'discovery')
 
+                    test_name = str(case_attrs['name']).strip()
+
                     try:
-                        ref_case = Test.objects.get(name=case_attrs['name'])
+                        ref_case = Test.objects.get(name=test_name)
                         if ref_case:
-                            Test.objects(name=case_attrs['name']).update_one(
-                                name=case_attrs['name'], test_case=case_attrs['test_case'], executed=executed,
+                            Test.objects(name=ref_case).update_one(
+                                name=ref_case, test_case=case_attrs['test_case'], executed=executed,
                                 test_type=test_type, upsert=True)
-                            new_test_case = Test.objects.get(name=case_attrs['name'])
+                            new_test_case = Test.objects.get(name=ref_case)
                     except DoesNotExist:
                         new_test_case = Test(
-                            name=case_attrs['name'], test_case=case_attrs['test_case'],
+                            name=ref_case, test_case=case_attrs['test_case'],
                             tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
                         ).save()
                     try:
@@ -612,6 +633,7 @@ class MarkScanSynced(graphene.Mutation):
 
     def mutate(self, info, scan_name):
         if _validate_jwt(info.context['request'].headers):
+            scan_name = str(scan_name).strip()
             try:
                 ref_scan = Scan.objects.get(name=scan_name)
                 if not ref_scan.synced:
@@ -621,6 +643,46 @@ class MarkScanSynced(graphene.Mutation):
                 raise Exception("Scan does not exist")
         else:
             raise Exception("Unauthorized to perform action")
+
+
+# delete mutations go here
+
+class DeleteProject(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(name).strip()
+                ref_proj = Proj.objects.get(name=name)
+                ref_proj.delete()
+                return DeleteProject(ok=True)
+            except DoesNotExist:
+                raise Exception("Project does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
+
+
+class DeleteUserStory(graphene.Mutation):
+    class Arguments:
+        short_name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, short_name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(short_name).strip()
+                ref_case = UseCase.objects.get(short_name=name)
+                ref_case.delete()
+                return DeleteUserStory(ok=True)
+            except DoesNotExist:
+                raise Exception("User Story does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
 
 
 # declarations of Mutations and Queries
@@ -637,6 +699,8 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     create_scan = CreateScan.Field()
     create_interaction = CreateOrUpdateInteraction.Field()
     mark_scan_synced = MarkScanSynced.Field()
+    delete_project = DeleteProject.Field()
+    delete_user_story = DeleteUserStory.Field()
 
 
 class Query(graphene.ObjectType):
@@ -662,6 +726,7 @@ class Query(graphene.ObjectType):
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
     vuls_by_cwe = graphene.List(Vuln, cwe=graphene.Int())
+
     # stories_by_cwe = graphene.List(graphene.JSONString, cwe=graphene.Int())
     # count_unique_cwes = graphene.List(graphene.Int(), project = graphene.String())
 
@@ -805,7 +870,6 @@ class Query(graphene.ObjectType):
     #                 return list(ThreatModel.objects.distinct('cwe'))
     #     else:
     #         raise Exception("Unauthorized to perform action")
-
 
     # def resolve_stories_by_cwe(self, info, **kwargs):
     #     if _validate_jwt(info.context['request'].headers):

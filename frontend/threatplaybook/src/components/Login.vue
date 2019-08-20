@@ -59,8 +59,8 @@
         methods: {
             loginAction() {
                 this.isLoading = true
-                const baseURL = process.env.VUE_APP_API_URL
-                // const baseURL = 'http://127.0.0.1:5042'
+                // const baseURL = process.env.VUE_APP_API_URL
+                const baseURL = 'http://127.0.0.1:5042'
                 const loginUrl = baseURL + '/login'
                 axios
                     .post(loginUrl, {

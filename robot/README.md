@@ -1,1 +1,0 @@
-# RobotFramework for ThreatPlaybook
