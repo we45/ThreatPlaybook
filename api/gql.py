@@ -685,6 +685,44 @@ class DeleteUserStory(graphene.Mutation):
             raise Exception("Not authorized to perform action")
 
 
+class DeleteAbuserStory(graphene.Mutation):
+    class Arguments:
+        short_name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, short_name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(short_name).strip()
+                ref_case = AbuseCase.objects.get(short_name=name)
+                ref_case.delete()
+                return DeleteAbuserStory(ok=True)
+            except DoesNotExist:
+                raise Exception("Abuser Story does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
+
+
+class DeleteThreatScenario(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(name).strip()
+                ref_case = ThreatModel.objects.get(name=name)
+                ref_case.delete()
+                return DeleteThreatScenario(ok=True)
+            except DoesNotExist:
+                raise Exception("Abuser Story does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
+
+
 # declarations of Mutations and Queries
 
 class ThreatPlaybookMutations(graphene.ObjectType):
@@ -701,6 +739,8 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     mark_scan_synced = MarkScanSynced.Field()
     delete_project = DeleteProject.Field()
     delete_user_story = DeleteUserStory.Field()
+    delete_abuser_story = DeleteAbuserStory.Field()
+    delete_threat_scenario = DeleteThreatScenario.Field()
 
 
 class Query(graphene.ObjectType):

@@ -230,6 +230,33 @@ def test_delete_user_story(api, setup):
     assert 'deleteUserStory' in r.json()['data']
     assert r.json()['data']['deleteUserStory']['ok']
 
+def test_delete_abuser_story(api, setup):
+    data = """
+        mutation {
+          deleteAbuserStory(shortName: "admin cred compromise") {
+            ok
+          }
+        }
+        """
+    r = api.requests.post("/graph", json={"query": data}, headers={"Authorization": token})
+    assert 'data' in r.json()
+    assert 'deleteAbuserStory' in r.json()['data']
+    assert r.json()['data']['deleteAbuserStory']['ok']
+
+def test_delete_threat_scenario(api, setup):
+    data = """
+        mutation {
+          deleteThreatScenario(name: "default admin password") {
+            ok
+          }
+        }
+        """
+    r = api.requests.post("/graph", json={"query": data}, headers={"Authorization": token})
+    assert 'data' in r.json()
+    assert 'deleteThreatScenario' in r.json()['data']
+    assert r.json()['data']['deleteThreatScenario']['ok']
+
+
 
 def test_delete_project(api, setup):
     data = """
@@ -243,4 +270,5 @@ def test_delete_project(api, setup):
     assert 'data' in r.json()
     assert 'deleteProject' in r.json()['data']
     assert r.json()['data']['deleteProject']['ok']
+
 
