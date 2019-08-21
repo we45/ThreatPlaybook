@@ -1,6 +1,6 @@
 from schema import Schema, Regex
 from mongoengine import *
-from api.models import User
+from models import User
 import os
 from huepy import *
 import jwt

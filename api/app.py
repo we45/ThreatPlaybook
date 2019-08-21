@@ -1,10 +1,10 @@
 import responder
-from api.models import *
+from models import *
 import graphene
-from api.gql import Query, ThreatPlaybookMutations
+from gql import Query, ThreatPlaybookMutations
 import json
 import logging
-from api.utils import validation_dictionary, connect_db, _validate_jwt, _validate_jwt_super
+from utils import validation_dictionary, connect_db, _validate_jwt, _validate_jwt_super
 from schema import Schema, Regex, SchemaMissingKeyError
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError

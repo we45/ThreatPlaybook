@@ -1,9 +1,9 @@
 import graphene
 from graphene_mongo import MongoengineObjectType
-from api.models import Vulnerability, Target
-from api.models import Project as Proj
-from api.models import ThreatModel, Test, Repo, RepoTestCase
-from api.models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
+from models import Vulnerability, Target
+from models import Project as Proj
+from models import ThreatModel, Test, Repo, RepoTestCase
+from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from api.utils import connect_db, _validate_jwt
