@@ -6,7 +6,7 @@ from models import ThreatModel, Test, Repo, RepoTestCase
 from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
 from mongoengine import DoesNotExist
 from graphene.relay import Node
-from api.utils import connect_db, _validate_jwt
+from utils import connect_db, _validate_jwt
 
 connect_db()
 
