@@ -145,3 +145,15 @@ class Settings(Document):
     orchy_url = StringField()
     orchy_user = StringField()
     orchy_password = StringField()
+
+
+class ASVS(Document):
+    section = StringField()
+    name = StringField()
+    item = StringField()
+    description = StringField()
+    l1 = BooleanField(default=False)
+    l2 = BooleanField(default=False)
+    l3 = BooleanField(default=False)
+    cwe = IntField()
+    nist = StringField()

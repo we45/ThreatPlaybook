@@ -15,6 +15,7 @@ import ntpath
 import yaml
 from bson.json_util import dumps
 from sys import exit
+import csv
 
 api = responder.API(cors=True, cors_params={
     "allow_origins": ['*'],
@@ -60,6 +61,23 @@ async def _validate(content, key):
         return {"__error": str(generic)}
 
 
+def load_reload_asvs_db():
+    if not ASVS.objects:
+        asvs_file = os.path.join(os.path.abspath(os.path.curdir), 'asvs/asvs.csv')
+        if os.path.isfile(asvs_file):
+            with open(asvs_file, 'rt') as asvs_file:
+                data = csv.reader(asvs_file)
+                for row in data:
+                    cwe = row[7]
+                    if not cwe:
+                        cwe = 0
+                    else:
+                        cwe = int(row[7])
+                    new_item = ASVS(section=row[0], name=row[1], item=row[2], description=row[3],
+                                    l1=row[4] or False, l2=row[5] or False, l3=row[6] or False, cwe=cwe,
+                                    nist=row[8] or "").save()
+
+
 def load_reload_repo_db():
     if not Repo.objects:
         print("No Repo items found. Loading...")
@@ -102,6 +120,8 @@ def initialize_superuser():
 
 load_reload_repo_db()  # check if repos are not loaded, then loads them
 initialize_superuser()  # adds superuser with default password if there's no superuser
+load_reload_asvs_db()  # checks if ASVS datasets are there in Mongo and loads them as required
+
 
 # Regular API Views
 @api.route('/create-user')
@@ -198,6 +218,7 @@ async def change_password(req, resp):
             resp.media = {'error': "Unable to parse JSON"}
             return resp
 
+
 @api.route('/feature-by-cwe/{cwe}')
 def get_story_by_cwe(req, resp, *, cwe):
     if req.method == 'post':
@@ -206,7 +227,7 @@ def get_story_by_cwe(req, resp, *, cwe):
             pipeline = [{"$match": {"cwe": cwe}}, {
                 "$lookup": {"from": "abuse_case", "localField": "_id", "foreignField": "models",
                             "as": "abuses_model"}}, {"$lookup": {"from": "use_case", "localField": "_id",
-                                                           "foreignField": "scenarios", "as": "usecases_model"}},
+                                                                 "foreignField": "scenarios", "as": "usecases_model"}},
                         {"$lookup": {"from": "project", "localField": "project",
                                      "foreignField": "_id", "as": "project_model"}},
                         ]
@@ -217,8 +238,6 @@ def get_story_by_cwe(req, resp, *, cwe):
             resp.status_code = api.status_codes.HTTP_403
             resp.media = {'error': "Unauthorized to perform action"}
             return resp
-
-
 
 
 # Additional Routes for API - GraphQL

@@ -3,7 +3,7 @@ from graphene_mongo import MongoengineObjectType
 from models import Vulnerability, Target
 from models import Project as Proj
 from models import ThreatModel, Test, Repo, RepoTestCase
-from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction
+from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction, ASVS
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
@@ -136,6 +136,11 @@ class NewVulnerabilityEvidence(graphene.ObjectType):
     attack = graphene.String()
     evidence = graphene.String()
     other_info = graphene.String()
+
+
+class OWASP_ASVS(MongoengineObjectType):
+    class Meta:
+        model = ASVS
 
 
 class UserStoryInput(graphene.InputObjectType):
@@ -766,6 +771,7 @@ class Query(graphene.ObjectType):
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
     vuls_by_cwe = graphene.List(Vuln, cwe=graphene.Int())
+    asvs_by_cwe = graphene.List(OWASP_ASVS, cwe=graphene.Int())
 
     # stories_by_cwe = graphene.List(graphene.JSONString, cwe=graphene.Int())
     # count_unique_cwes = graphene.List(graphene.Int(), project = graphene.String())
@@ -900,6 +906,14 @@ class Query(graphene.ObjectType):
             if 'cwe' in kwargs:
                 if isinstance(kwargs['cwe'], int):
                     return list(Vulnerability.objects(cwe=kwargs['cwe']))
+        else:
+            raise Exception("Unauthorized to perform action")
+
+    def resolve_asvs_by_cwe(self, info, **kwargs):
+        if _validate_jwt(info.context['request'].headers):
+            if 'cwe' in kwargs:
+                if isinstance(kwargs['cwe'], int):
+                    return list(ASVS.objects(cwe=kwargs['cwe']))
         else:
             raise Exception("Unauthorized to perform action")
 
