@@ -1,0 +1,22 @@
+name: Server-Side Request Forgery
+cwe: 918
+description: The web server receives a URL or similar request from an upstream component and retrieves the contents of this URL, but it does not sufficiently ensure that the request is being sent to the expected destination.
+mitigations:
+- description: Consider scanning dependencies for SSRF vulnerabilities, including infrastructure components like Apache
+  phase: Implementation
+- description: Consider implementing a URL whitelist to reduce the possibility of an attacker-controlled URL being resolved by your application
+  phase: Implementation
+- description: Consider implementing additional Header validation to sensitive paths like EC2 Metadata, etc to mitigate the effects of an existing SSRF flaw
+  phase: Implementation
+risk:
+- consequence: Unauthorized users may be able to gain access to sensitive information in internal/protected system components
+  type: Confidentiality
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools to identify SSRF
+  tools: [burpsuite,zap]
+  type: discovery
+- name: manual
+  test: test for misconfigured AWS S3 Buckets manually, as part of a Pentest or Bug-bounty
+  type: manual
+categories: [cloud]
