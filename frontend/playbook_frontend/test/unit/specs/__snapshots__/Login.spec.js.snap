@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login test 1`] = `
+<div>
+    <div><img src="../../assets/threat_logo.png" alt="ThreatPlaybook Logo" class="img-center">
+        <el-form model="[object Object]" rules="[object Object]" label-position="left" label-width="0px" class="demo-loginForm login-container">
+            <el-form-item label="Email" prop="checkEmail">
+                <el-input type="email" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Password" prop="checkPass">
+                <el-input type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" round="" style="float: right;">Login</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+`;
+
+exports[`methods Login test 1`] = `
+<div>
+    <div><img src="../../assets/threat_logo.png" alt="ThreatPlaybook Logo" class="img-center">
+        <el-form model="[object Object]" rules="[object Object]" label-position="left" label-width="0px" class="demo-loginForm login-container">
+            <el-form-item label="Email" prop="checkEmail">
+                <el-input type="email" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Password" prop="checkPass">
+                <el-input type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" round="" style="float: right;">Login</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+`;
