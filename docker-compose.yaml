@@ -24,7 +24,7 @@ services:
     volumes:
       - ./threatplaybook_db:/bitnami
   api:
-    image: we45/threatplaybook-api
+    image: we45/threatplaybook-api:4.0
     expose:
       - "5042"
     environment:
@@ -41,13 +41,12 @@ services:
       - mongo_db
     command: sh -c "./wait-for mongo_db:27017 -- /usr/local/bin/python3.6 /threatplaybook/app.py"
   frontend:
-    image: we45/threatplaybook-frontend
+    image: we45/threatplaybook-frontend:4.0
     expose:
       - "8080"
     environment:
-      - VUE_APP_API_URL=http://192.168.1.12
+      - API_URL=http://api:5042
     links:
       - api
     depends_on:
       - api
-
