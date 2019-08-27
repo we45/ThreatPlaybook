@@ -11,4 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Builds the API Docker Image
-      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file Dockerfile --tag threatplaybook-api:$(date +%s)
+      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file Dockerfile --tag threatplaybook-api
+
+    - name: Login to Docker
+      run: docker login -u we45 --password $DOCKER_LOGIN_PASS
+
+    - name: Tag and Push to Docker
+      run: docker tag threatplaybook-api we45/threatplaybook-api & docker push we45/threatplaybook-api
