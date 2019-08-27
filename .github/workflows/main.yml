@@ -1,0 +1,15 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build API Docker Container 
+      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-api
+    - name: Test Secret
+      run: echo $DOCKER_LOGIN_USER
