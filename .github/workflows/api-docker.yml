@@ -14,7 +14,7 @@ jobs:
       run: cd $GITHUB_WORKSPACE/api/ && docker build . --file Dockerfile --tag threatplaybook-api
 
     - name: Login to Docker
-      run: docker login -u we45 --password $DOCKER_LOGIN_PASS
+      run: docker login -u we45 --password-stdin $DOCKER_LOGIN_PASS
 
     - name: Tag and Push to Docker
       run: docker tag threatplaybook-api we45/threatplaybook-api & docker push we45/threatplaybook-api
