@@ -389,7 +389,6 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
             new_threat_model = None
             if 't_model' in kwargs:
                 model_attribs = kwargs['t_model']
-                print(model_attribs['project'])
                 if not all(k in model_attribs for k in ("name", "vul_name", "description", "project")):
                     raise Exception("Mandatory parameters are not in the mutation")
                 else:
@@ -426,26 +425,28 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                                                            project=ref_proj,
                                                            tests=test_cases
                                                            ).save()
+                            if 'abuser_stories' in model_attribs:
+                                abuses = model_attribs.get('abuser_stories')
+                                for single in abuses:
+                                    try:
+                                        ref_abuse = AbuseCase.objects.get(short_name=single)
+                                        linked_tm = ThreatModel.objects.get(name=model_attribs.get('name'))
+                                        ref_abuse.update(add_to_set__models=[linked_tm.id])
+                                    except DoesNotExist:
+                                        pass
+
+                            if 'user_story' in model_attribs:
+                                try:
+                                    features = str(model_attribs.get('user_story')).strip()
+                                    ref_use = UseCase.objects.get(short_name=features)
+                                    ref_use.update(add_to_set__scenarios=new_threat_model)
+                                except DoesNotExist:
+                                    raise Exception("Feature/User Story mentioned does not exist")
+
                     except Exception as e:
                         return e.args
 
-                    if 'abuser_stories' in model_attribs:
-                        abuses = str(model_attribs.get('abuser_stories')).strip()
-                        for single in abuses:
-                            try:
-                                ref_abuse = AbuseCase.objects.get(short_name=single)
-                                linked_tm = ThreatModel.objects.get(name=model_attribs.get('name'))
-                                ref_abuse.update(add_to_set__models=[linked_tm.id])
-                            except DoesNotExist:
-                                pass
 
-                    if 'user_story' in model_attribs:
-                        try:
-                            features = str(model_attribs.get('user_story')).strip()
-                            ref_use = UseCase.objects.get(short_name=features)
-                            ref_use.update(add_to_set__scenarios=new_threat_model)
-                        except DoesNotExist:
-                            raise Exception("Feature/User Story mentioned does not exist")
 
             return CreateOrUpdateThreatModel(threat_model=new_threat_model)
         else:
