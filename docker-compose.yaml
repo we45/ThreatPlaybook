@@ -1,11 +1,9 @@
 version: '3'
 services:
   nginx:
-    image: nginx:latest
+    image: we45/threatplaybook-nginx:latest
     ports:
       - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/app.conf
     depends_on:
       - api
       - frontend
@@ -34,7 +32,9 @@ services:
       - MONGO_PORT=27017
       - MONGO_DB=threat_playbook
       - SUPERUSER_EMAIL=abhay@we45.com
+      - SUPERUSER_PASS=pl@yb00k1234
       - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
+      - WAIT_HOSTS=mongo_db:27017
     links:
       - mongo_db
     depends_on:
