@@ -281,6 +281,7 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                                                                           project=my_proj, upsert=True)
                         if 'part_of' in attrs:
                             ref_user_story.update(part_of=attrs['part_of'])
+                        
 
                         new_user_story = ref_user_story
                     except DoesNotExist:
@@ -592,6 +593,8 @@ class CreateOrUpdateTestCase(graphene.Mutation):
     def mutate(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
             case_attrs = kwargs.get('single_case')
+            ref_case = None
+            new_test_case = None
 
             if not case_attrs:
                 raise Exception("No Case Attributes")
@@ -608,20 +611,21 @@ class CreateOrUpdateTestCase(graphene.Mutation):
 
                     try:
                         ref_case = Test.objects.get(name=test_name)
+                        print("REF CASE", ref_case.name)
                         if ref_case:
-                            Test.objects(name=ref_case).update_one(
-                                name=ref_case, test_case=case_attrs['test_case'], executed=executed,
+                            Test.objects(name=test_name).update_one(
+                                name=test_name, test_case=case_attrs['test_case'], executed=executed,
                                 test_type=test_type, upsert=True)
-                            new_test_case = Test.objects.get(name=ref_case)
+                            new_test_case = Test.objects.get(name=test_name)
                     except DoesNotExist:
+                        print("Invoking Does not exist")
                         new_test_case = Test(
-                            name=ref_case, test_case=case_attrs['test_case'],
+                            name=test_name, test_case=case_attrs['test_case'],
                             tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
                         ).save()
                     try:
                         ref_model = ThreatModel.objects.get(name=case_attrs['threat_model'])
                         ref_model.update(add_to_set__tests=new_test_case)
-                        print(ref_model)
 
                     except DoesNotExist:
                         pass
