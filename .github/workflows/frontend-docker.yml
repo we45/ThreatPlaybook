@@ -1,0 +1,14 @@
+name: Front-end Docker Image Build
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Builds the Front-end Docker Image
+      run: cd $GITHUB_WORKSPACE/frontend/playbook_frontend/ && docker build . --file Dockerfile --tag threatplaybook-frontend:$(date +%s)

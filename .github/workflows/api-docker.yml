@@ -1,0 +1,14 @@
+name: API Docker Image Build
+
+on: [push]
+
+jobs:
+
+  build:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - uses: actions/checkout@v1
+    - name: Builds the API Docker Image
+      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file Dockerfile --tag threatplaybook-api:$(date +%s)
