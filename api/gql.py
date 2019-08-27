@@ -268,6 +268,7 @@ class CreateOrUpdateUserStory(graphene.Mutation):
     user_story = graphene.Field(lambda: NewUserStory)
 
     def mutate(self, info, **kwargs):
+        new_user_story = None
         if _validate_jwt(info.context['request'].headers):
             try:
                 if 'userstory' in kwargs:
@@ -281,7 +282,6 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                                                                           project=my_proj, upsert=True)
                         if 'part_of' in attrs:
                             ref_user_story.update(part_of=attrs['part_of'])
-                        
 
                         new_user_story = ref_user_story
                     except DoesNotExist:
@@ -611,7 +611,6 @@ class CreateOrUpdateTestCase(graphene.Mutation):
 
                     try:
                         ref_case = Test.objects.get(name=test_name)
-                        print("REF CASE", ref_case.name)
                         if ref_case:
                             Test.objects(name=test_name).update_one(
                                 name=test_name, test_case=case_attrs['test_case'], executed=executed,
@@ -731,6 +730,23 @@ class DeleteThreatScenario(graphene.Mutation):
         else:
             raise Exception("Not authorized to perform action")
 
+class DeleteTestCase(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(name).strip()
+                ref_case = Test.objects.get(name=name)
+                ref_case.delete()
+                return DeleteTestCase(ok=True)
+            except DoesNotExist:
+                raise Exception("Test Case does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
 
 # declarations of Mutations and Queries
 
@@ -750,6 +766,7 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     delete_user_story = DeleteUserStory.Field()
     delete_abuser_story = DeleteAbuserStory.Field()
     delete_threat_scenario = DeleteThreatScenario.Field()
+    delete_test_case = DeleteTestCase.Field()
 
 
 class Query(graphene.ObjectType):
