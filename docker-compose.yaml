@@ -21,10 +21,12 @@ services:
       - MONGODB_DATABASE=threat_playbook
     expose:
       - "27017"
+    ports:
+      - "27017:27017"
     volumes:
       - ./threatplaybook_db:/bitnami
   api:
-    image: we45/threatplaybook-api:4.0
+    image: we45/threatplaybook-api:latest
     expose:
       - "5042"
     environment:
