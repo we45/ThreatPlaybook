@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build API Docker Container 
-      run: docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-api
+      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-api
