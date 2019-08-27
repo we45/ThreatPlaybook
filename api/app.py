@@ -113,7 +113,8 @@ def initialize_superuser():
             print("Mandatory variable SUPERUSER_EMAIL not present")
             exit(1)
         else:
-            hash_pass = ph.hash("pl@yb00k1234")
+            admin_pass = os.environ.get('SUPERUSER_PASS', "pl@yb00k1234")
+            hash_pass = ph.hash(admin_pass)
             User(email=os.environ.get('SUPERUSER_EMAIL'), password=hash_pass, user_type="super").save()
             print("Initialized SuperUser with default password")
 
