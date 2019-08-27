@@ -1,0 +1,13 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build API Docker Container 
+      run: docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-api
