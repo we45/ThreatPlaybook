@@ -13,7 +13,7 @@ Now ThreatPlaybook has an API component that can be deployed within your environ
     * [Responder Web Framework](https://python-responder.org/en/latest/)
     * [Graphene-Python](https://graphene-python.org/) for GraphQL. ThreatPlaybook is nearly 100% GraphQL
     * Frontend: VueJS 2.9.6
-        * Bootstrap4
+        * ElementUI
         * VisJS => Visualization Framework
     * Docopt => CLI framework for the API
     * MongoDB => Primary Backend Database

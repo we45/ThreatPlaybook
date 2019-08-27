@@ -24,7 +24,7 @@ We highly recommend that you use the Docker Compose file given in the repo. Its 
 
 Once you're ready. You can run `docker-compose up`. This will load the stack for you. 
 
-Your server should be running on `http://localhost:5042` unless you've changed the options for this. 
+Your server should be running on `http://<IP Address>` unless you've changed the options for this. You'll need to use an addressable IP Address to access the API and Frontend
 
 Once your server is up and running, you'll need to download and run the client. The client is a CLI app that you can `pip install` and get running with
 
@@ -57,7 +57,7 @@ Enter port information, port defaults to 5042 if nothing is entered
 [+] Successfully set host to: http://localhost and port to: 5042
 ```
 
-* You'll have to change the default password for your superadmin, which is `pl@yb00k1234`
+* You'll have to change the default password for your superadmin, which is in the `SUPERUSER_PASS` in your Docker-Compose File
 
 > Please note: You can't do anything without changing the default password. This applies to all users. Not just superusers
 
