@@ -268,6 +268,7 @@ class CreateOrUpdateUserStory(graphene.Mutation):
     user_story = graphene.Field(lambda: NewUserStory)
 
     def mutate(self, info, **kwargs):
+        new_user_story = None
         if _validate_jwt(info.context['request'].headers):
             try:
                 if 'userstory' in kwargs:
@@ -592,6 +593,8 @@ class CreateOrUpdateTestCase(graphene.Mutation):
     def mutate(self, info, **kwargs):
         if _validate_jwt(info.context['request'].headers):
             case_attrs = kwargs.get('single_case')
+            ref_case = None
+            new_test_case = None
 
             if not case_attrs:
                 raise Exception("No Case Attributes")
@@ -609,19 +612,19 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                     try:
                         ref_case = Test.objects.get(name=test_name)
                         if ref_case:
-                            Test.objects(name=ref_case).update_one(
-                                name=ref_case, test_case=case_attrs['test_case'], executed=executed,
+                            Test.objects(name=test_name).update_one(
+                                name=test_name, test_case=case_attrs['test_case'], executed=executed,
                                 test_type=test_type, upsert=True)
-                            new_test_case = Test.objects.get(name=ref_case)
+                            new_test_case = Test.objects.get(name=test_name)
                     except DoesNotExist:
+                        print("Invoking Does not exist")
                         new_test_case = Test(
-                            name=ref_case, test_case=case_attrs['test_case'],
+                            name=test_name, test_case=case_attrs['test_case'],
                             tags=tag_list, tools=tool_list, executed=executed, test_type=test_type
                         ).save()
                     try:
                         ref_model = ThreatModel.objects.get(name=case_attrs['threat_model'])
                         ref_model.update(add_to_set__tests=new_test_case)
-                        print(ref_model)
 
                     except DoesNotExist:
                         pass
@@ -727,6 +730,23 @@ class DeleteThreatScenario(graphene.Mutation):
         else:
             raise Exception("Not authorized to perform action")
 
+class DeleteTestCase(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        if _validate_jwt(info.context['request'].headers):
+            try:
+                name = str(name).strip()
+                ref_case = Test.objects.get(name=name)
+                ref_case.delete()
+                return DeleteTestCase(ok=True)
+            except DoesNotExist:
+                raise Exception("Test Case does not exist")
+        else:
+            raise Exception("Not authorized to perform action")
 
 # declarations of Mutations and Queries
 
@@ -746,6 +766,7 @@ class ThreatPlaybookMutations(graphene.ObjectType):
     delete_user_story = DeleteUserStory.Field()
     delete_abuser_story = DeleteAbuserStory.Field()
     delete_threat_scenario = DeleteThreatScenario.Field()
+    delete_test_case = DeleteTestCase.Field()
 
 
 class Query(graphene.ObjectType):

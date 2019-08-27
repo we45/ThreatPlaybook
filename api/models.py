@@ -21,7 +21,6 @@ class Interaction(Document):
 
 
 class Test(Document):
-    name_id = StringField(required=True, unique=True)
     name = StringField()
     test_case = StringField()
     executed = BooleanField(default=False)
