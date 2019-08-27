@@ -31,8 +31,8 @@ services:
       - MONGO_PASS=password123
       - MONGO_PORT=27017
       - MONGO_DB=threat_playbook
-      - SUPERUSER_EMAIL=abhay@we45.com
-      - SUPERUSER_PASS=pl@yb00k1234
+      - SUPERUSER_EMAIL=admin@admin.com
+      - SUPERUSER_PASS=supersecret
       - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
       - WAIT_HOSTS=mongo_db:27017
     links:
