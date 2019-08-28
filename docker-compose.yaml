@@ -43,7 +43,7 @@ services:
       - mongo_db
     command: sh -c "./wait-for mongo_db:27017 -- /usr/local/bin/python3.6 /threatplaybook/app.py"
   frontend:
-    image: we45/threatplaybook-frontend:4.0
+    image: we45/threatplaybook-frontend:4.1
     expose:
       - "8080"
     environment:
