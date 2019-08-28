@@ -1,5 +1,5 @@
 # Building your Threat Model with ThreatPlaybook
-* Please go over the [Getting Started](../Getting-Started.md) if you haven't already
+* Please go over the [Getting Started](../Getting-Started/README.md) if you haven't already
 * Please go over the [Client Operations Guide](../Client/README.md) to understand how you should use the client
 
 ## Building your Threat Model

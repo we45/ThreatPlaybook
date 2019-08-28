@@ -15,7 +15,7 @@ Now ThreatPlaybook has an API component that can be deployed within your environ
     * Frontend: VueJS 2.9.6
         * ElementUI
         * VisJS => Visualization Framework
-    * Docopt => CLI framework for the API
+    * Docopt => CLI framework for the Client
     * MongoDB => Primary Backend Database
     * MongoEngine => Python ODM/ORM for Mongo
     * PyJWT for JSON Web Token implementation
