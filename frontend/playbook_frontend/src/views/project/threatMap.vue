@@ -107,6 +107,7 @@ export default {
                     'id': sceneRandom,
                     'name': singleScenario.name,
                     'title': singleScenario.description,
+                    'cwe': singleScenario.cwe,
                     'type': 'Scenarios',
                     'children': []
                   }

@@ -19,7 +19,7 @@
             <span style="float: left;" class="headerStyle">  Name : {{ actual_project_name }} </span>
           </el-col>
           <el-col :span="12">
-            <el-button type="primary" round style="float: right;margin-right: 2%;" @click="viewUserStoryMap()">User Story Map</el-button>
+<!--            <el-button type="primary" round style="float: right;margin-right: 2%;" @click="viewUserStoryMap()">User Story Map</el-button>-->
             <el-button type="primary" round style="float: right; margin-right: 2%;" @click="viewThreatMap()">Threat
               Map
             </el-button>
