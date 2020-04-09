@@ -69,3 +69,6 @@ Pipfile
 cli/dist/ThreatPlaybook-Client-3.0.3.tar.gz
 cli/playbook/.cred
 venv/
+*.pyc
+api/__pycache__/utils.cpython-37.pyc
+api/__pycache__/models.cpython-37.pyc

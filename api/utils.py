@@ -48,6 +48,9 @@ def _validate_jwt_super(http_headers):
         else:
             return False
 
+# def _generate_object_hash(mydictionary):
+    
+
 
 def connect_db():
     if not 'MONGO_USER' in os.environ:
