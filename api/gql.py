@@ -770,7 +770,7 @@ class DeleteUserStory(graphene.Mutation):
                 name = str(short_name).strip()
                 ref_case = UseCase.objects.get(short_name=name)
                 try:
-                    ref_proj = Project.objects.get(id = ref_case.project)
+                    ref_proj = ref_case.project
                     if ref_case in ref_proj.features:
                         ref_proj.features.remove(ref_case)
                         ref_proj.save()
@@ -797,9 +797,9 @@ class DeleteAbuserStory(graphene.Mutation):
                 name = str(short_name).strip()
                 ref_case = AbuseCase.objects.get(short_name=name)
                 try:
-                    ref_story = UserStory.objects.get(id = ref_case.use_case)
+                    ref_story = ref_case.use_case
                     if ref_case in ref_story.abuses:
-                        ref_story.features.remove(ref_case)
+                        ref_story.abuses.remove(ref_case)
                         ref_story.save()
                 except DoesNotExist:
                     raise Exception("Unable to find referenced User Story/Feature.")
@@ -823,9 +823,9 @@ class DeleteThreatScenario(graphene.Mutation):
                 name = str(name).strip()
                 ref_case = ThreatModel.objects.get(name=name)
                 try:
-                    ref_story = AbuseCase.objects.get(id = ref_case.abuse_case)
+                    ref_story = ref_case.abuse_case
                     if ref_case in ref_story.scenarios:
-                        ref_story.features.remove(ref_case)
+                        ref_story.scenarios.remove(ref_case)
                         ref_story.save()
                 except DoesNotExist:
                     raise Exception("Unable to find referenced Abuse Case.")
@@ -849,9 +849,9 @@ class DeleteTestCase(graphene.Mutation):
                 name = str(name).strip()
                 ref_case = Test.objects.get(name=name)
                 try:
-                    ref_story = ThreatModel.objects.get(id = ref_case.scenario)
+                    ref_story = ref_case.scenario
                     if ref_case in ref_story.tests:
-                        ref_story.features.remove(ref_case)
+                        ref_story.tests.remove(ref_case)
                         ref_story.save()
                 except DoesNotExist:
                     raise Exception("Unable to find referenced Threat Model")
@@ -886,12 +886,6 @@ class ThreatPlaybookMutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    
-    # all_projects_to_models = MongoengineConnectionField(Project)
-    # all_features = MongoengineConnectionField(UserStory)
-    # all_abuses = MongoengineConnectionField(AbuserStory)
-    # all_models = MongoengineConnectionField(TModel)
-    # all_tests = MongoengineConnectionField(TCase)
     vulns = graphene.List(Vuln)
     scans = graphene.List(VulScan)
     projects = graphene.List(Project)
@@ -913,7 +907,7 @@ class Query(graphene.ObjectType):
 
     repo_by_name = graphene.Field(Repository, short_name=graphene.String())
     user_story_by_project = graphene.List(UserStory, project=graphene.String())
-    abuser_story_by_project = graphene.List(AbuserStory, project=graphene.String())
+    threat_scenarios_by_name = graphene.Field(TModel, name = graphene.String())
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
@@ -995,13 +989,6 @@ class Query(graphene.ObjectType):
         else:
             raise Exception("Unauthorized to perform action")
 
-    def resolve_abuser_story_by_project(self, info, **kwargs):
-        if _validate_jwt(info.context["request"].headers):
-            if "project" in kwargs:
-                ref_project = Proj.objects.get(name=kwargs.get("project"))
-                return AbuseCase.objects(project=ref_project.id)
-        else:
-            raise Exception("Unauthorized to perform action")
 
     def resolve_tgt_by_project(self, info, **kwargs):
         if _validate_jwt(info.context["request"].headers):
@@ -1010,6 +997,21 @@ class Query(graphene.ObjectType):
                 return Target.objects(project=ref_project.id)
         else:
             raise Exception("Unauthorized to perform action")
+
+    
+    def resolve_threat_scenarios_by_name(self, info, **kwargs):
+        if _validate_jwt(info.context.get('request').headers):
+            if "name" in kwargs:
+                try:
+                    return ThreatModel.objects.get(name = kwargs.get('name'))
+                except DoesNotExist:
+                    raise Exception("Unable to find threat model by that name")
+            else:
+                raise Exception("There's no name in query")
+            
+
+
+
 
     def resolve_search_threat_scenario(self, info, **kwargs):
         if _validate_jwt(info.context["request"].headers):
