@@ -1,5 +1,5 @@
 import graphene
-from graphene_mongo import MongoengineObjectType
+from graphene_mongo import MongoengineObjectType, MongoengineConnectionField
 from models import Vulnerability, Target
 from models import Project as Proj
 from models import ThreatModel, Test, Repo, RepoTestCase
@@ -7,6 +7,7 @@ from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction,
 from mongoengine import DoesNotExist
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
+from graphene.relay import Node
 import json
 
 connect_db()
@@ -16,25 +17,26 @@ class Vuln(MongoengineObjectType):
     class Meta:
         model = Vulnerability
 
+class Repository(MongoengineObjectType):
+    class Meta:
+        model = Repo
+        interfaces = (Node,)
+
+
+class RepositoryTestCase(MongoengineObjectType):
+    class Meta:
+        model = RepoTestCase
 
 class Project(MongoengineObjectType):
     class Meta:
         model = Proj
-
-
-class TCase(MongoengineObjectType):
-    class Meta:
-        model = Test
-
-
-class TModel(MongoengineObjectType):
-    class Meta:
-        model = ThreatModel
+        # interfaces = (Node, )
 
 
 class UserStory(MongoengineObjectType):
     class Meta:
         model = UseCase
+        # interfaces = (Node, )
 
 
 class AbuserStory(MongoengineObjectType):
@@ -43,14 +45,16 @@ class AbuserStory(MongoengineObjectType):
         # interfaces = (Node,)
 
 
-class Repository(MongoengineObjectType):
+class TModel(MongoengineObjectType):
     class Meta:
-        model = Repo
+        model = ThreatModel
+        # interfaces = (Node, )
 
 
-class RepositoryTestCase(MongoengineObjectType):
+class TCase(MongoengineObjectType):
     class Meta:
-        model = RepoTestCase
+        model = Test
+        # interfaces = (Node, )
 
 
 class Tgt(MongoengineObjectType):
@@ -288,6 +292,10 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                         )
                         if "part_of" in attrs:
                             ref_user_story.update(part_of=attrs["part_of"])
+                        
+                        if ref_user_story not in my_proj.features:
+                            my_proj.features.append(ref_user_story)
+                            my_proj.save()
 
                         new_user_story = ref_user_story
                     except DoesNotExist:
@@ -297,8 +305,12 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                         new_user_story.project = my_proj
                         if "part_of" in attrs:
                             new_user_story.part_of = attrs["part_of"]
+                        
 
                         new_user_story.save()
+                        if new_user_story not in my_proj.features:
+                            my_proj.features.append(new_user_story)
+                            my_proj.save()
 
                     except Exception as e:
                         return e.args
@@ -359,17 +371,19 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
             except DoesNotExist as ude:
                 return ude.args
 
-            ref_project = ref_user_story.project
             try:
 
-                AbuseCase.objects.get(short_name=short_name)
+                new_abuse_case = AbuseCase.objects.get(short_name=short_name)
                 AbuseCase.objects(short_name=short_name).update_one(
                     short_name=short_name,
                     description=description,
                     use_case=ref_user_story,
                     upsert=True,
                 )
-                new_abuse_case = AbuseCase.objects.get(short_name=short_name)
+                if new_abuse_case not in ref_user_story.abuses:
+                    ref_user_story.abuses.append(new_abuse_case)
+                    ref_user_story.save()
+
                 updated = True
                 created = False
             except DoesNotExist:
@@ -378,6 +392,11 @@ class CreateOrUpdateAbuserStory(graphene.Mutation):
                     description=description,
                     use_case=ref_user_story,
                 ).save()
+
+                if new_abuse_case not in ref_user_story.abuses:
+                    ref_user_story.abuses.append(new_abuse_case)
+                    ref_user_story.save()
+
                 updated = False
                 created = True
 
@@ -450,6 +469,9 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                             new_threat_model = ThreatModel.objects.get(
                                 name=model_attribs.get("name")
                             )
+                            if new_threat_model not in ref_abuser_story.scenarios:
+                                ref_abuser_story.scenarios.append(new_threat_model)
+                                ref_abuser_story.save()
 
                         except DoesNotExist:
                             new_threat_model = ThreatModel(
@@ -466,6 +488,9 @@ class CreateOrUpdateThreatModel(graphene.Mutation):
                             new_threat_model = ThreatModel.objects.get(
                                 name=model_attribs.get("name")
                             )
+                            if new_threat_model not in ref_abuser_story.scenarios:
+                                ref_abuser_story.scenarios.append(new_threat_model)
+                                ref_abuser_story.save()
 
                     except Exception as e:
                         return e.args
@@ -649,6 +674,13 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                     test_name = str(case_attrs["name"]).strip()
 
                     try:
+                        ref_model = ThreatModel.objects.get(
+                            name=case_attrs["threat_model"]
+                        )
+                    except DoesNotExist:
+                        raise("Threat Model does not exist")
+
+                    try:
                         ref_case = Test.objects.get(name=test_name)
                         if ref_case:
                             Test.objects(name=test_name).update_one(
@@ -656,9 +688,13 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                                 test_case=case_attrs["test_case"],
                                 executed=executed,
                                 test_type=test_type,
+                                scenario = ref_model,
                                 upsert=True,
                             )
                             new_test_case = Test.objects.get(name=test_name)
+                            if new_test_case not in ref_model.tests:
+                                ref_model.tests.append(new_test_case)
+                                ref_model.save()
                     except DoesNotExist:
                         print("Invoking Does not exist")
                         new_test_case = Test(
@@ -668,15 +704,13 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                             tools=tool_list,
                             executed=executed,
                             test_type=test_type,
+                            scenario = ref_model
                         ).save()
-                    try:
-                        ref_model = ThreatModel.objects.get(
-                            name=case_attrs["threat_model"]
-                        )
-                        ref_model.update(add_to_set__tests=new_test_case)
+                        if new_test_case not in ref_model.tests:
+                                ref_model.tests.append(new_test_case)
+                                ref_model.save()
+                    
 
-                    except DoesNotExist:
-                        pass
             return CreateOrUpdateTestCase(case=new_test_case)
         else:
             raise Exception("Unauthorized to perform action")
@@ -735,6 +769,14 @@ class DeleteUserStory(graphene.Mutation):
             try:
                 name = str(short_name).strip()
                 ref_case = UseCase.objects.get(short_name=name)
+                try:
+                    ref_proj = Project.objects.get(id = ref_case.project)
+                    if ref_case in ref_proj.features:
+                        ref_proj.features.remove(ref_case)
+                        ref_proj.save()
+                except DoesNotExist:
+                    raise Exception("Unable to find referenced project.")
+    
                 ref_case.delete()
                 return DeleteUserStory(ok=True)
             except DoesNotExist:
@@ -754,6 +796,13 @@ class DeleteAbuserStory(graphene.Mutation):
             try:
                 name = str(short_name).strip()
                 ref_case = AbuseCase.objects.get(short_name=name)
+                try:
+                    ref_story = UserStory.objects.get(id = ref_case.use_case)
+                    if ref_case in ref_story.abuses:
+                        ref_story.features.remove(ref_case)
+                        ref_story.save()
+                except DoesNotExist:
+                    raise Exception("Unable to find referenced User Story/Feature.")
                 ref_case.delete()
                 return DeleteAbuserStory(ok=True)
             except DoesNotExist:
@@ -773,46 +822,19 @@ class DeleteThreatScenario(graphene.Mutation):
             try:
                 name = str(name).strip()
                 ref_case = ThreatModel.objects.get(name=name)
+                try:
+                    ref_story = AbuseCase.objects.get(id = ref_case.abuse_case)
+                    if ref_case in ref_story.scenarios:
+                        ref_story.features.remove(ref_case)
+                        ref_story.save()
+                except DoesNotExist:
+                    raise Exception("Unable to find referenced Abuse Case.")
                 ref_case.delete()
                 return DeleteThreatScenario(ok=True)
             except DoesNotExist:
                 raise Exception("Abuser Story does not exist")
         else:
             raise Exception("Not authorized to perform action")
-
-
-def remove_model(automated_item_list):
-    delete_list = []
-    ref_models = ThreatModel.objects(entry_source = 'automated').values_list('hash')
-    if len(ref_models):
-        diff_list = set(ref_models)-set(automated_item_list)
-        for single in ref_models:
-            for single_diff in diff_list:
-                if single == single_diff:
-                    try:
-                        ref_model = ThreatModel.objects.get(hash = single)
-                        delete_list.append(ref_model.name)
-                        ref_model.delete()
-                    except DoesNotExist:
-                        raise Exception("Unable to find the referenced object by hash: {}".format(single))
-    return delete_list
-
-
-class DeleteSyncThreatModel(graphene.Mutation):
-    class Arguments:
-        hashes = graphene.List(graphene.String)
-    
-    synced = graphene.List(graphene.String)
-
-    def mutate(self, info, hashes):
-        if _validate_jwt(info.context["request"].headers):
-            try:
-                remove_list = remove_model(hashes)
-                return DeleteSyncThreatModel(synced=remove_list)
-            except Exception as e:
-                raise Exception(e)
-        else:
-            raise Exception("Unauthorized to perform this action")
 
 
 class DeleteTestCase(graphene.Mutation):
@@ -826,6 +848,13 @@ class DeleteTestCase(graphene.Mutation):
             try:
                 name = str(name).strip()
                 ref_case = Test.objects.get(name=name)
+                try:
+                    ref_story = ThreatModel.objects.get(id = ref_case.scenario)
+                    if ref_case in ref_story.tests:
+                        ref_story.features.remove(ref_case)
+                        ref_story.save()
+                except DoesNotExist:
+                    raise Exception("Unable to find referenced Threat Model")
                 ref_case.delete()
                 return DeleteTestCase(ok=True)
             except DoesNotExist:
@@ -857,6 +886,12 @@ class ThreatPlaybookMutations(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
+    
+    # all_projects_to_models = MongoengineConnectionField(Project)
+    # all_features = MongoengineConnectionField(UserStory)
+    # all_abuses = MongoengineConnectionField(AbuserStory)
+    # all_models = MongoengineConnectionField(TModel)
+    # all_tests = MongoengineConnectionField(TCase)
     vulns = graphene.List(Vuln)
     scans = graphene.List(VulScan)
     projects = graphene.List(Project)
@@ -873,8 +908,6 @@ class Query(graphene.ObjectType):
         name=graphene.String(),
         cwe=graphene.Int(),
         severity=graphene.Int(),
-        tests__name=graphene.String(),
-        tests__tools=graphene.String(),
         project_name=graphene.String(),
     )
 

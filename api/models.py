@@ -12,6 +12,7 @@ def random_scan_name():
 class Project(Document):
     name = StringField(max_length=100, required=True, unique=True)
     orchy_webhook = StringField(required=False)
+    features = ListField(ReferenceField('UseCase'))
 
 
 class RepoTestCase(Document):
@@ -45,12 +46,13 @@ class Interaction(Document):
 
 
 class UseCase(Document):
-    short_name = StringField(max_length=100, unique=True)
+    short_name = StringField()
     description = StringField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE, required=True)
-    hash = StringField()
+    hash = StringField(unique=True)
     relations = ListField(ReferenceField(Interaction))
     boundary = StringField()
+    abuses = ListField(ReferenceField('AbuseCase'))
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
@@ -65,6 +67,7 @@ class AbuseCase(Document):
     description = StringField()
     use_case = ReferenceField(UseCase, reverse_delete_rule=CASCADE, required=True)
     hash = StringField()
+    scenarios = ListField(ReferenceField('ThreatModel'))
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
@@ -78,7 +81,7 @@ model_type_choices = (("repo", "repo"), ("inline", "inline"))
 
 class ThreatModel(Document):
     # meta = {'collection': 'threat_model'}
-    name = StringField(max_length=200, unique=True)
+    name = StringField()
     vul_name = StringField()
     description = StringField(required=True)
     severity = IntField()
@@ -90,12 +93,13 @@ class ThreatModel(Document):
     related_cwes = ListField(IntField(), null=True)
     categories = ListField(StringField(max_length=30))
     mitigations = ListField(DictField())
-    hash = StringField()
+    hash = StringField(unique=True)
     entry_source = StringField(
         max_length=10,
         choices=(("automated", "automated"), ("manual", "manual")),
         default="automated",
     )
+    tests = ListField(ReferenceField('Test'))
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
@@ -116,6 +120,16 @@ class Test(Document):
     test_type = StringField()
     tags = ListField(StringField())
     scenario = ReferenceField(ThreatModel, reverse_delete_rule=CASCADE)
+    hash = StringField(unique=True)
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.hash = sha256(
+            "${}${}".format(
+                document.name,
+                document.scenario.name
+            ).encode()
+        ).hexdigest()
 
 
 class Risk(EmbeddedDocument):

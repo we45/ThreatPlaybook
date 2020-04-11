@@ -72,3 +72,4 @@ venv/
 *.pyc
 api/__pycache__/utils.cpython-37.pyc
 api/__pycache__/models.cpython-37.pyc
+.vscode/settings.json
