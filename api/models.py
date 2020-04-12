@@ -150,7 +150,7 @@ class VulnerabilityEvidence(Document):
 class Vulnerability(Document):
     severity_choices = ((3, "High"), (2, "Medium"), (1, "Low"), (0, "Info"))
     tool = StringField()
-    name = StringField()
+    name = StringField(unique = True)
     cwe = IntField()
     severity = IntField(choices=severity_choices)
     description = StringField()
@@ -159,11 +159,14 @@ class Vulnerability(Document):
     evidences = ListField(ReferenceField(VulnerabilityEvidence))
     project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
+    scan = ReferenceField('Scan')
+    target = ReferenceField("Target")
+    scenarios = ListField(ReferenceField('ThreatModel'))
 
 class Scan(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     name = StringField(default=random_scan_name)
-    vulnerabilities = ListField(ReferenceField(Vulnerability))
+    vulnerabilities = ListField(ReferenceField('Vulnerability'))
     synced = BooleanField(default=False)
 
 

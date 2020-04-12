@@ -1,14 +1,12 @@
 import graphene
-from graphene_mongo import MongoengineObjectType, MongoengineConnectionField
+from graphene_mongo import MongoengineObjectType
 from models import Vulnerability, Target
 from models import Project as Proj
 from models import ThreatModel, Test, Repo, RepoTestCase
 from models import UseCase, AbuseCase, VulnerabilityEvidence, Scan, Interaction, ASVS
-from mongoengine import DoesNotExist
+from mongoengine import DoesNotExist, NotUniqueError
 from graphene.relay import Node
 from utils import connect_db, _validate_jwt
-from graphene.relay import Node
-import json
 
 connect_db()
 
@@ -16,6 +14,7 @@ connect_db()
 class Vuln(MongoengineObjectType):
     class Meta:
         model = Vulnerability
+
 
 class Repository(MongoengineObjectType):
     class Meta:
@@ -26,6 +25,7 @@ class Repository(MongoengineObjectType):
 class RepositoryTestCase(MongoengineObjectType):
     class Meta:
         model = RepoTestCase
+
 
 class Project(MongoengineObjectType):
     class Meta:
@@ -292,7 +292,7 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                         )
                         if "part_of" in attrs:
                             ref_user_story.update(part_of=attrs["part_of"])
-                        
+
                         if ref_user_story not in my_proj.features:
                             my_proj.features.append(ref_user_story)
                             my_proj.save()
@@ -305,7 +305,6 @@ class CreateOrUpdateUserStory(graphene.Mutation):
                         new_user_story.project = my_proj
                         if "part_of" in attrs:
                             new_user_story.part_of = attrs["part_of"]
-                        
 
                         new_user_story.save()
                         if new_user_story not in my_proj.features:
@@ -562,6 +561,20 @@ class CreateScan(graphene.Mutation):
             raise Exception("Unauthorized to perform action")
 
 
+def get_project_relevant_threats(cwe, project):
+    relevant_threats = []
+    ref_threats = ThreatModel.objects.filter(cwe=cwe)
+    if not ref_threats:
+        return None
+    else:
+        for single in ref_threats:
+            ref_projs = Project.objects.filter(features__in=[single.use_case])
+            if ref_projs:
+                relevant_threats.append(single)
+
+    return relevant_threats
+
+
 class CreateVulnerability(graphene.Mutation):
     class Arguments:
         vuln = VulnerabilityInput(required=True)
@@ -584,7 +597,13 @@ class CreateVulnerability(graphene.Mutation):
                         ref_project = Proj.objects.get(
                             name=vuln_attributes.get("project")
                         )
+                        relevant_threats = get_project_relevant_threats(
+                            vuln_attributes.get("cwe", 0),
+                            vuln_attributes.get("project"),
+                        )
+
                         ref_scan = Scan.objects.get(name=vuln_attributes.get("scan"))
+                        ref_target = ref_scan.target
                         new_vuln = Vulnerability(
                             name=vuln_attributes["name"],
                             tool=vuln_attributes["tool"],
@@ -594,10 +613,20 @@ class CreateVulnerability(graphene.Mutation):
                             severity=vuln_attributes.get("severity", 1),
                             project=ref_project,
                             remediation=vuln_attributes.get("remediation", ""),
-                        ).save()
-                        ref_scan.update(add_to_set__vulnerabilities=new_vuln.id)
+                            scan=ref_scan,
+                            target=ref_target,
+                        )
+                        if relevant_threats:
+                            new_vuln.scenarios = relevant_threats
+                        new_vuln.save()
+                        ref_scan.update(add_to_set__vulnerabilities=new_vuln)
                     except DoesNotExist:
                         return "Project OR Target or Scan not found"
+                    except NotUniqueError:
+                        ref_vul = Vulnerability.objects.get(
+                            name=vuln_attributes.get("name")
+                        )
+                        return CreateVulnerability(vulnerability=ref_vul)
                     except Exception as e:
                         return e.args
 
@@ -678,7 +707,7 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                             name=case_attrs["threat_model"]
                         )
                     except DoesNotExist:
-                        raise("Threat Model does not exist")
+                        raise ("Threat Model does not exist")
 
                     try:
                         ref_case = Test.objects.get(name=test_name)
@@ -688,7 +717,7 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                                 test_case=case_attrs["test_case"],
                                 executed=executed,
                                 test_type=test_type,
-                                scenario = ref_model,
+                                scenario=ref_model,
                                 upsert=True,
                             )
                             new_test_case = Test.objects.get(name=test_name)
@@ -704,12 +733,11 @@ class CreateOrUpdateTestCase(graphene.Mutation):
                             tools=tool_list,
                             executed=executed,
                             test_type=test_type,
-                            scenario = ref_model
+                            scenario=ref_model,
                         ).save()
                         if new_test_case not in ref_model.tests:
-                                ref_model.tests.append(new_test_case)
-                                ref_model.save()
-                    
+                            ref_model.tests.append(new_test_case)
+                            ref_model.save()
 
             return CreateOrUpdateTestCase(case=new_test_case)
         else:
@@ -776,7 +804,7 @@ class DeleteUserStory(graphene.Mutation):
                         ref_proj.save()
                 except DoesNotExist:
                     raise Exception("Unable to find referenced project.")
-    
+
                 ref_case.delete()
                 return DeleteUserStory(ok=True)
             except DoesNotExist:
@@ -907,7 +935,7 @@ class Query(graphene.ObjectType):
 
     repo_by_name = graphene.Field(Repository, short_name=graphene.String())
     user_story_by_project = graphene.List(UserStory, project=graphene.String())
-    threat_scenarios_by_name = graphene.Field(TModel, name = graphene.String())
+    threat_scenarios_by_name = graphene.Field(TModel, name=graphene.String())
     tgt_by_project = graphene.List(Tgt, project=graphene.String())
     vuls_by_scan = graphene.Field(VulScan, scan_name=graphene.String())
     relations = graphene.List(Relations)
@@ -989,7 +1017,6 @@ class Query(graphene.ObjectType):
         else:
             raise Exception("Unauthorized to perform action")
 
-
     def resolve_tgt_by_project(self, info, **kwargs):
         if _validate_jwt(info.context["request"].headers):
             if "project" in kwargs:
@@ -998,20 +1025,15 @@ class Query(graphene.ObjectType):
         else:
             raise Exception("Unauthorized to perform action")
 
-    
     def resolve_threat_scenarios_by_name(self, info, **kwargs):
-        if _validate_jwt(info.context.get('request').headers):
+        if _validate_jwt(info.context.get("request").headers):
             if "name" in kwargs:
                 try:
-                    return ThreatModel.objects.get(name = kwargs.get('name'))
+                    return ThreatModel.objects.get(name=kwargs.get("name"))
                 except DoesNotExist:
                     raise Exception("Unable to find threat model by that name")
             else:
                 raise Exception("There's no name in query")
-            
-
-
-
 
     def resolve_search_threat_scenario(self, info, **kwargs):
         if _validate_jwt(info.context["request"].headers):
