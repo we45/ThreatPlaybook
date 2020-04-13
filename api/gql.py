@@ -601,9 +601,8 @@ class CreateVulnerability(graphene.Mutation):
                             vuln_attributes.get("cwe", 0),
                             vuln_attributes.get("project"),
                         )
-
                         ref_scan = Scan.objects.get(name=vuln_attributes.get("scan"))
-                        ref_target = ref_scan.target
+                        ref_target = Target.objects.get(name=vuln_attributes.get('target'))
                         new_vuln = Vulnerability(
                             name=vuln_attributes["name"],
                             tool=vuln_attributes["tool"],
@@ -626,6 +625,7 @@ class CreateVulnerability(graphene.Mutation):
                         ref_vul = Vulnerability.objects.get(
                             name=vuln_attributes.get("name")
                         )
+                        print(ref_vul)
                         return CreateVulnerability(vulnerability=ref_vul)
                     except Exception as e:
                         return e.args
@@ -652,23 +652,28 @@ class CreateVulnerabilityEvidence(graphene.Mutation):
                         "Mandatory fields `name`, `url` or `vuln_id` missing"
                     )
                 else:
-                    ref_vuln = Vulnerability.objects.get(id=attributes.get("vuln_id"))
-                    new_evidence = VulnerabilityEvidence()
-                    new_evidence.name = attributes.get("name")
-                    new_evidence.url = attributes.get("url")
-                    if "param" in attributes:
-                        new_evidence.param = attributes.get("param")
-                    if "log" in attributes:
-                        new_evidence.log = attributes.get("log")
-                    if "attack" in attributes:
-                        new_evidence.attack = attributes.get("attack")
-                    if "other_info" in attributes:
-                        new_evidence.other_info = attributes.get("other_info")
-                    if "evidence" in attributes:
-                        new_evidence.evidence = attributes.get("evidence")
+                    try:
+                        ref_vuln = Vulnerability.objects.get(id=attributes.get("vuln_id"))
+                        new_evidence = VulnerabilityEvidence()
+                        new_evidence.name = attributes.get("name")
+                        new_evidence.url = attributes.get("url")
+                        new_evidence.vuln = ref_vuln
+                        if "param" in attributes:
+                            new_evidence.param = attributes.get("param")
+                        if "log" in attributes:
+                            new_evidence.log = attributes.get("log")
+                        if "attack" in attributes:
+                            new_evidence.attack = attributes.get("attack")
+                        if "other_info" in attributes:
+                            new_evidence.other_info = attributes.get("other_info")
+                        if "evidence" in attributes:
+                            new_evidence.evidence = attributes.get("evidence")
 
-                    new_evidence.save()
-                    ref_vuln.update(add_to_set__evidences=new_evidence)
+                        new_evidence.save()
+                        ref_vuln.update(add_to_set__evidences=new_evidence)
+                    except NotUniqueError:
+                        ref_evidence = VulnerabilityEvidence.objects.get(name = attributes.get('name'))
+                        return CreateVulnerabilityEvidence(rev_evidence)
 
             return CreateVulnerabilityEvidence(new_evidence)
         else:

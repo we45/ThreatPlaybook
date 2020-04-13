@@ -124,12 +124,7 @@ class Test(Document):
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
-        document.hash = sha256(
-            "${}${}".format(
-                document.name,
-                document.scenario.name
-            ).encode()
-        ).hexdigest()
+        document.hash = sha256("${}${}".format(document.name,document.scenario.name).encode()).hexdigest()
 
 
 class Risk(EmbeddedDocument):
@@ -145,6 +140,17 @@ class VulnerabilityEvidence(Document):
     attack = StringField()
     other_info = StringField()
     evidence = StringField()
+    hash = StringField(unique=True)
+    vuln = ReferenceField('Vulnerability')
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.hash = sha256(
+            "${}${}".format(
+                document.name,
+                document.vuln.name
+            ).encode()
+        ).hexdigest()
 
 
 class Vulnerability(Document):
@@ -207,3 +213,4 @@ class ASVS(Document):
 signals.pre_save.connect(UseCase.pre_save, sender=UseCase)
 signals.pre_save.connect(AbuseCase.pre_save, sender=AbuseCase)
 signals.pre_save.connect(ThreatModel.pre_save, sender=ThreatModel)
+signals.pre_save.connect(VulnerabilityEvidence.pre_save, sender = VulnerabilityEvidence)
