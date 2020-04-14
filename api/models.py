@@ -120,11 +120,8 @@ class Test(Document):
     test_type = StringField()
     tags = ListField(StringField())
     scenario = ReferenceField(ThreatModel, reverse_delete_rule=CASCADE)
-    hash = StringField(unique=True)
 
-    @classmethod
-    def pre_save(cls, sender, document, **kwargs):
-        document.hash = sha256("${}${}".format(document.name,document.scenario.name).encode()).hexdigest()
+    
 
 
 class Risk(EmbeddedDocument):
