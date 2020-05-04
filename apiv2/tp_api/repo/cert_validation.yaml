@@ -1,0 +1,27 @@
+name: Improper Certificate Validation
+description: The software does not validate, or incorrectly validates, a certificate.
+cwe: 295
+categories: [app_vulns,owasp]
+mitigations:
+- description: Certificates should be carefully managed and checked to assure that
+    data are encrypted with the intended owner's public key.
+  phase: Architecture and Design
+- description: Certificates should be deployed with strong CipherSuite Specs and Perfect Forward Secrecy for highest
+    levels of protection
+  phase: Implementation
+risk:
+- consequence: Attacker may be able to leverage a weak SSL Implementation to compromise the master key/keying materials,
+    thereby compromising the transmission of sensitive information
+  type: Confidentiality
+test-cases:
+- name: ssl-test
+  test: Check for SSL/TLS implementation with automated tools
+  tools: [ssllabs.com,testssl.sh,sslyze,sslscan,nmap]
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of misconfigured SSL/TLS Implementation or Plaintext Data Transmission
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances that relate to misconfigured SSL/TLS Implementation or Plaintext Data Transmission
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity]
+  type: sast

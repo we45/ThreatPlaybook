@@ -12,7 +12,7 @@ def random_scan_name():
 class Project(Document):
     name = StringField(max_length=100, required=True, unique=True)
     orchy_webhook = StringField(required=False)
-    features = ListField(ReferenceField('UseCase'))
+    features = ListField(ReferenceField('UseCase'), required=False)
 
 
 class RepoTestCase(Document):
@@ -46,38 +46,28 @@ class Interaction(Document):
 
 
 class UseCase(Document):
-    short_name = StringField()
+    short_name = StringField(unique=True)
     description = StringField()
     project = ReferenceField(Project, reverse_delete_rule=CASCADE, required=True)
-    hash = StringField(unique=True)
     relations = ListField(ReferenceField(Interaction))
     boundary = StringField()
     abuses = ListField(ReferenceField('AbuseCase'))
-
-    @classmethod
-    def pre_save(cls, sender, document, **kwargs):
-        print(document.project.name)
-        document.hash = sha256(
-            "${}${}".format(document.short_name, document.project.name).encode()
-        ).hexdigest()
 
 
 class AbuseCase(Document):
     short_name = StringField(max_length=100, unique=True)
     description = StringField()
     use_case = ReferenceField(UseCase, reverse_delete_rule=CASCADE, required=True)
-    hash = StringField()
-    scenarios = ListField(ReferenceField('ThreatModel'))
-
-    @classmethod
-    def pre_save(cls, sender, document, **kwargs):
-        document.hash = sha256(
-            "${}${}".format(document.short_name, document.use_case.short_name).encode()
-        ).hexdigest()
-
+    scenarios = ListField(ReferenceField('ThreatModel'), required=False)
 
 model_type_choices = (("repo", "repo"), ("inline", "inline"))
 
+
+class Mitigations(EmbeddedDocument):
+    phase = StringField()
+    strategy = StringField()
+    description = StringField()
+    code = StringField()
 
 class ThreatModel(Document):
     # meta = {'collection': 'threat_model'}
@@ -90,27 +80,9 @@ class ThreatModel(Document):
     use_case = ReferenceField(UseCase, reverse_delete_rule=CASCADE)
     abuse_case = ReferenceField(AbuseCase, reverse_delete_rule=CASCADE)
     cwe = IntField()
-    related_cwes = ListField(IntField(), null=True)
     categories = ListField(StringField(max_length=30))
-    mitigations = ListField(DictField())
-    hash = StringField(unique=True)
-    entry_source = StringField(
-        max_length=10,
-        choices=(("automated", "automated"), ("manual", "manual")),
-        default="automated",
-    )
+    mitigations = EmbeddedDocumentListField(Mitigations)
     tests = ListField(ReferenceField('Test'))
-
-    @classmethod
-    def pre_save(cls, sender, document, **kwargs):
-        document.hash = sha256(
-            "${}${}${}".format(
-                document.name,
-                document.use_case.short_name,
-                document.abuse_case.short_name,
-            ).encode()
-        ).hexdigest()
-
 
 class Test(Document):
     name = StringField()
@@ -121,8 +93,6 @@ class Test(Document):
     tags = ListField(StringField())
     scenario = ReferenceField(ThreatModel, reverse_delete_rule=CASCADE)
 
-    
-
 
 class Risk(EmbeddedDocument):
     consequence = StringField()
@@ -130,47 +100,43 @@ class Risk(EmbeddedDocument):
 
 
 class VulnerabilityEvidence(Document):
-    name = StringField()
+    evidence_type = StringField()
     log = StringField()
     url = StringField()
+    line_num = IntField()
     param = StringField()
     attack = StringField()
-    other_info = StringField()
-    evidence = StringField()
-    hash = StringField(unique=True)
+    info = StringField()
     vuln = ReferenceField('Vulnerability')
-
-    @classmethod
-    def pre_save(cls, sender, document, **kwargs):
-        document.hash = sha256(
-            "${}${}".format(
-                document.name,
-                document.vuln.name
-            ).encode()
-        ).hexdigest()
 
 
 class Vulnerability(Document):
     severity_choices = ((3, "High"), (2, "Medium"), (1, "Low"), (0, "Info"))
     tool = StringField()
-    name = StringField(unique = True)
+    name = StringField()
     cwe = IntField()
     severity = IntField(choices=severity_choices)
     description = StringField()
     observation = StringField()
     remediation = StringField()
     evidences = ListField(ReferenceField(VulnerabilityEvidence))
-    project = ReferenceField(Project, reverse_delete_rule=CASCADE)
     created_on = DateTimeField(default=datetime.datetime.utcnow)
-    # scan = ReferenceField('Scan')
-    target = ReferenceField("Target")
-    # scenarios = ListField(ReferenceField('ThreatModel'))
+    scan = ReferenceField('Scan')
+    target=ReferenceField('Target')
 
 class Scan(Document):
     created_on = DateTimeField(default=datetime.datetime.utcnow)
     name = StringField(default=random_scan_name)
     vulnerabilities = ListField(ReferenceField('Vulnerability'))
-    synced = BooleanField(default=False)
+    target = ReferenceField('Target')
+    tool = StringField()
+    scan_type = StringField(choices = (
+        ("SAST", "Static Analysis"),
+        ("DAST", "Dynamic Analysis"),
+        ("SCA", "Source Composition Analysis"),
+        ("IAST", "Interactive Analysis"),
+        ("Manual", "Manual Scan"),
+    ))
 
 
 class Target(Document):
@@ -204,10 +170,3 @@ class ASVS(Document):
     l3 = BooleanField(default=False)
     cwe = IntField()
     nist = StringField()
-
-
-## signals
-signals.pre_save.connect(UseCase.pre_save, sender=UseCase)
-signals.pre_save.connect(AbuseCase.pre_save, sender=AbuseCase)
-signals.pre_save.connect(ThreatModel.pre_save, sender=ThreatModel)
-signals.pre_save.connect(VulnerabilityEvidence.pre_save, sender = VulnerabilityEvidence)

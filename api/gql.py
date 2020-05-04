@@ -587,40 +587,43 @@ class CreateVulnerability(graphene.Mutation):
             if not vuln_attributes:
                 raise Exception("You need to specify a vuln key")
             else:
-                if not all(
-                    k in vuln_attributes
-                    for k in ("name", "tool", "description", "project", "scan")
-                ):
+                if not all(k in vuln_attributes for k in ("name", "tool", "description", "project")):
                     raise Exception("Mandatory fields not in Vulnerability Definition")
                 else:
                     try:
                         ref_project = Proj.objects.get(
                             name=vuln_attributes.get("project")
                         )
-                        relevant_threats = get_project_relevant_threats(
-                            vuln_attributes.get("cwe", 0),
-                            vuln_attributes.get("project"),
-                        )
-                        ref_scan = Scan.objects.get(name=vuln_attributes.get("scan"))
+                        print(ref_project.name)
+                        # relevant_threats = get_project_relevant_threats(
+                        #     vuln_attributes.get("cwe", 0),
+                        #     vuln_attributes.get("project"),
+                        # )
+
+                        print(vuln_attributes)
+                        # ref_scan = Scan.objects.get(name=vuln_attributes.get("scan"))
+                        # print("REF scan", ref_scan)
                         ref_target = Target.objects.get(name=vuln_attributes.get('target'))
+                        
                         new_vuln = Vulnerability(
                             name=vuln_attributes["name"],
                             tool=vuln_attributes["tool"],
                             description=vuln_attributes["description"],
                             cwe=vuln_attributes.get("cwe", 0),
-                            observation=vuln_attributes.get("observation", ""),
                             severity=vuln_attributes.get("severity", 1),
                             project=ref_project,
-                            remediation=vuln_attributes.get("remediation", ""),
-                            scan=ref_scan,
+                            # scan=ref_scan,
                             target=ref_target,
                         )
-                        if relevant_threats:
-                            new_vuln.scenarios = relevant_threats
+                        if 'remediation' in vuln_attributes:
+                            new_vuln['remediation'] = vuln_attributes.get("remediation"),
+                        # if relevant_threats:
+                        #     new_vuln.scenarios = relevant_threats
                         new_vuln.save()
-                        ref_scan.update(add_to_set__vulnerabilities=new_vuln)
+                        # ref_scan.update(add_to_set__vulnerabilities=new_vuln)
+                        return CreateVulnerability(vulnerability=ref_vul)
                     except DoesNotExist:
-                        return "Project OR Target or Scan not found"
+                        raise Exception("Project OR Target or Scan not found")
                     except NotUniqueError:
                         ref_vul = Vulnerability.objects.get(
                             name=vuln_attributes.get("name")
@@ -628,9 +631,7 @@ class CreateVulnerability(graphene.Mutation):
                         print(ref_vul)
                         return CreateVulnerability(vulnerability=ref_vul)
                     except Exception as e:
-                        return e.args
-
-            return CreateVulnerability(vulnerability=new_vuln)
+                        raise Exception(e.args)
         else:
             raise Exception("Unauthorized to perform action")
 
@@ -653,6 +654,7 @@ class CreateVulnerabilityEvidence(graphene.Mutation):
                     )
                 else:
                     try:
+                        print("Vulnerability ID", attributes.get('vuln_id'))
                         ref_vuln = Vulnerability.objects.get(id=attributes.get("vuln_id"))
                         new_evidence = VulnerabilityEvidence()
                         new_evidence.name = attributes.get("name")

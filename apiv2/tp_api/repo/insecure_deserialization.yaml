@@ -1,0 +1,55 @@
+name: Insecure Deserialization
+description: The application deserializes untrusted data without sufficiently verifying
+  that the resulting data will be valid.
+cwe: 502
+mitigations:
+- description: If available, use the signing/sealing features of the programming language
+    to assure that deserialized data has not been tainted. For example, a hash-based
+    message authentication code (HMAC) could be used to ensure that data has not been
+    modified.
+  phase: Architecture and Design
+- description: When deserializing data, populate a new object rather than just deserializing.
+    The result is that the data flows through safe input validation and that the functions
+    are safe.
+  phase: Implementation
+- description: An attempt to serialize and then deserialize a class containing transient
+    fields will result in NULLs where the transient data should be. This is an excellent
+    way to prevent time, environment-based, or sensitive variables from being carried
+    over and used improperly.
+  phase: Architecture and Design
+- description: Avoid having unnecessary types or gadgets available that can be leveraged
+    for malicious ends. This limits the potential for unintended or unauthorized types
+    and gadgets to be leveraged by the attacker. Whitelist acceptable classes. Note-
+    new gadgets are constantly being discovered, so this alone is not a sufficient
+    mitigation.
+  phase: Implementation
+risk:
+- consequence: The consequences can vary widely, because it depends on which objects
+    or methods are being deserialized, and how they are used.
+- consequence: Attackers can modify unexpected objects or data that was assumed to
+    be safe from modification.
+  type: Integrity
+- consequence: If a function is making an assumption on when to terminate, based on
+    a sentry in a string, it could easily never terminate.
+  type: Availability
+- consequence: Code could potentially make the assumption that information in the
+    deserialized object is valid. Functions that make this dangerous assumption could
+    be exploited.
+  type: Authorization
+categories: [app_vulns,owasp]
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools and its Insecure Deserialization payloads against the application
+  tools: [zap,burpsuite,arachni,acunetix,netsparker,appspider,w3af]
+  type: discovery
+- name: manual
+  test: test for Insecure Deserialization variants manually with pentesters, bug-bounty
+  type: manual
+- name: static-analysis
+  test: Run Static Analysis tools to identify instances of improper input validation and output encoding for Insecure Deserialization
+  tools: [checkmarx,brakeman,bandit,pyt,security-code-scan,veracode,nodejsscan,coverity,]
+  type: sast
+- name: source-composition-scanning
+  test: Run Source Composition Scanners against the libraries being used by the application, to identify instances of Insecure Deserialization
+  tools: [retirejs,npm-audit,owasp-dependency-checker,blackduck,whitesource,snyk,safety]
+  type: sca

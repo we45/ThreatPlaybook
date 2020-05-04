@@ -1,0 +1,23 @@
+name: Misconfigured AWS S3 Bucket
+cwe: 16
+description: Misconfigured Amazon AWS S3 Bucket(s) might allow unauthorized users to read/write files in the specific
+  S3 buckets
+mitigations:
+- description: Ensure that IAM Policies are set for AWS S3 to protect against public/unauthorized access to unauthorized users
+  phase: Implementation
+- description: Consider implementation of encryption for data stored in AWS S3
+  phase: Implementation
+risk:
+- consequence: Unauthorized Users may gain access to files with sensitive information in the AWS S3 bucket(s)
+  type: Confidentiality
+- consequence: Unauthorized Users may write/modify data in the AWS S3 bucket(s)
+  type: Integrity
+test-cases:
+- name: automated-vulnerability-scanning
+  test: run automated vulnerability discovery tools to identify misconfigured AWS S3 buckets
+  tools: [scout2,prowler,weirdaal,burpsuite]
+  type: discovery
+- name: manual
+  test: test for misconfigured AWS S3 Buckets manually, as part of a Pentest or Bug-bounty
+  type: manual
+categories: [cloud]
