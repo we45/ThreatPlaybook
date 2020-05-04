@@ -26,7 +26,7 @@
         </template>
       </v-treeview>
     </v-card>
-    <v-navigation-drawer v-model="drawer" absolute temporary right width="70%">
+    <v-navigation-drawer v-model="drawer" absolute temporary right :width="625">
       <br />
       <h4 class="display-1 text-center" v-text="title"></h4>
       <br />

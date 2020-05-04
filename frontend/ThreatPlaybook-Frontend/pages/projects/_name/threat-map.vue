@@ -22,7 +22,7 @@
         ></organization-chart>
       </v-col>
     </v-row>
-    <v-navigation-drawer v-model="drawer" absolute temporary right width="70%">
+    <v-navigation-drawer v-model="drawer" absolute temporary right :width="625">
       <v-card>
         <v-card-title
           class="display-1 justify-center"
