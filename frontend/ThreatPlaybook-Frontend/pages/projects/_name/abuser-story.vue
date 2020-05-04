@@ -7,26 +7,17 @@
       </template>
     </v-breadcrumbs>
     <v-card>
-      <v-card-title
-        class="display-2 justify-center"
-        v-text="'Abuser Story of ' + projectName"
-      ></v-card-title>
+      <v-card-title class="display-2 justify-center" v-text="'Abuser Story of ' + projectName"></v-card-title>
     </v-card>
     <br />
     <v-card>
-      <v-treeview
-        v-model="tree"
-        hoverable
-        :items="chartData"
-        activatable
-        item-key="name"
-      >
+      <v-treeview v-model="tree" hoverable :items="chartData" activatable item-key="name">
         <template slot="label" slot-scope="{ item }">
           <a @click="openDialog(item)">{{ item.name }}</a>
         </template>
       </v-treeview>
     </v-card>
-    <v-navigation-drawer v-model="drawer" absolute temporary right width="70%">
+    <v-navigation-drawer v-model="drawer" absolute temporary right :width="625">
       <br />
       <h4 class="display-1 text-center" v-text="title"></h4>
       <!-- <v-list-item>
@@ -38,10 +29,7 @@
       <br />
       <v-divider></v-divider>
       <v-card>
-        <v-card-title
-          class="display-1 justify-center"
-          v-text="name"
-        ></v-card-title>
+        <v-card-title class="display-1 justify-center" v-text="name"></v-card-title>
         <v-card-text v-if="description">{{ description }}</v-card-text>
         <v-divider></v-divider>
         <v-card-text v-if="type === 'sce'">
@@ -57,22 +45,14 @@
                 class="ma-2"
                 color="#d11d55"
                 text-color="white"
-                >{{ sev }}</v-chip
-              >
+              >{{ sev }}</v-chip>
               <v-chip
                 v-if="sev === 'Medium'"
                 class="ma-2"
                 color="#ff9c2c"
                 text-color="white"
-                >{{ sev }}</v-chip
-              >
-              <v-chip
-                v-if="sev === 'Low'"
-                class="ma-2"
-                color="#008b8f"
-                text-color="white"
-                >{{ sev }}</v-chip
-              >
+              >{{ sev }}</v-chip>
+              <v-chip v-if="sev === 'Low'" class="ma-2" color="#008b8f" text-color="white">{{ sev }}</v-chip>
             </v-col>
           </v-row>
           <p v-if="asvsData.length > 0" class="title">ASVS</p>
@@ -91,39 +71,16 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.cwe }}</td>
                   <td>
-                    <v-chip
-                      v-if="item.l1"
-                      class="ma-2"
-                      color="indigo"
-                      text-color="white"
-                      small
-                      >L1</v-chip
-                    >
-                    <v-chip
-                      v-if="item.l2"
-                      class="ma-2"
-                      color="indigo"
-                      text-color="white"
-                      small
-                      >L2</v-chip
-                    >
-                    <v-chip
-                      v-if="item.l3"
-                      class="ma-2"
-                      color="indigo"
-                      text-color="white"
-                      small
-                      >L3</v-chip
-                    >
+                    <v-chip v-if="item.l1" class="ma-2" color="indigo" text-color="white" small>L1</v-chip>
+                    <v-chip v-if="item.l2" class="ma-2" color="indigo" text-color="white" small>L2</v-chip>
+                    <v-chip v-if="item.l3" class="ma-2" color="indigo" text-color="white" small>L3</v-chip>
                   </td>
                   <td>{{ item.description }}</td>
                 </tr>
               </tbody>
             </template>
           </v-simple-table>
-          <p v-if="relatedVuls.length > 0" class="title">
-            Vulnerabilities linked with threat scenario
-          </p>
+          <p v-if="relatedVuls.length > 0" class="title">Vulnerabilities linked with threat scenario</p>
           <v-simple-table v-if="relatedVuls.length > 0">
             <template v-slot:default>
               <thead>
@@ -144,29 +101,25 @@
                       class="ma-2"
                       color="#d11d55"
                       text-color="white"
-                      >High</v-chip
-                    >
+                    >High</v-chip>
                     <v-chip
                       v-if="item.severity === 2"
                       class="ma-2"
                       color="#ff9c2c"
                       text-color="white"
-                      >Medium</v-chip
-                    >
+                    >Medium</v-chip>
                     <v-chip
                       v-if="item.severity === 1"
                       class="ma-2"
                       color="#008b8f"
                       text-color="white"
-                      >Low</v-chip
-                    >
+                    >Low</v-chip>
                     <v-chip
                       v-if="item.severity === 0"
                       class="ma-2"
                       color="#008b8f"
                       text-color="white"
-                      >Low</v-chip
-                    >
+                    >Low</v-chip>
                   </td>
                   <td>{{ item.tool }}</td>
                 </tr>
@@ -202,13 +155,9 @@
             <p v-if="testCase" class="subtitle-1 text-center">{{ testCase }}</p>
             <p v-if="testType" class="title">
               Type :
-              <v-chip class="ma-2" color="indigo" text-color="white">
-                {{ testType }}
-              </v-chip>
+              <v-chip class="ma-2" color="indigo" text-color="white">{{ testType }}</v-chip>
             </p>
-            <p v-if="tools.length > 0" class="title">
-              Tools : {{ tools.toString() }}
-            </p>
+            <p v-if="tools.length > 0" class="title">Tools : {{ tools.toString() }}</p>
           </v-card-text>
         </v-card>
       </v-card>

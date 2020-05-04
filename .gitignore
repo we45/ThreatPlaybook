@@ -64,8 +64,8 @@ frontend/ThreatPlaybook-Frontend/npm-debug.log*
 frontend/ThreatPlaybook-Frontend/yarn-debug.log*
 frontend/ThreatPlaybook-Frontend/yarn-error.log*
 frontend/ThreatPlaybook-Frontend/package-lock.json
-frontend/ThreatPlaybook-Frontend/.babelrc
-frontend/ThreatPlaybook-Frontend/.editorconfig
+# frontend/ThreatPlaybook-Frontend/.babelrc
+# frontend/ThreatPlaybook-Frontend/.editorconfig
 Pipfile.lock
 Pipfile
 cli/dist/ThreatPlaybook-Client-3.0.3.tar.gz
@@ -75,3 +75,4 @@ venv/
 api/__pycache__/utils.cpython-37.pyc
 api/__pycache__/models.cpython-37.pyc
 .vscode/settings.json
+*.lock

@@ -9,17 +9,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest"
-  },
-  "lint-staged": {
-    "*.{js,vue}": "yarn lint",
-    "*.{css,vue}": "stylelint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "@nuxtjs/apollo": "^4.0.0-rc19",
@@ -45,7 +35,6 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.2",
-    "husky": "^4.0.0",
     "jest": "^24.1.0",
     "lint-staged": "^10.0.0",
     "prettier": "^1.19.1",
