@@ -14,20 +14,19 @@
     </v-card>
     <br />
     <v-card>
-      <!-- {{ getScanIndividualData }} -->
-      <v-simple-table v-if="vulnerabilityData.length > 0">
+      <v-simple-table v-if="getScanIndividualData.length > 0">
         <template v-slot:default>
           <thead>
             <tr>
               <th class="text-left">Name</th>
               <th class="text-left">CWE</th>
               <th class="text-left">Severity</th>
-              <th class="text-left">Tool</th>
+              <!-- <th class="text-left">Tool</th> -->
               <th class="text-left">Description</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in vulnerabilityData" :key="item.id">
+            <tr v-for="item in getScanIndividualData" :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.cwe }}</td>
               <td>
@@ -60,7 +59,7 @@
                   >Low</v-chip
                 >
               </td>
-              <td>{{ item.tool }}</td>
+              <!-- <td>{{ item.tool }}</td> -->
               <td>{{ item.description }}</td>
             </tr>
           </tbody>

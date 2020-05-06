@@ -53,7 +53,7 @@ export const actions = {
   },
   fetchIndividualScanData({ commit }, payload) {
     axios
-      .post(loginUrl + "/scan/read", payload, {
+      .post(loginUrl + "/scan-vuls/project", payload, {
         headers: {
           Authorization: localStorage.getItem("token")
         }
@@ -61,11 +61,15 @@ export const actions = {
       .then(response => {
         if (response.data.success) {
           const scanData = [];
+          for (const data of response.data.data) {
             scanData.push({
-              name: response.data.data.name,
-              scan_type: response.data.data.scan_type,
-              tool: response.data.data.tool
+              name: data.name,
+              cwe: data.cwe,
+              severity: data.severity,
+              description: data.description
             });
+          }
+            
           // }
           // for (const a of response.data.data)
           commit("FETCH_INDIVIDUAL_DATA", scanData);

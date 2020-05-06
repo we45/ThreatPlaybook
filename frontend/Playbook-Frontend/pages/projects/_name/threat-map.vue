@@ -75,8 +75,8 @@
               >
             </v-col>
           </v-row>
-          <p v-if="asvsData.length > 0" class="title">ASVS</p>
-          <v-simple-table v-if="asvsData.length > 0">
+          <p v-if="getASVSData.length > 0" class="title">ASVS</p>
+          <v-simple-table v-if="getASVSData.length > 0">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -87,7 +87,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in asvsData" :key="item.id">
+                <tr v-for="item in getASVSData" :key="item.id">
                   <td>{{ item.name }}</td>
                   <td>{{ item.cwe }}</td>
                   <td>
@@ -229,6 +229,7 @@ export default {
   },
   methods: {
     ...mapActions('threatmap', ['fetchThreatMapbyProject']),
+    ...mapActions('vulnerability', ['fetchASVSbyProject']),
     // async fetchThreatMapInfo() {
     //   const result = await this.$apollo.query({
     //     query: gql`
@@ -327,10 +328,14 @@ export default {
       this.relatedVuls = []
       this.dialogData = event
       if (event.type === 'Scenarios') {
-        if (event.cwe) {
+          const data = {
+            cwe: parseInt(event.cwe)
+          }
+          this.fetchASVSbyProject(data)
+        // if (event.cwe) {
           // this.fetchASVSInfo(event.cwe)
           // this.fetchRelatedVulsInfo(event.cwe)
-        }
+        // }
       }
     },
     // async fetchASVSInfo(cwe) {
@@ -383,6 +388,9 @@ export default {
   computed: {
     ...mapGetters('threatmap', {
       getThreatMapProjectData: 'getThreatMapProjectData'
+    }),
+    ...mapGetters('vulnerability', {
+      getASVSData: 'getASVSData'
     }),
   }
 }

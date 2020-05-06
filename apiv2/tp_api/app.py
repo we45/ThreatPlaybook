@@ -1433,5 +1433,34 @@ def get_threatmap_by_project():
     return respond(False, True, message="THreatMap does not exist"), 404
 
 
+@app.route("/scan-vuls/project", methods=["POST"])
+@validate_user
+def get_individual_scan_vuls():
+    data = request.get_json()
+    if 'name' in data:
+        try:
+            ref_scans = Scan.objects.get(name=data.get("name"))
+            ref_vuls = json.loads(Vulnerability.objects(scan=ref_scans.id).to_json())
+            return respond(True, False, data=ref_vuls)
+        except Exception as e:
+            return respond(False, True, message="Scans does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="Scans does not exist"), 404
+
+@app.route("/asvs", methods=["POST"])
+@validate_user
+def get_asvs_vuls():
+    data = request.get_json()
+    if 'cwe' in data:
+        try:
+            ref_asvs = json.loads(ASVS.objects(cwe=data.get('cwe')).to_json())
+            return respond(True, False, data=ref_asvs)
+        except Exception as e:
+            return respond(False, True, message="ASVS does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="ASVS does not exist"), 404
+
 if __name__ == "__main__":
     app.run(debug=True)

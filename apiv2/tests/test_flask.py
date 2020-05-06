@@ -11,6 +11,7 @@ abuse_case = ""
 threat_scenario = ""
 target_name = ""
 scan_name = ""
+cwe = 89
 
 
 @pytest.fixture(scope="module")
@@ -418,6 +419,32 @@ def test_get_threatmap_by_project(client):
         "/threatmap/project",
         data=json.dumps(
             {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_individual_scan_vuls(client):
+    response = client.post(
+        "/scan-vuls/project",
+        data=json.dumps(
+            {"name": scan_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_asvs_vuls(client):
+    response = client.post(
+        "/asvs",
+        data=json.dumps(
+            {"cwe": cwe}
         ),
         content_type="application/json",
         headers={"Authorization": token})

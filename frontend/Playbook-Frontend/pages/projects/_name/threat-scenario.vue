@@ -69,8 +69,8 @@
               >
             </v-col>
           </v-row>
-          <p v-if="asvsData.length > 0" class="title">ASVS</p>
-          <v-simple-table v-if="asvsData.length > 0">
+          <p v-if="getASVSData.length > 0" class="title">ASVS</p>
+          <v-simple-table v-if="getASVSData.length > 0">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -81,7 +81,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in asvsData" :key="item.id">
+                <tr v-for="item in getASVSData" :key="item.id">
                   <td>{{ item.name }}</td>
                   <td>{{ item.cwe }}</td>
                   <td>
@@ -254,6 +254,7 @@ export default {
   },
   methods: {
     ...mapActions('threatScenario', ['fetchThreatScenarioTreeByProject']),
+    ...mapActions('vulnerability', ['fetchASVSbyProject']),
     openDialog(event) {
       if (!this.drawer) {
         this.drawer = true
@@ -284,11 +285,16 @@ export default {
         } else {
           this.sev = 'Low'
         }
-        if (event.cwe) {
-          this.cwe = event.cwe
-          // this.fetchASVSInfo(event.cwe)
-          // this.fetchRelatedVulsInfo(event.cwe)
-        }
+        // if (event.cwe) {
+        //   this.cwe = event.cwe
+        //   // this.fetchASVSInfo(event.cwe)
+        //   // this.fetchRelatedVulsInfo(event.cwe)
+        // }
+        this.cwe = event.cwe
+          const data = {
+            cwe: parseInt(event.cwe)
+          }
+          this.fetchASVSbyProject(data)
         if (event.mitigations) {
           this.mitigations = event.mitigations
         }
@@ -446,6 +452,9 @@ export default {
   computed: {
     ...mapGetters('threatScenario', {
       getThreatScenarioProjectTree: 'getThreatScenarioProjectTree'
+    }),
+    ...mapGetters('vulnerability', {
+      getASVSData: 'getASVSData'
     }),
   }
 }
