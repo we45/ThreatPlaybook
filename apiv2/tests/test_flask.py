@@ -41,7 +41,8 @@ def test_change_password(client):
 def test_login(client):
     response = client.post(
         "/login",
-        data=json.dumps({"email": "admin@admin.com", "password": "supersecret"}),
+        data=json.dumps({"email": "admin@admin.com",
+                         "password": "supersecret"}),
         content_type="application/json",
     )
     data = json.loads(response.get_data(as_text=True))
@@ -55,7 +56,8 @@ def test_login(client):
 def test_create_project(client):
     response = client.post(
         "/project/create",
-        data=json.dumps({"name": "test-project-{}".format(secrets.token_urlsafe(8))}),
+        data=json.dumps(
+            {"name": "test-project-{}".format(secrets.token_urlsafe(8))}),
         content_type="application/json",
         headers={"Authorization": token},
     )
@@ -157,7 +159,7 @@ def test_create_target(client):
         data=json.dumps(
             {
                 "name": "test-target-{}".format(secrets.token_urlsafe(8)),
-                "url": "http://example.com", 
+                "url": "http://example.com",
                 "project": project_name,
             }
         ),
@@ -300,3 +302,125 @@ def test_get_test_case(client):
     assert data.get("success")
 
 
+def test_threat_scenario_severity(client):
+    response = client.get("/scenario/severity",
+                          headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_vulnerability_severity(client):
+    response = client.get("/vulnerability/severity",
+                          headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_scan(client):
+    response = client.get("/scan/read",
+                          headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_threat_scenario_by_project(client):
+    response = client.post(
+        "/scenarios/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_vulnerability(client):
+    response = client.get(
+        "/vulnerability/read",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_vulnerability_by_project(client):
+    response = client.post(
+        "/vulnerability/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_scan_by_project(client):
+    response = client.post(
+        "/scan/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_user_story_tree_by_project(client):
+    response = client.post(
+        "/user-story/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_abuser_story_tree_by_project(client):
+    response = client.post(
+        "/abuser-story/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_threat_scenario_tree_by_project(client):
+    response = client.post(
+        "/threat-scenario/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+
+
+def test_get_threatmap_by_project(client):
+    response = client.post(
+        "/threatmap/project",
+        data=json.dumps(
+            {"project": project_name}
+        ),
+        content_type="application/json",
+        headers={"Authorization": token})
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")

@@ -1,0 +1,31 @@
+{
+  "name": "Playbook-Frontend",
+  "version": "1.0.0",
+  "description": "My swell Nuxt.js project",
+  "author": "Tilak T",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@nuxtjs/auth": "^4.9.1",
+    "@nuxtjs/axios": "^5.3.6",
+    "apexcharts": "^3.19.0",
+    "nuxt": "^2.0.0",
+    "uuid": "^8.0.0",
+    "vue-apexcharts": "^1.5.3",
+    "vue-organization-chart": "^1.1.6",
+    "vuelidate": "^0.7.5"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0",
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-jest": "^24.1.0",
+    "jest": "^24.1.0",
+    "vue-jest": "^4.0.0-0"
+  }
+}

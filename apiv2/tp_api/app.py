@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 import jwt
 from secrets import token_urlsafe
 from os import getenv
-from tp_api.utils import (
+from utils import (
     logger,
     connect_db,
     load_reload_asvs_db,
@@ -10,11 +10,12 @@ from tp_api.utils import (
     initialize_superuser,
     respond,
 )
-from tp_api.models import *
+from models import *
 import bcrypt
 from functools import wraps
 import json
-
+from flask_cors import CORS
+import uuid
 
 JWT_PASSWORD = getenv("JWT_PASS", token_urlsafe(16))
 items_per_page = 20
@@ -25,6 +26,8 @@ initialize_superuser()
 
 
 app = Flask(__name__)
+
+CORS(app)
 
 
 def validate_user(f):
@@ -43,7 +46,8 @@ def validate_user(f):
                 return f(*args, **kwargs)
             except Exception as e:
                 logger.exception(e)
-                token_err = respond(False, True, message="Invalid Token or User")
+                token_err = respond(
+                    False, True, message="Invalid Token or User")
                 return token_err, 403
 
     return inner
@@ -89,17 +93,20 @@ def change_password():
                         403,
                     )
                 verify_pass = bcrypt.checkpw(
-                    pass_data["old_password"].encode(), str(ref_user.password).encode()
+                    pass_data["old_password"].encode(), str(
+                        ref_user.password).encode()
                 )
                 if verify_pass and (
                     pass_data["new_password"] == pass_data["verify_password"]
                 ):
                     hash_pass = bcrypt.hashpw(
-                        pass_data.get("new_password").encode(), bcrypt.gensalt()
+                        pass_data.get(
+                            "new_password").encode(), bcrypt.gensalt()
                     ).decode()
                     ref_user.update(password=hash_pass, default_password=False)
                     logger.info(
-                        "Changed password for user {}".format(pass_data["email"])
+                        "Changed password for user {}".format(
+                            pass_data["email"])
                     )
                     return jsonify(
                         {
@@ -141,20 +148,24 @@ def login():
     if request.method == "POST":
         login_data = request.get_json()
         if "email" not in login_data and "password" not in login_data:
-            input_error = respond(False, True, message="Input Validation Error")
+            input_error = respond(
+                False, True, message="Input Validation Error")
             return input_error, 400
         else:
             try:
                 ref_user = User.objects.get(email=login_data["email"])
             except DoesNotExist:
-                user_not_exists = respond(False, True, message="Invalid credentials")
+                user_not_exists = respond(
+                    False, True, message="Invalid credentials")
                 return user_not_exists, 403
 
             verify_pass = bcrypt.checkpw(
-                login_data["password"].encode(), str(ref_user.password).encode()
+                login_data["password"].encode(), str(
+                    ref_user.password).encode()
             )
             if verify_pass:
-                logger.info("User '{}' successfully logged in".format(ref_user.email))
+                logger.info(
+                    "User '{}' successfully logged in".format(ref_user.email))
                 token = jwt.encode(
                     {"email": ref_user.email}, key=JWT_PASSWORD, algorithm="HS256"
                 ).decode()
@@ -187,7 +198,8 @@ def create_project():
                 message="successfully saved project",
                 data={"name": data.get("name")},
             )
-            logger.info("Successfully created project {}".format(data.get("name")))
+            logger.info(
+                "Successfully created project {}".format(data.get("name")))
             return success
         except Exception as e:
             logger.exception(e)
@@ -216,7 +228,8 @@ def create_user_story():
             project_not_exists = respond(
                 False,
                 True,
-                message="Project '{}' does not exist".format(data.get("project")),
+                message="Project '{}' does not exist".format(
+                    data.get("project")),
             )
             return project_not_exists, 404
 
@@ -231,7 +244,8 @@ def create_user_story():
                 my_proj.features.append(ref_feature)
                 my_proj.save()
             logger.info(
-                "Successfully created user-story/feature '{}'".format(short_name)
+                "Successfully created user-story/feature '{}'".format(
+                    short_name)
             )
             return respond(
                 True,
@@ -260,12 +274,14 @@ def create_abuser_story():
         return input_val_err, 400
     else:
         try:
-            ref_user_story = UseCase.objects.get(short_name=data.get("feature"))
+            ref_user_story = UseCase.objects.get(
+                short_name=data.get("feature"))
         except DoesNotExist:
             project_not_exists = respond(
                 False,
                 True,
-                message="Feature '{}' does not exist".format(data.get("feature")),
+                message="Feature '{}' does not exist".format(
+                    data.get("feature")),
             )
             return project_not_exists, 404
 
@@ -282,11 +298,13 @@ def create_abuser_story():
             if ref_abuse not in ref_user_story.abuses:
                 ref_user_story.abuses.append(ref_abuse)
                 ref_user_story.save()
-            logger.info("Successfully created abuser-story '{}'".format(short_name))
+            logger.info(
+                "Successfully created abuser-story '{}'".format(short_name))
             return respond(
                 True,
                 False,
-                message="Successfully created Abuser Story '{}'".format(short_name),
+                message="Successfully created Abuser Story '{}'".format(
+                    short_name),
                 data={"short_name": short_name},
             )
         except Exception as e:
@@ -298,7 +316,8 @@ def create_abuser_story():
 @validate_user
 def create_threat_scenario():
     data = request.get_json()
-    mandatory_params = ("vul_name", "name", "description", "feature", "abuser_story")
+    mandatory_params = ("vul_name", "name", "description",
+                        "feature", "abuser_story")
     if not set(mandatory_params) <= set(data):
         return (
             respond(
@@ -311,7 +330,8 @@ def create_threat_scenario():
         )
     else:
         try:
-            ref_user_story = UseCase.objects.get(short_name=data.get("feature"))
+            ref_user_story = UseCase.objects.get(
+                short_name=data.get("feature"))
         except DoesNotExist:
             return (
                 respond(False, True, message="Unable to find reference User Story"),
@@ -324,7 +344,8 @@ def create_threat_scenario():
             )
         except DoesNotExist:
             return (
-                respond(False, True, message="Unable to find reference Abuser Story"),
+                respond(False, True,
+                        message="Unable to find reference Abuser Story"),
                 400,
             )
 
@@ -390,7 +411,8 @@ def create_test_case():
         return input_val_err, 400
     else:
         try:
-            ref_scenario = ThreatModel.objects.get(name=data.get("threat_scenario"))
+            ref_scenario = ThreatModel.objects.get(
+                name=data.get("threat_scenario"))
         except DoesNotExist:
             project_not_exists = respond(
                 False,
@@ -456,7 +478,8 @@ def create_test_case():
 def create_target():
     data = request.get_json()
     if not set(("name", "url", "project")) <= set(data):
-        logger.error("Mandatory params 'name', 'url', 'project' not in request")
+        logger.error(
+            "Mandatory params 'name', 'url', 'project' not in request")
         input_val_err = respond(
             False,
             True,
@@ -536,12 +559,11 @@ def create_vulnerability():
             ref_scan = Scan.objects.get(name=scan)
         except Exception:
             return respond(False, True, message="Unable to find scan"), 404
-        
-        try:
-            ref_target = Target.objects.get(id = ref_scan.target.id)
-        except Exception:
-            return respond(False, True, message="Unable to find target"),404
 
+        try:
+            ref_target = Target.objects.get(id=ref_scan.target.id)
+        except Exception:
+            return respond(False, True, message="Unable to find target"), 404
 
         name = data.get("name")
         severity = data.get("severity", 1)
@@ -592,7 +614,8 @@ def create_vulnerability():
                         #     new_vul.save()
                     except Exception:
                         return (
-                            respond(False, True, message="Unable to save evidence"),
+                            respond(False, True,
+                                    message="Unable to save evidence"),
                             500,
                         )
 
@@ -633,7 +656,8 @@ def get_project(page_num=1):
             else:
                 offset = (page_num - 1) * items_per_page
                 project_list = json.loads(
-                    Project.objects.skip(offset).limit(items_per_page).to_json()
+                    Project.objects.skip(offset).limit(
+                        items_per_page).to_json()
                 )
                 return respond(
                     True,
@@ -659,75 +683,79 @@ def get_project(page_num=1):
                 return respond(False, True, message="Unable to find the project"), 404
 
 
-@app.route("/feature/read", methods=["POST"])
+@app.route("/feature/read", methods=["GET", "POST"])
 @validate_user
 def get_features():
-    data = request.get_json()
-    if "project" in data:
-        try:
-            ref_project = Project.objects.get(name=data.get("project"))
-        except Exception:
-            return respond(False, True, message="Project does not exist"), 404
-
-        if "short_name" in data:
+    if request.method == "GET":
+        user_story_list = json.loads(UseCase.objects().to_json())
+        return respond(True, False, data=user_story_list)
+    elif request.method == "POST":
+        data = request.get_json()
+        if "project" in data:
             try:
-                ref_feature = json.loads(
-                    UseCase.objects.get(
-                        short_name=data.get("short_name"), project=ref_project
-                    ).to_json()
-                )
-                return respond(True, False, data=ref_feature)
-            except Exception as e:
-                logger.exception(e)
-                return (
-                    respond(
-                        False, True, message="Unable to fetch the referenced user story"
-                    ),
-                    404,
-                )
-        else:
-            if "page" in data:
-                page_num = data.get("page")
-                num_pages = (UseCase.objects.count() % items_per_page) + 1
-                if num_pages > 1 and page_num:
-                    if page_num == 1:
-                        feature_list = json.loads(
-                            UseCase.objects(project=ref_project)
-                            .limit(items_per_page)
-                            .to_json()
-                        )
-                        return respond(
-                            True,
-                            False,
-                            message="Successfully retrieved data",
-                            data=feature_list,
-                        )
-                    else:
-                        offset = (page_num - 1) * items_per_page
-                        feature_list = json.loads(
-                            UseCase.objects(project=ref_project)
-                            .skip(offset)
-                            .limit(items_per_page)
-                            .to_json()
-                        )
-                        return respond(
-                            True,
-                            False,
-                            message="Successfully retrieved data",
-                            data=feature_list,
-                        )
-            else:
-                feature_list = json.loads(
-                    UseCase.objects(project=ref_project).to_json()
-                )
-                return respond(
-                    True,
-                    False,
-                    message="Successfully retrieved data",
-                    data=feature_list,
-                )
+                ref_project = Project.objects.get(name=data.get("project"))
+            except Exception:
+                return respond(False, True, message="Project does not exist"), 404
 
-    return respond(False, True, message="Unable to find User Stories/Features"), 404
+            if "short_name" in data:
+                try:
+                    ref_feature = json.loads(
+                        UseCase.objects.get(
+                            short_name=data.get("short_name"), project=ref_project
+                        ).to_json()
+                    )
+                    return respond(True, False, data=ref_feature)
+                except Exception as e:
+                    logger.exception(e)
+                    return (
+                        respond(
+                            False, True, message="Unable to fetch the referenced user story"
+                        ),
+                        404,
+                    )
+            else:
+                if "page" in data:
+                    page_num = data.get("page")
+                    num_pages = (UseCase.objects.count() % items_per_page) + 1
+                    if num_pages > 1 and page_num:
+                        if page_num == 1:
+                            feature_list = json.loads(
+                                UseCase.objects(project=ref_project)
+                                .limit(items_per_page)
+                                .to_json()
+                            )
+                            return respond(
+                                True,
+                                False,
+                                message="Successfully retrieved data",
+                                data=feature_list,
+                            )
+                        else:
+                            offset = (page_num - 1) * items_per_page
+                            feature_list = json.loads(
+                                UseCase.objects(project=ref_project)
+                                .skip(offset)
+                                .limit(items_per_page)
+                                .to_json()
+                            )
+                            return respond(
+                                True,
+                                False,
+                                message="Successfully retrieved data",
+                                data=feature_list,
+                            )
+                else:
+                    feature_list = json.loads(
+                        UseCase.objects(project=ref_project).to_json()
+                    )
+                    return respond(
+                        True,
+                        False,
+                        message="Successfully retrieved data",
+                        data=feature_list,
+                    )
+    else:
+        return respond(False, True, message="Unable to find User Stories/Features"), 404
 
 
 @app.route("/abuses/read", methods=["POST"])
@@ -736,7 +764,8 @@ def get_abuser_story():
     data = request.get_json()
     if "user_story" in data:
         try:
-            ref_use_case = UseCase.objects.get(short_name=data.get("user_story"))
+            ref_use_case = UseCase.objects.get(
+                short_name=data.get("user_story"))
         except Exception:
             return respond(False, True, message="User Story does not exist"), 404
 
@@ -803,77 +832,83 @@ def get_abuser_story():
     return respond(False, True, message="Unable to find Abuser Stories"), 404
 
 
-@app.route("/scenarios/read", methods=["POST"])
+@app.route("/scenarios/read", methods=["GET", "POST"])
 @validate_user
 def get_threat_scenario():
-    data = request.get_json()
-    if "abuser_story" in data:
-        try:
-            ref_abuse = AbuseCase.objects.get(short_name=data.get("abuser_story"))
-        except Exception:
-            return respond(False, True, message="Abuser Story does not exist"), 404
-
-        if "name" in data:
+    if request.method == "GET":
+        threat_scenario_list = json.loads(ThreatModel.objects().to_json())
+        return respond(True, False, data=threat_scenario_list)
+    elif request.method == "POST":
+        data = request.get_json()
+        if "abuser_story" in data:
             try:
-                ref_scenario = json.loads(
-                    ThreatModel.objects.get(
-                        name=data.get("name"), abuse_case=ref_abuse
-                    ).to_json()
-                )
-                return respond(True, False, data=ref_scenario)
-            except Exception as e:
-                logger.exception(e)
-                return (
-                    respond(
-                        False,
-                        True,
-                        message="Unable to fetch the referenced threat scenario",
-                    ),
-                    404,
-                )
-        else:
-            if "page" in data:
-                page_num = data.get("page")
-                num_pages = (ThreatModel.objects.count() % items_per_page) + 1
-                if num_pages > 1 and page_num:
-                    if page_num == 1:
-                        feature_list = json.loads(
-                            ThreatModel.objects(abuse_case=ref_abuse)
-                            .limit(items_per_page)
-                            .to_json()
-                        )
-                        return respond(
-                            True,
-                            False,
-                            message="Successfully retrieved data",
-                            data=feature_list,
-                        )
-                    else:
-                        offset = (page_num - 1) * items_per_page
-                        feature_list = json.loads(
-                            ThreatModel.objects(abuse_case=ref_abuse)
-                            .skip(offset)
-                            .limit(items_per_page)
-                            .to_json()
-                        )
-                        return respond(
-                            True,
-                            False,
-                            message="Successfully retrieved data",
-                            data=feature_list,
-                        )
-            else:
-                feature_list = json.loads(
-                    ThreatModel.objects(abuse_case=ref_abuse).to_json()
-                )
-                return respond(
-                    True,
-                    False,
-                    message="Successfully retrieved data",
-                    data=feature_list,
-                )
+                ref_abuse = AbuseCase.objects.get(
+                    short_name=data.get("abuser_story"))
+            except Exception:
+                return respond(False, True, message="Abuser Story does not exist"), 404
 
-    return respond(False, True, message="Unable to find Threat Scenarios"), 404
+            if "name" in data:
+                try:
+                    ref_scenario = json.loads(
+                        ThreatModel.objects.get(
+                            name=data.get("name"), abuse_case=ref_abuse
+                        ).to_json()
+                    )
+                    return respond(True, False, data=ref_scenario)
+                except Exception as e:
+                    logger.exception(e)
+                    return (
+                        respond(
+                            False,
+                            True,
+                            message="Unable to fetch the referenced threat scenario",
+                        ),
+                        404,
+                    )
+            else:
+                if "page" in data:
+                    page_num = data.get("page")
+                    num_pages = (ThreatModel.objects.count() %
+                                 items_per_page) + 1
+                    if num_pages > 1 and page_num:
+                        if page_num == 1:
+                            feature_list = json.loads(
+                                ThreatModel.objects(abuse_case=ref_abuse)
+                                .limit(items_per_page)
+                                .to_json()
+                            )
+                            return respond(
+                                True,
+                                False,
+                                message="Successfully retrieved data",
+                                data=feature_list,
+                            )
+                        else:
+                            offset = (page_num - 1) * items_per_page
+                            feature_list = json.loads(
+                                ThreatModel.objects(abuse_case=ref_abuse)
+                                .skip(offset)
+                                .limit(items_per_page)
+                                .to_json()
+                            )
+                            return respond(
+                                True,
+                                False,
+                                message="Successfully retrieved data",
+                                data=feature_list,
+                            )
+                else:
+                    feature_list = json.loads(
+                        ThreatModel.objects(abuse_case=ref_abuse).to_json()
+                    )
+                    return respond(
+                        True,
+                        False,
+                        message="Successfully retrieved data",
+                        data=feature_list,
+                    )
+    else:
+        return respond(False, True, message="Unable to find Threat Scenarios"), 404
 
 
 @app.route("/test/read", methods=["POST"])
@@ -934,7 +969,8 @@ def get_test_case():
                             data=feature_list,
                         )
             else:
-                feature_list = json.loads(Test.objects(scenario=ref_scenario).to_json())
+                feature_list = json.loads(Test.objects(
+                    scenario=ref_scenario).to_json())
                 return respond(
                     True,
                     False,
@@ -956,19 +992,445 @@ def map_threat_scenario_vul():
             ref_scenario = ThreatModel.objects.get(id=data.get("id"))
         except Exception:
             return respond(False, True, message="Unable to find Threat Scenario")
-        
+
         if ref_scenario.cwe:
             ref_abuse = AbuseCase.objects.get(id=ref_scenario.abuse.id)
             ref_use_case = UseCase.objects.get(id=ref_abuse.use_case.id)
-            ref_project = Project.objects.get(id = ref_use_case.project.id)
-            ref_targets = Target.objects(project = ref_project)
+            ref_project = Project.objects.get(id=ref_use_case.project.id)
+            ref_targets = Target.objects(project=ref_project)
             for single_target in ref_targets:
-                ref_vulns = Vulnerability.objects(target = single_target)
+                ref_vulns = Vulnerability.objects(target=single_target)
             if ref_vulns:
                 return respond(True, False, message="successfully returned mapped objects", data={
                     "threat_scenario": json.loads(ref_scenario.to_json()),
                     "vulnerabilities": json.loads(ref_vulns.to_json())
                 })
+
+
+@app.route("/scenario/severity", methods=["GET"])
+@validate_user
+def threat_scenario_severity():
+    if request.method == "GET":
+        try:
+            scenario_severity_list = json.loads(
+                ThreatModel.objects().values_list('severity').to_json())
+            return respond(
+                True,
+                False,
+                message="Successfully retrieved data",
+                data=scenario_severity_list,
+            )
+        except Exception as e:
+            logger.exception(e)
+            return respond(False, True, message="Therat Scenario does not exist"), 404
+    else:
+        return respond(False, True, message="Unable to find Threat Scenarios severity"), 404
+
+
+@app.route("/vulnerability/severity", methods=["GET"])
+@validate_user
+def vulnerability_severity():
+    if request.method == "GET":
+        try:
+            scenario_severity_list = json.loads(
+                Vulnerability.objects().values_list('severity').to_json())
+            return respond(
+                True,
+                False,
+                message="Successfully retrieved data",
+                data=scenario_severity_list,
+            )
+        except Exception as e:
+            logger.exception(e)
+            return respond(False, True, message="Therat Scenario does not exist"), 404
+    else:
+        return respond(False, True, message="Unable to find Threat Scenarios severity"), 404
+
+
+@app.route("/scan/read", methods=["GET", "POST"])
+@validate_user
+def get_scan(page_num=1):
+    if request.method == "GET":
+        num_pages = (Scan.objects.count() % items_per_page) + 1
+        if num_pages > 1 and page_num:
+            if page_num == 1:
+                scan_list = json.loads(
+                    Scan.objects.limit(items_per_page).to_json()
+                )
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=scan_list,
+                )
+            else:
+                offset = (page_num - 1) * items_per_page
+                scan_list = json.loads(
+                    Scan.objects.skip(offset).limit(
+                        items_per_page).to_json()
+                )
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=scan_list,
+                )
+        else:
+            scan_list = json.loads(Scan.objects().to_json())
+            return respond(True, False, data=scan_list)
+
+    if request.method == "POST":
+        data = request.get_json()
+        if "name" in data:
+            try:
+                ref_scan = json.loads(
+                    Scan.objects.get(name=data.get("name")).to_json()
+                )
+                return respond(True, False, data=ref_scan)
+            except Exception as e:
+                logger.exception(e)
+                return respond(False, True, message="Unable to find the scan"), 404
+
+
+@app.route("/scenarios/project", methods=["POST"])
+@validate_user
+def get_threat_scenario_by_project():
+    data = request.get_json()
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        user_story = UseCase.objects(project=ref_project).to_json()
+        d = json.loads(user_story)
+        try:
+            user_stories_list = [a.get('_id').get('$oid') for a in d]
+            ref_threatScenario = json.loads(ThreatModel.objects.filter(
+                use_case__in=user_stories_list).to_json())
+            return respond(True, False, data=ref_threatScenario)
+        except Exception as e:
+            return respond(False, True, message="Scenario does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="Scenario does not exist"), 404
+
+
+@app.route("/vulnerability/read", methods=["GET", "POST"])
+@validate_user
+def get_vulnerability(page_num=1):
+    if request.method == "GET":
+        num_pages = (Vulnerability.objects.count() % items_per_page) + 1
+        if num_pages > 1 and page_num:
+            if page_num == 1:
+                vul_list = json.loads(
+                    Vulnerability.objects.limit(items_per_page).to_json()
+                )
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=vul_list,
+                )
+            else:
+                offset = (page_num - 1) * items_per_page
+                vul_list = json.loads(
+                    Vulnerability.objects.skip(offset).limit(
+                        items_per_page).to_json()
+                )
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=vul_list,
+                )
+        else:
+            vul_list = json.loads(Vulnerability.objects().to_json())
+            return respond(True, False, data=vul_list)
+
+    if request.method == "POST":
+        data = request.get_json()
+        if "name" in data:
+            try:
+                ref_scan = json.loads(
+                    Vulnerability.objects.get(name=data.get("name")).to_json()
+                )
+                return respond(True, False, data=ref_scan)
+            except Exception as e:
+                logger.exception(e)
+                return respond(False, True, message="Unable to find the vulnerability"), 404
+
+
+@app.route("/vulnerability/project", methods=["POST"])
+@validate_user
+def get_vulnerability_by_project():
+    data = request.get_json()
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            target_obj = Target.objects.get(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        try:
+            ref_vuls = json.loads(Vulnerability.objects(target=target_obj.id).to_json())
+            return respond(True, False, data=ref_vuls)
+        except Exception as e:
+            return respond(False, True, message="Vulnerability does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="Vulnerability does not exist"), 404
+
+@app.route("/scan/project", methods=["POST"])
+@validate_user
+def get_scan_by_project():
+    data = request.get_json()
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            target_obj = Target.objects.get(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        try:
+            ref_scans = json.loads(Scan.objects(
+                target=target_obj.id).to_json())
+            return respond(True, False, data=ref_scans)
+        except Exception as e:
+            return respond(False, True, message="Scans does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="Scans does not exist"), 404
+
+@app.route("/user-story/project", methods=["POST"])
+@validate_user
+def get_user_story_tree_by_project():
+    data = request.get_json()
+    user_story_tree = []
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            usecases_obj = UseCase.objects(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        for usecase in usecases_obj:
+            userStory_dict = {}
+            userStory_dict['name'] = usecase.short_name
+            userStory_dict['description'] = usecase.description
+            userStory_dict['children'] = []
+            userStory_dict['type'] = 'us'
+            userStory_dict['title'] = 'User Story'            
+            for abuses in usecase.abuses:
+                abuserStory_dict = {}
+                abuserStory_dict['name'] = abuses.short_name
+                abuserStory_dict['description'] = abuses.description
+                abuserStory_dict['children'] = []
+                abuserStory_dict['type'] = 'as'
+                abuserStory_dict['title'] = 'Abuser Story'
+                userStory_dict['children'].append(abuserStory_dict)
+                for scenario in abuses.scenarios:
+                    threat_scenario_dict = {}
+                    threat_scenario_dict['name'] = scenario.name
+                    threat_scenario_dict['description'] = scenario.description
+                    threat_scenario_dict['vul_name'] = scenario.vul_name
+                    threat_scenario_dict['severity'] = scenario.severity
+                    threat_scenario_dict['cwe'] = scenario.cwe
+                    threat_scenario_dict['children'] = []
+                    threat_scenario_dict['type'] = 'sce'
+                    threat_scenario_dict['title'] = 'Threat Scenario'
+                    abuserStory_dict['children'].append(threat_scenario_dict)
+                    for test in scenario.tests:
+                        test_dict = {}
+                        test_dict['name'] = test.name
+                        test_dict['test_case'] = test.test_case
+                        test_dict['tools'] = test.tools
+                        test_dict['test_type'] = test.test_type
+                        test_dict['type'] = 'tc'
+                        test_dict['title'] = 'Test Case'
+                        threat_scenario_dict['children'].append(test_dict)
+            user_story_tree.append(userStory_dict)
+        try:
+            ref_scans = json.loads(json.dumps(user_story_tree))
+            return respond(True, False, data=ref_scans)
+        except Exception as e:
+            return respond(False, True, message="UserStory does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="UserStory does not exist"), 404
+
+
+@app.route("/abuser-story/project", methods=["POST"])
+@validate_user
+def get_abuser_story_tree_by_project():
+    data = request.get_json()
+    abuser_story_tree = []
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            usecases_obj = UseCase.objects(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        for usecase in usecases_obj:
+            for abuses in usecase.abuses:
+                abuserStory_dict = {}
+                abuserStory_dict['name'] = abuses.short_name
+                abuserStory_dict['description'] = abuses.description
+                abuserStory_dict['children'] = []
+                abuserStory_dict['type'] = 'as'
+                abuserStory_dict['title'] = 'Abuser Story'
+                # userStory_dict['children'].append(abuserStory_dict)
+                for scenario in abuses.scenarios:
+                    threat_scenario_dict = {}
+                    threat_scenario_dict['name'] = scenario.name
+                    threat_scenario_dict['description'] = scenario.description
+                    threat_scenario_dict['vul_name'] = scenario.vul_name
+                    threat_scenario_dict['severity'] = scenario.severity
+                    threat_scenario_dict['cwe'] = scenario.cwe
+                    threat_scenario_dict['children'] = []
+                    threat_scenario_dict['type'] = 'sce'
+                    threat_scenario_dict['title'] = 'Threat Scenario'
+                    abuserStory_dict['children'].append(threat_scenario_dict)
+                    for test in scenario.tests:
+                        test_dict = {}
+                        test_dict['name'] = test.name
+                        test_dict['test_case'] = test.test_case
+                        test_dict['tools'] = test.tools
+                        test_dict['test_type'] = test.test_type
+                        test_dict['type'] = 'tc'
+                        test_dict['title'] = 'Test Case'
+                        threat_scenario_dict['children'].append(test_dict)
+                abuser_story_tree.append(abuserStory_dict)
+        try:
+            ref_scans = json.loads(json.dumps(abuser_story_tree))
+            return respond(True, False, data=ref_scans)
+        except Exception as e:
+            return respond(False, True, message="AbuserStory does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="AbuserStory does not exist"), 404
+
+
+@app.route("/threat-scenario/project", methods=["POST"])
+@validate_user
+def get_threat_scenario_tree_by_project():
+    data = request.get_json()
+    threat_scenario_tree = []
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            usecases_obj = UseCase.objects(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        for usecase in usecases_obj:
+            for abuses in usecase.abuses:
+                for scenario in abuses.scenarios:
+                    threat_scenario_dict = {}
+                    threat_scenario_dict['name'] = scenario.name
+                    threat_scenario_dict['description'] = scenario.description
+                    threat_scenario_dict['vul_name'] = scenario.vul_name
+                    threat_scenario_dict['severity'] = scenario.severity
+                    threat_scenario_dict['cwe'] = scenario.cwe
+                    threat_scenario_dict['children'] = []
+                    threat_scenario_dict['type'] = 'sce'
+                    threat_scenario_dict['title'] = 'Threat Scenario'
+                    for test in scenario.tests:
+                        test_dict = {}
+                        test_dict['name'] = test.name
+                        test_dict['test_case'] = test.test_case
+                        test_dict['tools'] = test.tools
+                        test_dict['test_type'] = test.test_type
+                        test_dict['type'] = 'tc'
+                        test_dict['title'] = 'Test Case'
+                        threat_scenario_dict['children'].append(test_dict)
+                    threat_scenario_tree.append(threat_scenario_dict)
+        try:
+            ref_scans = json.loads(json.dumps(threat_scenario_tree))
+            return respond(True, False, data=ref_scans)
+        except Exception as e:
+            return respond(False, True, message="ThreatScenario does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="ThreatScenario does not exist"), 404
+
+
+@app.route("/threatmap/project", methods=["POST"])
+@validate_user
+def get_threatmap_by_project():
+    data = request.get_json()
+    threat_map = {}
+    if 'project' in data:
+        try:
+            ref_project = Project.objects.get(name=data.get("project"))
+            threat_map['name'] = ref_project.name
+            threat_map['children'] = []
+            threat_map['type'] = 'Project'
+            threat_map['id'] = 1
+        except Exception:
+            return respond(False, True, message="Project does not exist"), 404
+        try:
+            usecases_obj = UseCase.objects(project=ref_project.id)
+        except Exception:
+            return respond(False, True, message="Target does not exist"), 404
+        for usecase in usecases_obj:
+            userStory_id = str(uuid.uuid4())
+            userStory_dict = {}
+            userStory_dict['id'] = userStory_id
+            userStory_dict['name'] = usecase.short_name
+            userStory_dict['title'] = usecase.description
+            userStory_dict['type'] = 'Feature'
+            userStory_dict['children'] = []
+            threat_map['children'].append(userStory_dict)
+            for abuses in usecase.abuses:
+                abuserStory_id = str(uuid.uuid4())
+                abuserStory_dict = {}
+                abuserStory_dict['id'] = abuserStory_id
+                abuserStory_dict['name'] = abuses.short_name
+                abuserStory_dict['title'] = abuses.description
+                abuserStory_dict['children'] = []
+                abuserStory_dict['type'] = 'Abuses'
+                userStory_dict['children'].append(abuserStory_dict)
+                for scenario in abuses.scenarios:
+                    scenario_id = str(uuid.uuid4())
+                    threat_scenario_dict = {}
+                    threat_scenario_dict['id'] = scenario_id
+                    threat_scenario_dict['name'] = scenario.name
+                    threat_scenario_dict['title'] = scenario.description
+                    threat_scenario_dict['vul_name'] = scenario.vul_name
+                    threat_scenario_dict['severity'] = scenario.severity
+                    threat_scenario_dict['cwe'] = scenario.cwe
+                    threat_scenario_dict['children'] = []
+                    threat_scenario_dict['type'] = 'Scenarios'
+                    abuserStory_dict['children'].append(threat_scenario_dict)
+                    for test in scenario.tests:
+                        test_id = str(uuid.uuid4())
+                        test_dict = {}
+                        test_dict['id'] = test_id
+                        test_dict['name'] = test.name
+                        test_dict['title'] = test.test_case
+                        test_dict['tools'] = test.tools
+                        test_dict['test_type'] = test.test_type
+                        test_dict['type'] = 'Test Cases'
+                        threat_scenario_dict['children'].append(test_dict)
+        try:
+            ref_threatmap = json.loads(json.dumps(threat_map))
+            return respond(True, False, data=ref_threatmap)
+        except Exception as e:
+            return respond(False, True, message="THreatMap does not exist"), 404
+    else:
+        return respond(False, True, message="Project does not exist"), 404
+    return respond(False, True, message="THreatMap does not exist"), 404
 
 
 if __name__ == "__main__":

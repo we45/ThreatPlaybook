@@ -3103,3 +3103,1201 @@ tp_api.models.DoesNotExist: Project matching query does not exist.
 2020-05-03 19:52:38.991 | INFO     | tp_api.app:create_abuser_story:285 - Successfully created abuser-story 'test-abuser-story-A1HyjuVJ9hQ'
 2020-05-03 19:52:39.009 | INFO     | tp_api.app:create_threat_scenario:365 - Created Threat Scenario 'threat-scenario-iaIo1_hBsHA'
 2020-05-03 19:52:39.024 | INFO     | tp_api.app:create_test_case:437 - Created Test-Case 'test-case-icUi31XxPfA' for Threat Scenario 'threat-scenario-iaIo1_hBsHA'
+2020-05-04 14:56:27.240 | INFO     | tp_api.app:change_password:102 - Changed password for user admin@admin.com
+2020-05-04 14:56:27.551 | INFO     | tp_api.app:login:157 - User 'admin@admin.com' successfully logged in
+2020-05-04 14:56:27.609 | INFO     | tp_api.app:create_project:190 - Successfully created project test-project-4CRGntbrWQ0
+2020-05-04 14:56:27.681 | INFO     | tp_api.app:create_user_story:234 - Successfully created user-story/feature 'test-feature-_zk3SXIDE1Y'
+2020-05-04 14:56:27.743 | INFO     | tp_api.app:create_abuser_story:285 - Successfully created abuser-story 'test-abuser-story-lp0WkLx-aRo'
+2020-05-04 14:56:27.780 | INFO     | tp_api.app:create_threat_scenario:365 - Created Threat Scenario 'threat-scenario-MyUIaE9jd0M'
+2020-05-04 14:56:27.812 | INFO     | tp_api.app:create_test_case:437 - Created Test-Case 'test-case-rN6MT67Y8mc' for Threat Scenario 'threat-scenario-MyUIaE9jd0M'
+2020-05-04 14:57:12.343 | INFO     | __main__:login:157 - User 'admin@admin.com' successfully logged in
+2020-05-04 15:22:25.453 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 15:23:09.203 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 15:23:23.646 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 15:33:21.653 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 16:03:33.958 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 16:06:45.075 | INFO     | __main__:create_project:191 - Successfully created project demo
+2020-05-04 16:12:17.553 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 16:58:25.775 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-2, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-2, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-2, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-2, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-2, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54660)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54660)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2ded0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2ded0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2ded0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2ded0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2ded0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103d30050>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e2d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103d2bd40>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103d2bd40>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/feature/read' [GET]>
+           │    │              │    └ 'get_features'
+           │    │              └ <Rule '/feature/read' (HEAD, POST, GET, OPTIONS) -> get_features>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 16:58:41.012 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-3, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-3, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-3, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-3, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-3, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54664)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54664)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2dbd0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2dbd0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2dbd0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2dbd0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103d2dbd0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103dfbd40>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e2d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103dfbcb0>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103dfbcb0>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 16:58:45.077 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 16:59:25.444 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-7, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-7, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-7, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-7, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-7, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54681)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54681)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e40450>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e40450>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e40450>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e40450>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e40450>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e3cb00>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e2d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c9e0>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c9e0>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 16:59:43.562 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-9, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-9, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-9, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-9, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-9, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54691)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54691)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4c3d0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4c3d0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4c3d0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4c3d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4c3d0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e4d170>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e2d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e4d0e0>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e4d0e0>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:00:53.596 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-11, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-11, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-11, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-11, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-11, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54713)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54713)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4eed0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4eed0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4eed0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4eed0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4eed0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e3cd40>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e350>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3ce60>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3ce60>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:00:54.044 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-12, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-12, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-12, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-12, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-12, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54714)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54714)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4e290>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4e290>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4e290>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4e290>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e4e290>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e3c710>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e350>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c170>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c170>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:00:58.466 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-13, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-13, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-13, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-13, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-13, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54715)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54715)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e43050>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e43050>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e43050>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e43050>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e43050>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e3c050>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e350>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c440>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e3c440>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:01:13.852 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-15, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-15, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-15, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-15, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-15, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54722)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54722)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3afd0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3afd0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3afd0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3afd0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3afd0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103d30950>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e350>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103d30050>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103d30050>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:01:18.282 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x1025010e0>
+    └ <Thread(Thread-16, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x1024fce60>
+    └ <Thread(Thread-16, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-16, started daemon 123145510928384)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-16, started daemon 123145510928384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>>
+    └ <Thread(Thread-16, started daemon 123145510928384)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54731)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x102ed8200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │    │                   │        └ ('127.0.0.1', 54731)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x103135ef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3a3d0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3a3d0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x102ad4a70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x1031330e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3a3d0>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x103135e60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3a3d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x103d2db10>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x103e3a3d0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x103e4d200>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x103d2e350>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e4d170>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x103cef150>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x103e4d170>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x1033d8830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1033d5ef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x1033d5e60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/project/read' [GET]>
+           │    │              │    └ 'get_project'
+           │    │              └ <Rule '/project/read' (HEAD, POST, GET, OPTIONS) -> get_project>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x103c6e710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'EQDisRmJLndWtmGYC6oW9g'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x1033ed150>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'EQDisRmJLndWtmGYC6oW9g'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.YQm_QBYfvM5FWxDyhxVZK5NkmhwdnjgFZRg2Jb4RWMY'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'EQDisRmJLndWtmGYC6oW9g'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:01:37.932 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in
+2020-05-04 17:04:29.008 | ERROR    | __main__:inner:46 - Signature verification failed
+Traceback (most recent call last):
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x10baab0e0>
+    └ <Thread(Thread-2, started daemon 123145398575104)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x10baa6e60>
+    └ <Thread(Thread-2, started daemon 123145398575104)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-2, started daemon 123145398575104)>
+    │    │        │    └ (<socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-2, started daemon 123145398575104)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x10d256e90>>
+    └ <Thread(Thread-2, started daemon 123145398575104)>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 54781)
+    │    │              └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x10c402200>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10d256e90>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x10d256e90>
+    │    │                   │        └ ('127.0.0.1', 54781)
+    │    │                   └ <socket.socket fd=10, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10d256e90>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x10c65fef0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x10d25e210>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x10d25e210>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x10bfffa70>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x10c65d0e0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x10d25e210>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x10c65fe60>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x10d25e210>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x10d20b590>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10d256e90>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x10d25e210>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x10d25a050>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x10d2582d0>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x10d255d40>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x10d20b590>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x10d255d40>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=10>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x10c901830>
+           └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x10c8feef0>
+               └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x10c8fee60>
+         └ <Flask 'app'>
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/scenarios/read' [GET]>
+           │    │              │    └ 'get_threat_scenario'
+           │    │              └ <Rule '/scenarios/read' (OPTIONS, GET, POST, HEAD) -> get_threat_scenario>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'app'>>, 'mytest': <function mytest at 0x10d198710>, ...
+           └ <Flask 'app'>
+
+> File "/Users/tilakt/Documents/github/ThreatPlaybook/apiv2/tp_api/app.py", line 42, in inner
+    decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
+              │   │      │      └ 'ye1hnJn1C-jcRm1xYxw85A'
+              │   │      └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.N9REP0DwGxYXwgQ1EIAIwG_cHFNx3lXvCGievtCzj3Y'
+              │   └ <bound method PyJWT.decode of <jwt.api_jwt.PyJWT object at 0x10c918390>>
+              └ <module 'jwt' from '/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/__init__.py'>
+
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jwt.py", line 92, in decode
+    jwt, key=key, algorithms=algorithms, options=options, **kwargs
+    │        │               │                   │          └ {}
+    │        │               │                   └ {'verify_signature': True}
+    │        │               └ ['HS256']
+    │        └ 'ye1hnJn1C-jcRm1xYxw85A'
+    └ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSJ9.N9REP0DwGxYXwgQ1EIAIwG_cHFNx3lXvCGievtCzj3Y'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 156, in decode
+    key, algorithms)
+    │    └ ['HS256']
+    └ 'ye1hnJn1C-jcRm1xYxw85A'
+  File "/Users/tilakt/Documents/github/ThreatPlaybook/venv/lib/python3.7/site-packages/jwt/api_jws.py", line 223, in _verify_signature
+    raise InvalidSignatureError('Signature verification failed')
+          └ <class 'jwt.exceptions.InvalidSignatureError'>
+
+jwt.exceptions.InvalidSignatureError: Signature verification failed
+2020-05-04 17:04:39.526 | INFO     | __main__:login:158 - User 'admin@admin.com' successfully logged in

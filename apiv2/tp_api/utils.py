@@ -2,7 +2,7 @@ from mongoengine import *
 from loguru import logger
 from sys import exit
 import os
-from tp_api.models import *
+from models import *
 from glob import glob
 import ntpath
 import yaml
