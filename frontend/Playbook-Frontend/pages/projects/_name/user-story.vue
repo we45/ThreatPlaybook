@@ -282,7 +282,6 @@ export default {
   methods: {
     ...mapActions('userStory', ['fetchUserStoryTreeByProject']),
     openDialog(event) {
-      console.log("event", event)
       if (!this.drawer) {
         this.drawer = true
       }
@@ -302,7 +301,6 @@ export default {
       this.name = event.name
       this.description = event.description
       if (event.type === 'sce') {
-        console.log("event.vul_name", event.cwe)
         if (event.vul_name) {
           this.vulName = event.vul_name
         }
