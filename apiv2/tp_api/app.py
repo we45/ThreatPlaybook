@@ -16,6 +16,7 @@ from functools import wraps
 import json
 from flask_cors import CORS
 import uuid
+from flasgger import Swagger, swag_from
 
 JWT_PASSWORD = getenv("JWT_PASS", token_urlsafe(16))
 items_per_page = 20
@@ -26,6 +27,7 @@ initialize_superuser()
 
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 CORS(app)
 
@@ -52,12 +54,8 @@ def validate_user(f):
     return inner
 
 
-@app.route("/", methods=["GET"])
-def mytest():
-    return "hello world"
-
-
 @app.route("/change-password", methods=["POST"])
+@swag_from('swagger/change-password.yml')
 def change_password():
     if request.method == "POST":
         pass_data = request.get_json()
@@ -200,6 +198,7 @@ def create_project():
 
 @app.route("/feature/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/feature-create.yml')
 def create_user_story():
     data = request.get_json()
     if not set(("short_name", "description", "project")) <= set(data):
@@ -249,6 +248,7 @@ def create_user_story():
 
 @app.route("/abuse-case/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/abuse-create.yml')
 def create_abuser_story():
     data = request.get_json()
     if not set(("short_name", "description", "feature")) <= set(data):
@@ -299,6 +299,7 @@ def create_abuser_story():
 
 @app.route("/scenario/repo/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/scenario-repo.yml')
 def create_repo_scenario():
     data = request.get_json()
     try:
@@ -379,6 +380,7 @@ def create_repo_scenario():
 
 @app.route("/scenario/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/scenario-inline.yml')
 def create_threat_scenario():
     data = request.get_json()
     mandatory_params = (
