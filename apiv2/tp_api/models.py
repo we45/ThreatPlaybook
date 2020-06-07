@@ -69,6 +69,10 @@ class Mitigations(EmbeddedDocument):
     description = StringField()
     code = StringField()
 
+class Risk(EmbeddedDocument):
+    description = StringField()
+    phase = StringField()
+
 class ThreatModel(Document):
     # meta = {'collection': 'threat_model'}
     name = StringField()
@@ -80,6 +84,7 @@ class ThreatModel(Document):
     use_case = ReferenceField(UseCase, reverse_delete_rule=CASCADE)
     abuse_case = ReferenceField(AbuseCase, reverse_delete_rule=CASCADE)
     cwe = IntField()
+    risks = EmbeddedDocumentListField(Risk)
     categories = ListField(StringField(max_length=30))
     mitigations = EmbeddedDocumentListField(Mitigations)
     tests = ListField(ReferenceField('Test'))

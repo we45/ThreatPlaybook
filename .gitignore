@@ -77,3 +77,5 @@ api/__pycache__/models.cpython-37.pyc
 .vscode/settings.json
 *.lock
 apiv2/.vscode/settings.json
+apiv2/tp_api/logs/output.log
+apiv2/logs/output.log

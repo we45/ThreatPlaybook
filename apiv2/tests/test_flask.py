@@ -112,6 +112,29 @@ def test_create_abuser_story(client):
     abuse_case = data.get("data").get("short_name")
 
 
+def test_create_threat_scenario_repo(client):
+    response = client.post(
+        "/scenario/repo/create",
+        data=json.dumps(
+            {
+                "name": "threat-scenario-{}".format(secrets.token_urlsafe(8)),
+                "description": "This is a test description",
+                "feature": use_case,
+                "abuser_story": abuse_case,
+                "vul_name": "SQL Injection",
+                "type": "repo",
+                "repo_name": "sql_injection"
+            }
+        ),
+        content_type="application/json",
+        headers={"Authorization": token},
+    )
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert data.get("success")
+    assert data.get("data").get("name")
+
+
 def test_create_threat_scenario(client):
     response = client.post(
         "/scenario/create",
@@ -122,6 +145,7 @@ def test_create_threat_scenario(client):
                 "feature": use_case,
                 "abuser_story": abuse_case,
                 "vul_name": "SQL Injection",
+                "type": "inline"
             }
         ),
         content_type="application/json",
