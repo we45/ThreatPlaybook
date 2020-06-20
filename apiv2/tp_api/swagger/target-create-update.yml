@@ -1,26 +1,32 @@
-This is the API Endpoint that is used to create and update a User Story/Feature.
+This is the API Endpoint to create and update Targets for Vulnerability Scanning and Management
 ---
+securitySchemes: 
+  bearerAuth: 
+    type: http
+    scheme: bearer
+    format: JWT
 parameters:
   - name: body
     in: body
     required: true
     schema:
-      id: Abuser Story
+      id: Target
       type: object
       required: 
-        - short_name
-        - description
+        - name
+        - url
         - project
       properties: 
-        short_name:
+        name:
           type: string
-        description: 
+        url:
           type: string
         project:
           type: string
+
 responses:
   200: 
-    description: Feature/User Story successfully created
+    description: Target successfully created
   400:
     description: Input Validation Errors or other client Errors
   404:

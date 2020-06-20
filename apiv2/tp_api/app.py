@@ -467,6 +467,7 @@ def create_threat_scenario():
 
 @app.route("/test/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/test-case-create.yml')
 def create_test_case():
     data = request.get_json()
     if not set(("test_case", "name", "threat_scenario")) <= set(data):
@@ -539,11 +540,12 @@ def create_test_case():
 
         except Exception as e:
             logger.exception(e)
-            return respond(False, True, message="Unable to create Abuser Story"), 400
+            return respond(False, True, message="Unable to create Test Case"), 400
 
 
 @app.route("/target/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/target-create-update.yml')
 def create_target():
     data = request.get_json()
     if not set(("name", "url", "project")) <= set(data):
@@ -1529,6 +1531,89 @@ def get_asvs_vuls():
 
     return respond(False, True, message="ASVS does not exist"), 404
 
+
+@app.route("/delete/feature", methods=["POST"])
+@validate_user
+def delete_feature():
+    data = request.get_json()
+    if "name" not in data and "project" not in data:
+        return respond(False, True, message="Mandatory fields 'name' and 'project' not in request"), 400
+    
+    try:
+        ref_project = Project.objects.get(name = data.get('project'))
+        ref_use_case = UseCase.objects.get(short_name = data.get('name'), project=ref_project)
+        ref_use_case.delete()
+        return respond(True, False, message="Successfully deleted Feature: {}".format(data.get('name')))
+    except Exception as del_e:
+        logger.error(del_e)
+        return respond(False,True,message="Unable to delete Use-Case"),500
+
+
+@app.route("/delete/abuser-story", methods=["POST"])
+@validate_user
+def delete_abuse_case():
+    data = request.get_json()
+    if "name" not in data and "feature" not in data:
+        return respond(False, True, message="Mandatory fields 'name' and 'feature' not in request"), 400
+    
+    try:
+        ref_use_case = UseCase.objects.get(short_name = data.get('feature'))
+        ref_abuse = AbuseCase.objects.get(short_name = data.get('name'), use_case = ref_use_case)
+        ref_abuse.delete()
+        return respond(True, False, message="Successfully deleted Abuser Story: {}".format(data.get('name')))
+    except Exception as del_e:
+        logger.error(del_e)
+        return respond(False,True,message="Unable to delete Abuser Story"),500
+
+
+@app.route("/delete/scenario", methods=["POST"])
+@validate_user
+def delete_scenario():
+    data = request.get_json()
+    if "name" not in data and "abuser_story" not in data:
+        return respond(False, True, message="Mandatory fields 'name' and 'abuser_story' not in request"), 400
+    
+    try:
+        ref_abuse_case = AbuseCase.objects.get(short_name = data.get('abuser_story'))
+        ref_scenario = ThreatModel.objects.get(name=data.get('name'), abuse_case = ref_abuse_case)
+        ref_scenario.delete()
+        return respond(True, False, message="Successfully deleted Threat Scenario: {}".format(data.get('name')))
+    except Exception as del_e:
+        logger.error(del_e)
+        return respond(False,True,message="Unable to delete Threat Scenario"),500
+
+
+@app.route("/delete/test", methods=["POST"])
+@validate_user
+def delete_test():
+    data = request.get_json()
+    if "name" not in data and "scenario" not in data:
+        return respond(False, True, message="Mandatory fields 'name' and 'scenario' not in request"), 400
+    
+    try:
+        ref_scenario = ThreatModel.objects.get(name=data.get('scenario'))
+        ref_test = Test.objects.get(name=data.get('name'), scenario=ref_scenario)
+        ref_scenario.delete()
+        return respond(True, False, message="Successfully deleted Test-Case: {}".format(data.get('name')))
+    except Exception as del_e:
+        logger.error(del_e)
+        return respond(False,True,message="Unable to delete Test Case"), 500
+
+
+@app.route("/delete/project", methods=["POST"])
+@validate_user
+def delete_project():
+    data = request.get_json()
+    if "name" not in data:
+        return respond(False, True, message="Mandatory fields 'name' not in request"), 400
+    
+    try:
+        ref_project = Project.objects.get(name=data.get('name'))
+        ref_project.delete()
+        return respond(True, False, message="Successfully deleted Project {}".format(data.get('name')))
+    except Exception as del_e:
+        logger.error(del_e)
+        return respond(False,True,message="Unable to delete Project"), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
