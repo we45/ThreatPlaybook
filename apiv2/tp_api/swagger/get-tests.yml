@@ -1,0 +1,25 @@
+This is the API Endpoint that is used retrieve a single Abuser Story or multiple Abuser Stories
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Security Test Case
+      type: object
+      required:
+        - scenario
+      properties: 
+        name: 
+          type: string
+        page:
+          type: integer
+        scenario:
+          type: string
+
+responses:
+  200: 
+    description: Project or Projects successfully retrieved
+  404:
+    description: Unable to find Threat Scenario or Test Cases
+

@@ -1,10 +1,10 @@
 {
   "docs": {
     "Quick-Start": ["doc1"],
-    "First Category": ["doc2"],
-    "Second Category": ["doc3"]
+    "Tutorials": ["doc2", "doc3"],
+    "Guides": ["doc4", "doc5"]
   },
   "docs-other": {
-    "First Category": ["doc4", "doc5"]
+    "Guides": ["doc4", "doc5"]
   }
 }

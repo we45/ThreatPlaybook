@@ -10,10 +10,10 @@
         "sidebar_label": "Quick Start"
       },
       "doc2": {
-        "title": "document number 2"
+        "title": "Tutorial - Story-Driven Threat Modeling with ThreatPlaybook"
       },
       "doc3": {
-        "title": "This is document number 3"
+        "title": "Tutorial - ThreatPlaybook WebUI"
       },
       "doc4": {
         "title": "Other Document"
@@ -29,8 +29,8 @@
     },
     "categories": {
       "Quick-Start": "Quick-Start",
-      "First Category": "First Category",
-      "Second Category": "Second Category"
+      "Tutorials": "Tutorials",
+      "Guides": "Guides"
     }
   },
   "pages-strings": {

@@ -1,0 +1,25 @@
+This is the API Endpoint that is used retrieve a single Abuser Story or multiple Abuser Stories
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Threat Scenario
+      type: object
+      required:
+        - abuser_story
+      properties: 
+        name: 
+          type: string
+        page:
+          type: integer
+        abuser_story:
+          type: string
+
+responses:
+  200: 
+    description: Threat Scenario or Scenarios successfully retrieved
+  404:
+    description: Unable to find Threat Scenario or Abuser Story
+

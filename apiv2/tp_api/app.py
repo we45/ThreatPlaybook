@@ -53,7 +53,7 @@ def validate_user(f):
 
     return inner
 
-
+# swagger done
 @app.route("/change-password", methods=["POST"])
 @swag_from('swagger/change-password.yml')
 def change_password():
@@ -136,7 +136,7 @@ def change_password():
             )
             return jsonify(invalid_data), 400
 
-
+# swagger done
 @app.route("/login", methods=["POST"])
 def login():
     if request.method == "POST":
@@ -170,7 +170,7 @@ def login():
                 )
                 return invalid_credentials, 403
 
-
+# swagger done
 @app.route("/project/create", methods=["POST"])
 @validate_user
 def create_project():
@@ -195,7 +195,7 @@ def create_project():
             exc = respond(False, True, "unable to save Project to DB")
             return exc, 400
 
-
+# swagger done
 @app.route("/feature/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/feature-create.yml')
@@ -245,7 +245,7 @@ def create_user_story():
             logger.exception(e)
             return respond(False, True, message="Unable to create User Story"), 400
 
-
+# swagger done
 @app.route("/abuse-case/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/abuse-create.yml')
@@ -296,7 +296,7 @@ def create_abuser_story():
             logger.exception(e)
             return respond(False, True, message="Unable to create Abuser Story"), 400
 
-
+# swagger done
 @app.route("/scenario/repo/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/scenario-repo.yml')
@@ -377,7 +377,7 @@ def create_repo_scenario():
             data={"name": tm_name},
         )
 
-
+# swagger done
 @app.route("/scenario/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/scenario-inline.yml')
@@ -438,11 +438,11 @@ def create_threat_scenario():
                 upsert=True,
             )
             ref_threat_model = ThreatModel.objects.get(name=tm_name)
-            if "categories" in data:
-                for single_category in data.categories:
-                    if single_category not in ref_threat_model.categories:
-                        ref_threat_model.categories.append(single_category)
-                        ref_threat_model.save()
+            # if "categories" in data:
+            #     for single_category in data.categories:
+            #         if single_category not in ref_threat_model.categories:
+            #             ref_threat_model.categories.append(single_category)
+            #             ref_threat_model.save()
 
             if "mitigations" in data:
                 ThreatModel.objects(name=tm_name).update_one(
@@ -465,6 +465,7 @@ def create_threat_scenario():
             return respond(False, True, message="Unable to load Threat Scenario"), 400
 
 
+# swagger done
 @app.route("/test/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/test-case-create.yml')
@@ -543,6 +544,7 @@ def create_test_case():
             return respond(False, True, message="Unable to create Test Case"), 400
 
 
+# swagger done
 @app.route("/target/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/target-create-update.yml')
@@ -578,6 +580,7 @@ def create_target():
 
 @app.route("/scan/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/scan-create.yml')
 def create_scan():
     data = request.get_json()
     if not set(("tool", "target")) <= set(data):
@@ -589,6 +592,7 @@ def create_scan():
     else:
         try:
             ref_target = Target.objects.get(name=data.get("target"))
+            ref_project = Project.objects.get(id = ref_target.project.id)        
         except Exception:
             return respond(False, True, message="Target not found"), 404
         try:
@@ -601,6 +605,17 @@ def create_scan():
             if new_scan not in ref_target.scans:
                 ref_target.scans.append(new_scan)
                 ref_target.save()
+            
+            ref_features = UseCase.objects(project=ref_project)
+            for single_feature in ref_features:
+                ref_scenarios = ThreatModel.objects(use_case=single_feature)
+                for single_scenario in ref_scenarios:
+                    for single_test in single_scenario.tests:
+                        ref_test = Test.objects.get(id = single_test.id)
+                        if data.get('tool') in ref_test.tools:
+                            ref_test.executed = True
+                            ref_test.save()
+
 
             return respond(
                 True,
@@ -608,12 +623,14 @@ def create_scan():
                 message="successfully created scan",
                 data={"name": new_scan.name},
             )
-        except Exception:
+        except Exception as ex:
+            logger.error(ex)
             return respond(False, True, message="Unable to create Scan")
 
 
 @app.route("/vulnerability/create", methods=["POST"])
 @validate_user
+@swag_from('swagger/vulnerability-create.yml')
 def create_vulnerability():
     data = request.get_json()
     if "name" not in data and "scan" not in data:
@@ -632,6 +649,7 @@ def create_vulnerability():
 
         try:
             ref_target = Target.objects.get(id=ref_scan.target.id)
+            ref_project = Project.objects.get(id = ref_target.project.id)        
         except Exception:
             return respond(False, True, message="Unable to find target"), 404
 
@@ -708,6 +726,7 @@ def create_vulnerability():
 @app.route("/project/read", methods=["GET", "POST"])
 @app.route("/project/read/<page_num>", methods=["GET", "POST"])
 @validate_user
+@swag_from('swagger/get-project.yml')
 def get_project(page_num=1):
     if request.method == "GET":
         num_pages = (Project.objects.count() % items_per_page) + 1
@@ -754,6 +773,7 @@ def get_project(page_num=1):
 
 @app.route("/feature/read", methods=["GET", "POST"])
 @validate_user
+@swag_from('swagger/get-feature.yml')
 def get_features():
     if request.method == "GET":
         user_story_list = json.loads(UseCase.objects().to_json())
@@ -831,6 +851,7 @@ def get_features():
 
 @app.route("/abuses/read", methods=["POST"])
 @validate_user
+@swag_from('swagger/get-abuse.yml')
 def get_abuser_story():
     data = request.get_json()
     if "user_story" in data:
@@ -898,12 +919,13 @@ def get_abuser_story():
                     message="Successfully retrieved data",
                     data=feature_list,
                 )
-
-    return respond(False, True, message="Unable to find Abuser Stories"), 404
+    
+    return respond(False, True, message="Unable to find Abuser Stories. You need to provide a reference feature/user story"), 404
 
 
 @app.route("/scenarios/read", methods=["GET", "POST"])
 @validate_user
+@swag_from('swagger/get-scenario.yml')
 def get_threat_scenario():
     if request.method == "GET":
         threat_scenario_list = json.loads(ThreatModel.objects().to_json())
@@ -981,6 +1003,7 @@ def get_threat_scenario():
 
 @app.route("/test/read", methods=["POST"])
 @validate_user
+@swag_from('swagger/get-tests.yml')
 def get_test_case():
     data = request.get_json()
     if "scenario" in data:

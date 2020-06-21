@@ -1,0 +1,27 @@
+This is the API Endpoint that is used to create a scan for storing Vulnerability Results in the Database
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Scan
+      type: object
+      required: 
+        - tool
+        - target
+      properties: 
+        tool:
+          type: string
+        target: 
+          type: string
+        scan_type:
+          type: string
+responses:
+  200: 
+    description: Scan successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find Target
+
