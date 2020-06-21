@@ -1,18 +1,42 @@
-version: "3"
-
+version: '3'
 services:
-  docusaurus:
-    build: .
+  mongo_db:
+    image: bitnami/mongodb:latest
+    user: root
+    environment:
+      - MONGODB_USERNAME=threatplaybook
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=threat_playbook
+    expose:
+      - "27017"
     ports:
-      - 3000:3000
-      - 35729:35729
+      - "27017:27017"
     volumes:
-      - ./docs:/app/docs
-      - ./website/blog:/app/website/blog
-      - ./website/core:/app/website/core
-      - ./website/i18n:/app/website/i18n
-      - ./website/pages:/app/website/pages
-      - ./website/static:/app/website/static
-      - ./website/sidebars.json:/app/website/sidebars.json
-      - ./website/siteConfig.js:/app/website/siteConfig.js
-    working_dir: /app/website
+      - ./threatplaybook_db:/bitnami
+  api:
+    image: threatplaybook-server
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_HOST=mongo_db
+      - MONGO_USER=threatplaybook
+      - MONGO_PASS=password123
+      - MONGO_PORT=27017
+      - MONGO_DB=threat_playbook
+      - SUPERUSER_EMAIL=admin@admin.com
+      - SUPERUSER_PASS=supersecret
+      - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
+      - WAIT_HOSTS=mongo_db:27017
+    links:
+      - mongo_db
+    depends_on:
+      - mongo_db
+  gateway:
+    build: traefik
+    ports:
+      - "9000:80"
+      - "9090:8080"
+    depends_on:
+      - api

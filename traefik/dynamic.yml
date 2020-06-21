@@ -1,0 +1,10 @@
+http:
+  routers:
+    api:
+      rule: "PathPrefix(`/api`)"
+      service: api
+  services:
+    api:
+      loadBalancer:
+        servers:
+        - url: http://api:5000

@@ -54,7 +54,7 @@ def validate_user(f):
     return inner
 
 # swagger done
-@app.route("/change-password", methods=["POST"])
+@app.route("/api/change-password", methods=["POST"])
 @swag_from('swagger/change-password.yml')
 def change_password():
     if request.method == "POST":
@@ -137,7 +137,7 @@ def change_password():
             return jsonify(invalid_data), 400
 
 # swagger done
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     if request.method == "POST":
         login_data = request.get_json()
@@ -171,7 +171,7 @@ def login():
                 return invalid_credentials, 403
 
 # swagger done
-@app.route("/project/create", methods=["POST"])
+@app.route("/api/project/create", methods=["POST"])
 @validate_user
 def create_project():
     data = request.get_json()
@@ -196,7 +196,7 @@ def create_project():
             return exc, 400
 
 # swagger done
-@app.route("/feature/create", methods=["POST"])
+@app.route("/api/feature/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/feature-create.yml')
 def create_user_story():
@@ -246,7 +246,7 @@ def create_user_story():
             return respond(False, True, message="Unable to create User Story"), 400
 
 # swagger done
-@app.route("/abuse-case/create", methods=["POST"])
+@app.route("/api/abuse-case/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/abuse-create.yml')
 def create_abuser_story():
@@ -297,7 +297,7 @@ def create_abuser_story():
             return respond(False, True, message="Unable to create Abuser Story"), 400
 
 # swagger done
-@app.route("/scenario/repo/create", methods=["POST"])
+@app.route("/api/scenario/repo/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/scenario-repo.yml')
 def create_repo_scenario():
@@ -378,7 +378,7 @@ def create_repo_scenario():
         )
 
 # swagger done
-@app.route("/scenario/create", methods=["POST"])
+@app.route("/api/scenario/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/scenario-inline.yml')
 def create_threat_scenario():
@@ -466,7 +466,7 @@ def create_threat_scenario():
 
 
 # swagger done
-@app.route("/test/create", methods=["POST"])
+@app.route("/api/test/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/test-case-create.yml')
 def create_test_case():
@@ -545,7 +545,7 @@ def create_test_case():
 
 
 # swagger done
-@app.route("/target/create", methods=["POST"])
+@app.route("/api/target/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/target-create-update.yml')
 def create_target():
@@ -578,7 +578,7 @@ def create_target():
             return respond(False, True, message="Unable to create Target")
 
 
-@app.route("/scan/create", methods=["POST"])
+@app.route("/api/scan/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/scan-create.yml')
 def create_scan():
@@ -628,7 +628,7 @@ def create_scan():
             return respond(False, True, message="Unable to create Scan")
 
 
-@app.route("/vulnerability/create", methods=["POST"])
+@app.route("/api/vulnerability/create", methods=["POST"])
 @validate_user
 @swag_from('swagger/vulnerability-create.yml')
 def create_vulnerability():
@@ -723,8 +723,8 @@ def create_vulnerability():
             )
 
 
-@app.route("/project/read", methods=["GET", "POST"])
-@app.route("/project/read/<page_num>", methods=["GET", "POST"])
+@app.route("/api/project/read", methods=["GET", "POST"])
+@app.route("/api/project/read/<page_num>", methods=["GET", "POST"])
 @validate_user
 @swag_from('swagger/get-project.yml')
 def get_project(page_num=1):
@@ -771,7 +771,7 @@ def get_project(page_num=1):
                 return respond(False, True, message="Unable to find the project"), 404
 
 
-@app.route("/feature/read", methods=["GET", "POST"])
+@app.route("/api/feature/read", methods=["GET", "POST"])
 @validate_user
 @swag_from('swagger/get-feature.yml')
 def get_features():
@@ -849,7 +849,7 @@ def get_features():
         return respond(False, True, message="Unable to find User Stories/Features"), 404
 
 
-@app.route("/abuses/read", methods=["POST"])
+@app.route("/api/abuses/read", methods=["POST"])
 @validate_user
 @swag_from('swagger/get-abuse.yml')
 def get_abuser_story():
@@ -923,7 +923,7 @@ def get_abuser_story():
     return respond(False, True, message="Unable to find Abuser Stories. You need to provide a reference feature/user story"), 404
 
 
-@app.route("/scenarios/read", methods=["GET", "POST"])
+@app.route("/api/scenarios/read", methods=["GET", "POST"])
 @validate_user
 @swag_from('swagger/get-scenario.yml')
 def get_threat_scenario():
@@ -1001,7 +1001,7 @@ def get_threat_scenario():
         return respond(False, True, message="Unable to find Threat Scenarios"), 404
 
 
-@app.route("/test/read", methods=["POST"])
+@app.route("/api/test/read", methods=["POST"])
 @validate_user
 @swag_from('swagger/get-tests.yml')
 def get_test_case():
@@ -1071,7 +1071,7 @@ def get_test_case():
     return respond(False, True, message="Unable to find Threat Scenarios"), 404
 
 
-@app.route("/scenario/vuln/", methods=["POST"])
+@app.route("/api/scenario/vuln/", methods=["POST"])
 @validate_user
 def map_threat_scenario_vul():
     data = request.get_json()
@@ -1102,7 +1102,7 @@ def map_threat_scenario_vul():
                 )
 
 
-@app.route("/scenario/severity", methods=["GET"])
+@app.route("/api/scenario/severity", methods=["GET"])
 @validate_user
 def threat_scenario_severity():
     if request.method == "GET":
@@ -1126,7 +1126,7 @@ def threat_scenario_severity():
         )
 
 
-@app.route("/vulnerability/severity", methods=["GET"])
+@app.route("/api/vulnerability/severity", methods=["GET"])
 @validate_user
 def vulnerability_severity():
     if request.method == "GET":
@@ -1150,7 +1150,7 @@ def vulnerability_severity():
         )
 
 
-@app.route("/scan/read", methods=["GET", "POST"])
+@app.route("/api/scan/read", methods=["GET", "POST"])
 @validate_user
 def get_scan(page_num=1):
     if request.method == "GET":
@@ -1184,7 +1184,7 @@ def get_scan(page_num=1):
                 return respond(False, True, message="Unable to find the scan"), 404
 
 
-@app.route("/scenarios/project", methods=["POST"])
+@app.route("/api/scenarios/project", methods=["POST"])
 @validate_user
 def get_threat_scenario_by_project():
     data = request.get_json()
@@ -1208,7 +1208,7 @@ def get_threat_scenario_by_project():
     return respond(False, True, message="Scenario does not exist"), 404
 
 
-@app.route("/vulnerability/read", methods=["GET", "POST"])
+@app.route("/api/vulnerability/read", methods=["GET", "POST"])
 @validate_user
 def get_vulnerability(page_num=1):
     if request.method == "GET":
@@ -1249,7 +1249,7 @@ def get_vulnerability(page_num=1):
                 )
 
 
-@app.route("/vulnerability/project", methods=["POST"])
+@app.route("/api/vulnerability/project", methods=["POST"])
 @validate_user
 def get_vulnerability_by_project():
     data = request.get_json()
@@ -1272,7 +1272,7 @@ def get_vulnerability_by_project():
     return respond(False, True, message="Vulnerability does not exist"), 404
 
 
-@app.route("/scan/project", methods=["POST"])
+@app.route("/api/scan/project", methods=["POST"])
 @validate_user
 def get_scan_by_project():
     data = request.get_json()
@@ -1295,7 +1295,7 @@ def get_scan_by_project():
     return respond(False, True, message="Scans does not exist"), 404
 
 
-@app.route("/user-story/project", methods=["POST"])
+@app.route("/api/user-story/project", methods=["POST"])
 @validate_user
 def get_user_story_tree_by_project():
     data = request.get_json()
@@ -1355,7 +1355,7 @@ def get_user_story_tree_by_project():
     return respond(False, True, message="UserStory does not exist"), 404
 
 
-@app.route("/abuser-story/project", methods=["POST"])
+@app.route("/api/abuser-story/project", methods=["POST"])
 @validate_user
 def get_abuser_story_tree_by_project():
     data = request.get_json()
@@ -1409,7 +1409,7 @@ def get_abuser_story_tree_by_project():
     return respond(False, True, message="AbuserStory does not exist"), 404
 
 
-@app.route("/threat-scenario/project", methods=["POST"])
+@app.route("/api/threat-scenario/project", methods=["POST"])
 @validate_user
 def get_threat_scenario_tree_by_project():
     data = request.get_json()
@@ -1455,7 +1455,7 @@ def get_threat_scenario_tree_by_project():
     return respond(False, True, message="ThreatScenario does not exist"), 404
 
 
-@app.route("/threatmap/project", methods=["POST"])
+@app.route("/api/threatmap/project", methods=["POST"])
 @validate_user
 def get_threatmap_by_project():
     data = request.get_json()
@@ -1523,7 +1523,7 @@ def get_threatmap_by_project():
     return respond(False, True, message="THreatMap does not exist"), 404
 
 
-@app.route("/scan-vuls/project", methods=["POST"])
+@app.route("/api/scan-vuls/project", methods=["POST"])
 @validate_user
 def get_individual_scan_vuls():
     data = request.get_json()
@@ -1539,7 +1539,7 @@ def get_individual_scan_vuls():
     return respond(False, True, message="Scans does not exist"), 404
 
 
-@app.route("/asvs", methods=["POST"])
+@app.route("/api/asvs", methods=["POST"])
 @validate_user
 def get_asvs_vuls():
     data = request.get_json()
@@ -1555,7 +1555,7 @@ def get_asvs_vuls():
     return respond(False, True, message="ASVS does not exist"), 404
 
 
-@app.route("/delete/feature", methods=["POST"])
+@app.route("/api/delete/feature", methods=["POST"])
 @validate_user
 def delete_feature():
     data = request.get_json()
@@ -1572,7 +1572,7 @@ def delete_feature():
         return respond(False,True,message="Unable to delete Use-Case"),500
 
 
-@app.route("/delete/abuser-story", methods=["POST"])
+@app.route("/api/delete/abuser-story", methods=["POST"])
 @validate_user
 def delete_abuse_case():
     data = request.get_json()
@@ -1589,7 +1589,7 @@ def delete_abuse_case():
         return respond(False,True,message="Unable to delete Abuser Story"),500
 
 
-@app.route("/delete/scenario", methods=["POST"])
+@app.route("/api/delete/scenario", methods=["POST"])
 @validate_user
 def delete_scenario():
     data = request.get_json()
@@ -1606,7 +1606,7 @@ def delete_scenario():
         return respond(False,True,message="Unable to delete Threat Scenario"),500
 
 
-@app.route("/delete/test", methods=["POST"])
+@app.route("/api/delete/test", methods=["POST"])
 @validate_user
 def delete_test():
     data = request.get_json()
@@ -1623,7 +1623,7 @@ def delete_test():
         return respond(False,True,message="Unable to delete Test Case"), 500
 
 
-@app.route("/delete/project", methods=["POST"])
+@app.route("/api/delete/project", methods=["POST"])
 @validate_user
 def delete_project():
     data = request.get_json()
@@ -1639,4 +1639,4 @@ def delete_project():
         return respond(False,True,message="Unable to delete Project"), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host = "0.0.0.0", debug=True)
