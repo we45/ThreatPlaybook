@@ -1,0 +1,28 @@
+This is the API Endpoint that is used to create/update Abuser Stories linked to Feature/User Story
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Abuser Story
+      type: object
+      required: 
+        - short_name
+        - description
+        - feature
+      properties: 
+        short_name:
+          type: string
+        description: 
+          type: string
+        feature:
+          type: string
+responses:
+  200: 
+    description: Abuser Story successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find Feature/User Story
+

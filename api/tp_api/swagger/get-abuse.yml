@@ -1,0 +1,25 @@
+This is the API Endpoint that is used retrieve a single Abuser Story or multiple Abuser Stories
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Abuser Story
+      type: object
+      required:
+        - feature
+      properties: 
+        name: 
+          type: string
+        page:
+          type: integer
+        feature:
+          type: string
+
+responses:
+  200: 
+    description: Project or Projects successfully retrieved
+  404:
+    description: Unable to find Scan or Target
+

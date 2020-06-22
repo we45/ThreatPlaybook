@@ -1,0 +1,10 @@
+{
+  "docs": {
+    "Quick-Start": ["doc1"],
+    "Tutorials": ["doc2", "doc3"],
+    "Guides": ["doc4", "doc5"]
+  },
+  "docs-other": {
+    "Guides": ["doc4", "doc5"]
+  }
+}
