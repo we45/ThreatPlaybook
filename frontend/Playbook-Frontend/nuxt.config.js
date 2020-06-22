@@ -13,16 +13,16 @@ export default {
       {
         hid: "description",
         name: "description",
-        content: process.env.npm_package_description || ""
-      }
+        content: process.env.npm_package_description || "",
+      },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   /*
    ** Customize the progress-bar color
    */
   env: {
-    VUE_APP_API_URL: process.env.VUE_APP_API_URL
+    VUE_APP_API_URL: process.env.VUE_APP_API_URL,
   },
 
   loading: { color: "#fff" },
@@ -35,7 +35,7 @@ export default {
    */
   plugins: [
     { src: "~plugins/vue-apexchart.js", ssr: false },
-    { src: "~plugins/vue-organization-chart.js", ssr: false }
+    { src: "~plugins/vue-organization-chart.js", ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules
@@ -47,15 +47,16 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
-    "@nuxtjs/auth"
+    "@nuxtjs/auth",
   ],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: process.env.VUE_APP_API_URL
+    baseURL: process.env.VUE_APP_API_URL,
   },
+  
   // auth: {
   //   strategies: {
   //     local: {
@@ -70,6 +71,7 @@ export default {
   //     }
   //   }
   // },
+
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -77,6 +79,7 @@ export default {
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     theme: {
+      // disable: true,
       dark: false,
       themes: {
         dark: {
@@ -86,10 +89,10 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+          success: colors.green.accent3,
+        },
+      },
+    },
   },
   /*
    ** Build configuration
@@ -101,7 +104,7 @@ export default {
      */
     extend(config, ctx) {
       const vueLoader = config.module.rules.find(
-        rule => rule.loader === "vue-loader"
+        (rule) => rule.loader === "vue-loader"
       );
       vueLoader.options.transformToRequire = {
         img: "src",
@@ -111,8 +114,8 @@ export default {
         "b-card": "img-src",
         "b-card-img": "img-src",
         "b-carousel-slide": "img-src",
-        "b-embed": "src"
+        "b-embed": "src",
       };
-    }
-  }
+    },
+  },
 };

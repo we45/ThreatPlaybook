@@ -93,40 +93,6 @@ export default {
   },
   methods: {
     ...mapActions('vulnerability', ['fetchVulnerabilitybyProject']),
-    // async fetchProjectVulnerabilities() {
-    //   const result = await this.$apollo.query({
-    //     query: gql`
-    //       query {
-    //         vulns {
-    //           cwe
-    //           name
-    //           description
-    //           project {
-    //             name
-    //           }
-    //           severity
-    //           remediation
-    //           scan {
-    //             name
-    //           }
-    //         }
-    //       }
-    //     `
-    //   })
-    //   this.vulnerabilityData = []
-    //   if (result.data.vulns.length > 0) {
-    //     for (const vul of result.data.vulns) {
-    //       if (this.projectName === vul.project.name) {
-    //         this.vulnerabilityData.push({
-    //           name: vul.name,
-    //           cwe: vul.cwe,
-    //           severity: vul.severity,
-    //           description: vul.description
-    //         })
-    //       }
-    //     }
-    //   }
-    // }
   },
   computed: {
     ...mapGetters('vulnerability', {
