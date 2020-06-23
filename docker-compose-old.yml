@@ -1,5 +1,15 @@
 version: '3'
 services:
+  nginx:
+    image: we45/threatplaybook-nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - frontend
+    links:
+      - api
+      - frontend
   mongo_db:
     image: bitnami/mongodb:latest
     user: root
@@ -9,12 +19,14 @@ services:
       - MONGODB_DATABASE=threat_playbook
     expose:
       - "27017"
+    ports:
+      - "27017:27017"
     volumes:
-      - /tmp/playbook:/bitnami
+      - ./threatplaybook_db:/bitnami
   api:
-    image: threatplaybook-server:latest
+    image: we45/threatplaybook-api:latest
     expose:
-      - "5000"
+      - "5042"
     environment:
       - MONGO_HOST=mongo_db
       - MONGO_USER=threatplaybook
@@ -29,23 +41,14 @@ services:
       - mongo_db
     depends_on:
       - mongo_db
+    command: sh -c "./wait-for mongo_db:27017 -- /usr/local/bin/python3.6 /threatplaybook/app.py"
   frontend:
-    image: playbook_new_ui:latest
+    image: we45/threatplaybook-frontend:4.1
     expose:
-      - "3000"
-    # ports:
-    #   - "3000:3000"
+      - "8080"
     environment:
-      - VUE_APP_API_URL='http://192.168.0.104:9000/api'
+      - API_URL=http://api:5042
     links:
       - api
     depends_on:
       - api
-  gateway:
-    build: traefik
-    ports:
-      - "9000:80"
-      - "9090:8080"
-    depends_on:
-      - api
-      - frontend  

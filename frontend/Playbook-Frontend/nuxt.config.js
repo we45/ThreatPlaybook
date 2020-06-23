@@ -25,6 +25,10 @@ export default {
     VUE_APP_API_URL: process.env.VUE_APP_API_URL
   },
 
+  router: {
+    base: "/frontend/"
+  },
+
   loading: { color: "#fff" },
   /*
    ** Global CSS
@@ -56,6 +60,7 @@ export default {
   axios: {
     baseURL: process.env.VUE_APP_API_URL
   },
+
   // auth: {
   //   strategies: {
   //     local: {
@@ -70,6 +75,7 @@ export default {
   //     }
   //   }
   // },
+
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -77,6 +83,7 @@ export default {
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     theme: {
+      // disable: true,
       dark: false,
       themes: {
         dark: {

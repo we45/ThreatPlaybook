@@ -1,9 +1,16 @@
 http:
-  routers:
+  routers:    
+    frontend:
+      rule: "PathPrefix(`/frontend`)"
+      service: frontend
     api:
       rule: "PathPrefix(`/api`)"
       service: api
-  services:
+  services:    
+    frontend:
+      loadBalancer:
+        servers:
+        - url: http://frontend:3000
     api:
       loadBalancer:
         servers:

@@ -12467,3 +12467,4 @@ jwt.exceptions.InvalidSignatureError: Signature verification failed
 2020-05-06 14:35:08.683 | INFO     | __main__:login:167 - User 'admin@admin.com' successfully logged in
 2020-05-06 14:35:51.058 | INFO     | __main__:login:167 - User 'admin@admin.com' successfully logged in
 2020-05-06 14:52:24.087 | INFO     | __main__:login:167 - User 'admin@admin.com' successfully logged in
+2020-05-06 17:52:44.122 | INFO     | __main__:login:168 - User 'admin@admin.com' successfully logged in
