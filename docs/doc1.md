@@ -22,7 +22,9 @@ This page details a quick-start example for how you can get started with ThreatP
 #### Download the install bash script
 
 ```bash
-wget https://<github-raw-url>/install-playbook-server.sh
+git clone https://github.com/we45/ThreatPlaybook.git
+
+cd ThreatPlaybook
 ```
 
 #### Run the install script
@@ -30,10 +32,14 @@ wget https://<github-raw-url>/install-playbook-server.sh
 ##### Notes
 * Initially, the MongoDB volume persists on `/tmp`. We advise that you change it when using it more permanently (or in prod). This can be done in line number X in the install bash script
 * You can change the values of the superuser email and password in the bash script when deploying it to a more permanent environment
-* Traefik Reverse proxy runs on port 9090, both the API and the Front-end on port 9090
+* Traefik Reverse proxy runs on port 9000, both the API and the Front-end on port 9000
+
+Please see more on Installation and Configuration nuances [here](doc3.md).
+
+**Windows Users, please change the mongo mount point in your docker-compose file as `/tmp` won't work for your machines**
 
 ```bash
-install-playbook-server.sh
+docker-compose up
 ```
 
 #### Check if server has been deployed
@@ -50,7 +56,7 @@ Even if you have deployed the app on your local machine (`localhost`), you'll be
 
 > You'll have to use your Addressable IP Address on the browser and API requests to access the app
 
-> Example: http://192.168.1.24:9090/app/login
+> Example: http://192.168.1.24:9000/app/login
 
 If you've been able to do all this, it means that your ThreatPlaybook server is up and running. 
 

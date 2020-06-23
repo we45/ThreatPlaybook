@@ -1,11 +1,11 @@
 http:
   routers:    
-    frontend:
-      rule: "PathPrefix(`/frontend`)"
-      service: frontend
     api:
       rule: "PathPrefix(`/api`)"
       service: api
+    frontend:
+      rule: "PathPrefix(`/frontend`)"
+      service: frontend
   services:    
     frontend:
       loadBalancer:

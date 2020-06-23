@@ -1,28 +1,30 @@
 version: '3'
 services:
   mongo_db:
-    image: mongo:latest
+    image: bitnami/mongodb:latest
+    user: root
     environment:
+      - MONGODB_USERNAME=threatplaybook
+      - MONGODB_PASSWORD=password123
       - MONGODB_DATABASE=threat_playbook
     expose:
       - "27017"
-    ports:
-      - "27017:27017"
     volumes:
-      - ./orl_mongo/:/data/db mongo
+      - /tmp/playbook:/bitnami
   api:
     image: threatplaybook-server:latest
     expose:
       - "5000"
-    # ports:
-    #   - "5000:5000"
     environment:
       - MONGO_HOST=mongo_db
+      - MONGO_USER=threatplaybook
+      - MONGO_PASS=password123
       - MONGO_PORT=27017
       - MONGO_DB=threat_playbook
       - SUPERUSER_EMAIL=admin@admin.com
       - SUPERUSER_PASS=supersecret
       - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
+      - WAIT_HOSTS=mongo_db:27017
     links:
       - mongo_db
     depends_on:
@@ -34,7 +36,7 @@ services:
     # ports:
     #   - "3000:3000"
     environment:
-      - VUE_APP_API_URL='http://192.168.0.117:5000/api'
+      - VUE_APP_API_URL='http://192.168.0.104:9000/api'
     links:
       - api
     depends_on:
