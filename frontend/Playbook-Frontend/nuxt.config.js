@@ -25,9 +25,9 @@ export default {
     VUE_APP_API_URL: process.env.VUE_APP_API_URL
   },
 
-  router: {
-    base: "/frontend/"
-  },
+  // router: {
+  //   base: "/frontend/"
+  // },
 
   loading: { color: "#fff" },
   /*
