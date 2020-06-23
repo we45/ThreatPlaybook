@@ -2,7 +2,7 @@
   <v-row align="center" justify="center">
     <v-col cols="12" sm="8" md="4">
       <center>
-        <img src="/threat_logo.png" alt="Threat Playbook" />
+        <img src="~/assets/threat_logo.png" alt="Threat Playbook" />
       </center>
       <v-alert
         v-if="isLoginError"
