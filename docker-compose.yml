@@ -9,16 +9,12 @@ services:
       - MONGODB_DATABASE=threat_playbook
     expose:
       - "27017"
-    ports:
-      - "27017:27017"
     volumes:
-      - ./threatplaybook_db:/bitnami
+      - /tmp/playbook:/bitnami
   api:
     image: threatplaybook-server
     expose:
       - "5000"
-    ports:
-      - "5000:5000"
     environment:
       - MONGO_HOST=mongo_db
       - MONGO_USER=threatplaybook
