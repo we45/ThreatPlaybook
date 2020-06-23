@@ -9,13 +9,13 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - /Users/tilakt/orl_mongo/:/data/db mongo
+      - ./orl_mongo/:/data/db mongo
   api:
-    image: threatplaybook-server
+    image: threatplaybook-server:latest
     expose:
       - "5000"
-    ports:
-      - "5000:5000"
+    # ports:
+    #   - "5000:5000"
     environment:
       - MONGO_HOST=mongo_db
       - MONGO_PORT=27017
@@ -27,6 +27,18 @@ services:
       - mongo_db
     depends_on:
       - mongo_db
+  frontend:
+    image: playbook_new_ui:latest
+    expose:
+      - "3000"
+    # ports:
+    #   - "3000:3000"
+    environment:
+      - VUE_APP_API_URL='http://192.168.0.117:5000/api'
+    links:
+      - api
+    depends_on:
+      - api
   gateway:
     build: traefik
     ports:
@@ -34,3 +46,4 @@ services:
       - "9090:8080"
     depends_on:
       - api
+      - frontend  

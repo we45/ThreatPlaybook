@@ -1,8 +1,10 @@
 FROM node:12
 
-COPY . ./
-
-RUN yarn install
-RUN yarn build
-
-CMD ["yarn", "dev"]
+COPY dist/ ./
+RUN npm install -g serve 
+# RUN yarn install
+# RUN yarn build
+WORKDIR /dist/
+ENV PORT=3000
+CMD serve -s dist
+# CMD ["yarn", "dev"]
