@@ -13,6 +13,9 @@ A unified DevSecOps Framework that allows you to go from iterative, collaborativ
 
 [Documentation](https://threatplaybook.netlify.app)
 
+* [Quick Start](https://threatplaybook.netlify.app/docs/installation)
+* [Tutorial](https://threatplaybook.netlify.app/docs/tutorial)
+
 
 ![](img/tp-logo.png)
 
