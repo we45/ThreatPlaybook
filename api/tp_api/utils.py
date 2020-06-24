@@ -28,15 +28,14 @@ def respond(success, error, message="", data=None):
 
 
 def connect_db():
-    if "MONGO_HOST" not in os.environ:
+    if "MONGO_USER" not in os.environ:
         db = connect(os.environ.get("MONGO_DB", "threat_playbook"))
     else:
         try:
             db = connect(
-                # username=os.environ.get("MONGO_USER"),
-                # password=os.environ.get("MONGO_PASS"),
+                username=os.environ.get("MONGO_USER"),
+                password=os.environ.get("MONGO_PASS"),
                 host=os.environ.get("MONGO_HOST", "127.0.0.1"),
-                # host="192.168.0.106",
                 db=os.environ.get("MONGO_DB", "threat_playbook"),
                 port=int(os.environ.get("MONGO_PORT", 27017)),
             )

@@ -25,10 +25,6 @@ export default {
     VUE_APP_API_URL: process.env.VUE_APP_API_URL
   },
 
-  // router: {
-  //   base: "/frontend/"
-  // },
-
   loading: { color: "#fff" },
   /*
    ** Global CSS
@@ -61,20 +57,6 @@ export default {
     baseURL: process.env.VUE_APP_API_URL
   },
 
-  // auth: {
-  //   strategies: {
-  //     local: {
-  //       endpoints: {
-  //         login: { url: "/login", method: "post", propertyName: "token" }
-  //         // logout: { url: '/api/auth/logout', method: 'post' },
-  //         // user: { url: '/api/auth/user', method: 'get', propertyName: 'user' }
-  //       }
-  //       // tokenRequired: true,
-  //       // tokenType: 'bearer'
-  //       // autoFetchUser: true
-  //     }
-  //   }
-  // },
 
   /*
    ** vuetify module configuration

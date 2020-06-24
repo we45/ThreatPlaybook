@@ -19,7 +19,7 @@ export const actions = {
   },
   fetchThreatMapbyProject({ commit }, payload) {
     axios
-      .post(loginUrl + "/threatmap/project", payload, {
+      .post("/api/threatmap/project", payload, {
         headers: {
           Authorization: localStorage.getItem("token")
         }
@@ -34,8 +34,6 @@ export const actions = {
       .catch(error => {
         if (error.response.status === 401) {
           commit("PAGE_LOADING", false);
-          //   commit("ERROR_MESSAGE", "Invalid credentials");
-          //   commit("ERROR_MESSAGE_STATUS", true);
         }
       });
   }

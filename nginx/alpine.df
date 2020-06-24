@@ -1,0 +1,11 @@
+FROM nginx:latest
+
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN rm /etc/nginx/sites-enabled/*
+
+ADD sites-enabled/ /etc/nginx/sites-enabled/
+
+EXPOSE 5000
+EXPOSE 80
+
+CMD ["/usr/sbin/nginx"]
