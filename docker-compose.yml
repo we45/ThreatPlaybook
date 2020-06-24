@@ -30,7 +30,7 @@ services:
     depends_on:
       - mongo_db
   frontend:
-    image: playbook_new_ui:latest
+    image: playbook_new_ui
     expose:
       - "3000"
     # ports:
