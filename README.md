@@ -10,7 +10,14 @@ A unified DevSecOps Framework that allows you to go from iterative, collaborativ
 
 [![Black Hat Arsenal USA](https://rawgit.com/toolswatch/badges/master/arsenal/usa/2018.svg)](https://www.blackhat.com/us-18/arsenal/schedule/index.html#threatplaybook-11697)
 
-![](docs/img/tp_logo.png)
+
+[Documentation](https://threatplaybook.netlify.app)
+
+* [Quick Start](https://threatplaybook.netlify.app/docs/installation)
+* [Tutorial](https://threatplaybook.netlify.app/docs/tutorial)
+
+
+![](img/tp-logo.png)
 
 ## Brought to you proudly by
-![](docs/img/we45logo.jpg)
+![](img/we45logo.jpg)

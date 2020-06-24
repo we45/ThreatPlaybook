@@ -1,0 +1,44 @@
+This is the API Endpoint to create and update Security Test Cases a.k.a Test Cases
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Security Test Case
+      type: object
+      required: 
+        - test_case
+        - name
+        - threat_scenario
+        - tools
+        - tags
+        - executed
+        - test_type
+      properties: 
+        name:
+          type: string
+        test_case: 
+          type: string
+        threat_scenario:
+          type: string
+        tools:
+          type: array
+          items: 
+            type: string
+        tags:
+          type: array
+          items: 
+            type: string
+        executed:
+          type: boolean
+        test_type:
+          type: string
+responses:
+  200: 
+    description: Test Case successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find threat scenario
+

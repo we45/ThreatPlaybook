@@ -1,0 +1,12 @@
+// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
+//
+// The variables you want to modify
+// $font-size-root: 20px;
+// assets/variables.scss
+
+// Variables you want to modify
+$btn-border-radius: 0px;
+
+// If you need to extend Vuetify SASS lists
+// $material-light: ( cards: blue );
+@import '~vuetify/src/styles/styles.sass';

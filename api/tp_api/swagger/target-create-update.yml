@@ -1,0 +1,34 @@
+This is the API Endpoint to create and update Targets for Vulnerability Scanning and Management
+---
+securitySchemes: 
+  bearerAuth: 
+    type: http
+    scheme: bearer
+    format: JWT
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Target
+      type: object
+      required: 
+        - name
+        - url
+        - project
+      properties: 
+        name:
+          type: string
+        url:
+          type: string
+        project:
+          type: string
+
+responses:
+  200: 
+    description: Target successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find Project
+

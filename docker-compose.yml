@@ -1,0 +1,49 @@
+version: '3'
+services:
+  nginx:
+    image: we45/threatplaybook-nginx:latest
+    ports:
+        - "80:80"
+    depends_on:
+        - api
+    links:
+        - api
+  mongo_db:
+    image: 'docker.io/bitnami/mongodb:4.2-debian-10'
+    volumes:
+      - '/tmp/playbook:/bitnami/mongodb'
+    environment:
+      - MONGODB_USERNAME=threatplaybook
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=threat_playbook
+    expose:
+      - "27017"
+  api:
+    image: we45/threatplaybook-server:latest
+    expose:
+      - "5000"
+    environment:
+      - MONGO_HOST=mongo_db
+      - MONGO_USER=threatplaybook
+      - MONGO_PASS=password123
+      - MONGO_PORT=27017
+      - MONGO_DB=threat_playbook
+      - SUPERUSER_EMAIL=admin@admin.com
+      - SUPERUSER_PASS=supersecret
+      - JWT_PASS=VGCxqDnhsN6vNQVqmXtrNVVe1AS36ZMQKTq6lYpj0ygHiuWunMOkFi2j17cHSbG-WId9x_yJpeSqy0TTFjs06Q
+      - WAIT_HOSTS=mongo_db:27017
+    links:
+      - mongo_db
+    depends_on:
+      - mongo_db
+    command: sh -c "/app/wait-for mongo_db:27017 -- /usr/local/bin/python /app/app.py"
+  frontend:
+    image: we45/threatplaybook-frontend:latest
+    expose:
+      - "3000"
+    environment:
+      - VUE_APP_API_URL=http://api
+    links:
+      - api
+    depends_on:
+      - api

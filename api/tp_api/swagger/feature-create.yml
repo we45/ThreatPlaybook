@@ -1,0 +1,28 @@
+This is the API Endpoint that is used to create and update a User Story/Feature.
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Feature
+      type: object
+      required: 
+        - short_name
+        - description
+        - project
+      properties: 
+        short_name:
+          type: string
+        description: 
+          type: string
+        project:
+          type: string
+responses:
+  200: 
+    description: Feature/User Story successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find Project
+

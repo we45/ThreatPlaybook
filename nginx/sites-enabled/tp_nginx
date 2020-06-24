@@ -1,0 +1,43 @@
+upstream frontend_server {
+    server frontend:80 fail_timeout=1000;
+}
+
+server {
+    listen 80;
+    listen 5000;
+    server_name 127.0.0.1;
+    client_max_body_size 10G;
+
+    autoindex off;
+
+    gzip on;
+    gzip_types text/plain text/css application/javascript;
+
+    location /api {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        fastcgi_hide_header X-Powered-By;
+        proxy_set_header Host $http_host;
+        proxy_read_timeout 1000s;
+        proxy_connect_timeout 1000s;
+        proxy_send_timeout 1000s;
+        proxy_pass http://api:5000;
+    }
+
+    location / {
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        fastcgi_hide_header X-Powered-By;
+
+        proxy_set_header Host $http_host;
+        proxy_read_timeout 1000s;
+        proxy_connect_timeout 1000s;
+        proxy_send_timeout 1000s;
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://frontend_server;
+            break;
+        }
+    }
+}

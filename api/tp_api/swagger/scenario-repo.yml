@@ -1,0 +1,37 @@
+This is the API Endpoint that is used to create and update Threat Scenarios that are linked to existing Vulnerability Repositories
+---
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id: Threat Scenario
+      type: object
+      required: 
+        - name
+        - abuser_story
+        - feature
+        - type
+        - repo_name
+        - description
+      properties: 
+        name:
+          type: string
+        description: 
+          type: string
+        feature:
+          type: string
+        abuser_story:
+          type: string
+        type:
+          type: string
+        repo_name:
+          type: string
+responses:
+  200: 
+    description: Threat Scenario successfully created
+  400:
+    description: Input Validation Errors or other client Errors
+  404:
+    description: Unable to find User Story OR Abuser Story OR Repo Item
+
