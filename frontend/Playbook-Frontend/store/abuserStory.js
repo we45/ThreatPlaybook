@@ -19,7 +19,7 @@ export const actions = {
   },
   fetchAbuserStoryTreeByProject({ commit }, payload) {
     axios
-      .post(loginUrl + "/abuser-story/project", payload, {
+      .post("/api/abuser-story/project", payload, {
         headers: {
           Authorization: localStorage.getItem("token")
         }

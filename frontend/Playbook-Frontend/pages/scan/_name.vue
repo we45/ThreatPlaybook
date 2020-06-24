@@ -59,7 +59,6 @@
                   >Low</v-chip
                 >
               </td>
-              <!-- <td>{{ item.tool }}</td> -->
               <td>{{ item.description }}</td>
             </tr>
           </tbody>
@@ -96,40 +95,6 @@ export default {
   },
   methods: {
     ...mapActions('scan', ['fetchIndividualScanData']),
-    // async fetchScanVulnerabilities() {
-    //   const result = await this.$apollo.query({
-    //     query: gql`
-    //       query OWASP_ASVS($sname: String!) {
-    //         vulsByScan(scanName: $sname) {
-    //           vulnerabilities {
-    //             name
-    //             cwe
-    //             severity
-    //             description
-    //             tool
-    //             remediation
-    //             observation
-    //           }
-    //         }
-    //       }
-    //     `,
-    //     variables: {
-    //       sname: this.scanName
-    //     }
-    //   })
-    //   this.vulnerabilityData = []
-    //   if (result.data.vulsByScan.vulnerabilities.length > 0) {
-    //     for (const vul of result.data.vulsByScan.vulnerabilities) {
-    //       this.vulnerabilityData.push({
-    //         name: vul.name,
-    //         cwe: vul.cwe,
-    //         tool: vul.tool,
-    //         severity: vul.severity,
-    //         description: vul.description
-    //       })
-    //     }
-    //   }
-    // }
   },
   computed: {
     ...mapGetters('scan', {

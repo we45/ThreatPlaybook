@@ -54,13 +54,6 @@ export default {
       pieSeries: []
     }
   },
-  // asyncData(){
-  //   this.projectName = this.$route.params.name
-  //   const data = {
-  //     project: this.projectName
-  //   }
-  //   this.fetchProjectUserStoryData(data)
-  // },
   mounted() {
     this.projectName = this.$route.params.name
     const data = {
@@ -70,8 +63,6 @@ export default {
     this.fetchProjectThreatScenarioData(data)
     this.fetchVulnerabilitybyProject(data)
     this.fetchScanbyProject(data)
-    // this.fetchProjectInfo()
-    // this.fetchProjectScanInfo()
   },
   methods: {
      ...mapActions('userStory', ['fetchUserStoryByProject']),

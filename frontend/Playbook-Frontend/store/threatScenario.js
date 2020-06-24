@@ -31,7 +31,7 @@ export const actions = {
   },
   fetchThreatScenarioData({ commit }) {
     axios
-      .get(loginUrl + "/scenarios/read", {
+      .get("/api/scenarios/read", {
         headers: {
           Authorization: localStorage.getItem("token")
         }
@@ -50,14 +50,12 @@ export const actions = {
       .catch(error => {
         if (error.response.status === 401) {
           commit("PAGE_LOADING", false);
-          //   commit("ERROR_MESSAGE", "Invalid credentials");
-          //   commit("ERROR_MESSAGE_STATUS", true);
         }
       });
   },
   fetchThreatScenarioSevData({ commit }) {
     axios
-      .get(loginUrl + "/scenario/severity", {
+      .get("/api/scenario/severity", {
         headers: {
           Authorization: localStorage.getItem("token")
         }
@@ -88,14 +86,12 @@ export const actions = {
       .catch(error => {
         if (error.response.status === 401) {
           commit("PAGE_LOADING", false);
-          //   commit("ERROR_MESSAGE", "Invalid credentials");
-          //   commit("ERROR_MESSAGE_STATUS", true);
         }
       });
   },
   fetchProjectThreatScenarioData({ commit }, payload) {
     axios
-      .post(loginUrl + "/scenarios/project", payload, {
+      .post("/api/scenarios/project", payload, {
         headers: {
           Authorization: localStorage.getItem("token")
         }
@@ -116,14 +112,12 @@ export const actions = {
       .catch(error => {
         if (error.response.status === 401) {
           commit("PAGE_LOADING", false);
-          //   commit("ERROR_MESSAGE", "Invalid credentials");
-          //   commit("ERROR_MESSAGE_STATUS", true);
         }
       });
   },
   fetchThreatScenarioTreeByProject({ commit }, payload) {
     axios
-      .post(loginUrl + "/threat-scenario/project", payload, {
+      .post("/api/threat-scenario/project", payload, {
         headers: {
           Authorization: localStorage.getItem("token")
         }

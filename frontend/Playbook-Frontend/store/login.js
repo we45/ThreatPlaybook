@@ -31,12 +31,11 @@ export const actions = {
   pageLoading({ commit }, data) {
     commit('PAGE_LOADING', data)
   },
-  loginUser({ commit }, data) {    
+  loginUser({ commit }, data) {
     axios
-      .post(loginUrl + '/login', data)
+      .post('/api/login', data)
       .then((response) => {
         if (response.data.success) {
-          localStorage.removeItem("token");
           commit("STORE_TOKEN", response.data.data.token);
           commit("PAGE_LOADING", false);
           this.$router.push("/home");
