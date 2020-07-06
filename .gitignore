@@ -82,3 +82,4 @@ apiv2/logs/output.log
 logs/output.log
 website/node_modules/*
 frontend/Playbook-Frontend/package-lock.json
+api/tp_api/logs/output.log

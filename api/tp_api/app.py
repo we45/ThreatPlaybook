@@ -43,7 +43,7 @@ def validate_user(f):
         else:
             try:
                 token = request.headers.get("Authorization")
-                decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"], verify=False)
+                decoded = jwt.decode(token, JWT_PASSWORD, algorithms=["HS256"])
                 ref_user = User.objects.get(email=decoded["email"])
                 return f(*args, **kwargs)
             except Exception as e:
@@ -53,9 +53,10 @@ def validate_user(f):
 
     return inner
 
+
 # swagger done
 @app.route("/api/change-password", methods=["POST"])
-@swag_from('swagger/change-password.yml')
+@swag_from("swagger/change-password.yml")
 def change_password():
     if request.method == "POST":
         pass_data = request.get_json()
@@ -136,6 +137,7 @@ def change_password():
             )
             return jsonify(invalid_data), 400
 
+
 # swagger done
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -170,6 +172,7 @@ def login():
                 )
                 return invalid_credentials, 403
 
+
 # swagger done
 @app.route("/api/project/create", methods=["POST"])
 @validate_user
@@ -195,10 +198,11 @@ def create_project():
             exc = respond(False, True, "unable to save Project to DB")
             return exc, 400
 
+
 # swagger done
 @app.route("/api/feature/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/feature-create.yml')
+@swag_from("swagger/feature-create.yml")
 def create_user_story():
     data = request.get_json()
     if not set(("short_name", "description", "project")) <= set(data):
@@ -245,10 +249,11 @@ def create_user_story():
             logger.exception(e)
             return respond(False, True, message="Unable to create User Story"), 400
 
+
 # swagger done
 @app.route("/api/abuse-case/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/abuse-create.yml')
+@swag_from("swagger/abuse-create.yml")
 def create_abuser_story():
     data = request.get_json()
     if not set(("short_name", "description", "feature")) <= set(data):
@@ -296,10 +301,11 @@ def create_abuser_story():
             logger.exception(e)
             return respond(False, True, message="Unable to create Abuser Story"), 400
 
+
 # swagger done
 @app.route("/api/scenario/repo/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/scenario-repo.yml')
+@swag_from("swagger/scenario-repo.yml")
 def create_repo_scenario():
     data = request.get_json()
     try:
@@ -346,7 +352,14 @@ def create_repo_scenario():
                 ref_abuser_story.save()
         except Exception as e:
             logger.exception(e)
-            return respond(False, True, message="Unable to store Threat Scenario: {}".format(tm_name)), 500
+            return (
+                respond(
+                    False,
+                    True,
+                    message="Unable to store Threat Scenario: {}".format(tm_name),
+                ),
+                500,
+            )
 
         if ref_repo.tests:
             for single_test in ref_repo.tests:
@@ -377,10 +390,11 @@ def create_repo_scenario():
             data={"name": tm_name},
         )
 
+
 # swagger done
 @app.route("/api/scenario/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/scenario-inline.yml')
+@swag_from("swagger/scenario-inline.yml")
 def create_threat_scenario():
     data = request.get_json()
     mandatory_params = (
@@ -468,7 +482,7 @@ def create_threat_scenario():
 # swagger done
 @app.route("/api/test/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/test-case-create.yml')
+@swag_from("swagger/test-case-create.yml")
 def create_test_case():
     data = request.get_json()
     if not set(("test_case", "name", "threat_scenario")) <= set(data):
@@ -547,7 +561,7 @@ def create_test_case():
 # swagger done
 @app.route("/api/target/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/target-create-update.yml')
+@swag_from("swagger/target-create-update.yml")
 def create_target():
     data = request.get_json()
     if not set(("name", "url", "project")) <= set(data):
@@ -580,7 +594,7 @@ def create_target():
 
 @app.route("/api/scan/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/scan-create.yml')
+@swag_from("swagger/scan-create.yml")
 def create_scan():
     data = request.get_json()
     if not set(("tool", "target")) <= set(data):
@@ -592,7 +606,7 @@ def create_scan():
     else:
         try:
             ref_target = Target.objects.get(name=data.get("target"))
-            ref_project = Project.objects.get(id = ref_target.project.id)        
+            ref_project = Project.objects.get(id=ref_target.project.id)
         except Exception:
             return respond(False, True, message="Target not found"), 404
         try:
@@ -605,17 +619,16 @@ def create_scan():
             if new_scan not in ref_target.scans:
                 ref_target.scans.append(new_scan)
                 ref_target.save()
-            
+
             ref_features = UseCase.objects(project=ref_project)
             for single_feature in ref_features:
                 ref_scenarios = ThreatModel.objects(use_case=single_feature)
                 for single_scenario in ref_scenarios:
                     for single_test in single_scenario.tests:
-                        ref_test = Test.objects.get(id = single_test.id)
-                        if data.get('tool') in ref_test.tools:
+                        ref_test = Test.objects.get(id=single_test.id)
+                        if data.get("tool") in ref_test.tools:
                             ref_test.executed = True
                             ref_test.save()
-
 
             return respond(
                 True,
@@ -630,7 +643,7 @@ def create_scan():
 
 @app.route("/api/vulnerability/create", methods=["POST"])
 @validate_user
-@swag_from('swagger/vulnerability-create.yml')
+@swag_from("swagger/vulnerability-create.yml")
 def create_vulnerability():
     data = request.get_json()
     if "name" not in data and "scan" not in data:
@@ -649,7 +662,7 @@ def create_vulnerability():
 
         try:
             ref_target = Target.objects.get(id=ref_scan.target.id)
-            ref_project = Project.objects.get(id = ref_target.project.id)        
+            ref_project = Project.objects.get(id=ref_target.project.id)
         except Exception:
             return respond(False, True, message="Unable to find target"), 404
 
@@ -696,11 +709,12 @@ def create_vulnerability():
                     try:
                         new_evid.save()
                         # print(new_vul.cwe)
-                        # if new_evid not in new_vul.evidences:
-                        #     new_vul.append(new_evid)
-                        #     print("append is happening")
-                        #     new_vul.save()
-                    except Exception:
+                        if new_evid not in new_vul.evidences:
+                            new_vul.evidences.append(new_evid)
+                            print("append is happening")
+                            new_vul.save()
+                    except Exception as ev_e:
+                        logger.error(ev_e)
                         return (
                             respond(False, True, message="Unable to save evidence"),
                             500,
@@ -712,7 +726,8 @@ def create_vulnerability():
                 message="Vulnerability successfully created",
                 data={"name": name},
             )
-        except Exception:
+        except Exception as vul_ex:
+            logger.error(vul_ex)
             return (
                 respond(
                     False,
@@ -726,7 +741,7 @@ def create_vulnerability():
 @app.route("/api/project/read", methods=["GET", "POST"])
 @app.route("/api/project/read/<page_num>", methods=["GET", "POST"])
 @validate_user
-@swag_from('swagger/get-project.yml')
+@swag_from("swagger/get-project.yml")
 def get_project(page_num=1):
     if request.method == "GET":
         num_pages = (Project.objects.count() % items_per_page) + 1
@@ -773,7 +788,7 @@ def get_project(page_num=1):
 
 @app.route("/api/feature/read", methods=["GET", "POST"])
 @validate_user
-@swag_from('swagger/get-feature.yml')
+@swag_from("swagger/get-feature.yml")
 def get_features():
     if request.method == "GET":
         user_story_list = json.loads(UseCase.objects().to_json())
@@ -851,7 +866,7 @@ def get_features():
 
 @app.route("/api/abuses/read", methods=["POST"])
 @validate_user
-@swag_from('swagger/get-abuse.yml')
+@swag_from("swagger/get-abuse.yml")
 def get_abuser_story():
     data = request.get_json()
     if "user_story" in data:
@@ -919,13 +934,20 @@ def get_abuser_story():
                     message="Successfully retrieved data",
                     data=feature_list,
                 )
-    
-    return respond(False, True, message="Unable to find Abuser Stories. You need to provide a reference feature/user story"), 404
+
+    return (
+        respond(
+            False,
+            True,
+            message="Unable to find Abuser Stories. You need to provide a reference feature/user story",
+        ),
+        404,
+    )
 
 
 @app.route("/api/scenarios/read", methods=["GET", "POST"])
 @validate_user
-@swag_from('swagger/get-scenario.yml')
+@swag_from("swagger/get-scenario.yml")
 def get_threat_scenario():
     if request.method == "GET":
         threat_scenario_list = json.loads(ThreatModel.objects().to_json())
@@ -1003,7 +1025,7 @@ def get_threat_scenario():
 
 @app.route("/api/test/read", methods=["POST"])
 @validate_user
-@swag_from('swagger/get-tests.yml')
+@swag_from("swagger/get-tests.yml")
 def get_test_case():
     data = request.get_json()
     if "scenario" in data:
@@ -1150,6 +1172,53 @@ def vulnerability_severity():
         )
 
 
+### Select APIs that we need
+# Get Vulnerabilities by Target
+
+
+@app.route("/api/target/read", methods=["GET", "POST"])
+@validate_user
+def get_target(page_num=1):
+    if request.method == "GET":
+        num_pages = (Target.objects.count() % items_per_page) + 1
+        if num_pages > 1 and page_num:
+            if page_num == 1:
+                target_list = json.loads(Target.objects.limit(items_per_page).to_json())
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=target_list,
+                )
+            else:
+                offset = (page_num - 1) * items_per_page
+                target_list = json.loads(
+                    Target.objects.skip(offset).limit(items_per_page).to_json()
+                )
+                return respond(
+                    True,
+                    False,
+                    message="Successfully retrieved data",
+                    data=target_list,
+                )
+        else:
+            target_list = json.loads(Scan.objects().to_json())
+            return respond(True, False, data=scan_list)
+
+    if request.method == "POST":
+        data = request.get_json()
+        if "project" in data:
+            ref_project = Project.objects.get(name = data.get('project'))
+            targets_for_project = json.loads(
+                Target.objects(project=ref_project).to_json()
+            )
+            return respond(True, False, data = targets_for_project)
+         
+        if "name" in data:
+            specific_target = json.loads(Target.objects.get(name = data.get('name')).to_json())
+            return respond(True, False, data = specific_target)
+
+
 @app.route("/api/scan/read", methods=["GET", "POST"])
 @validate_user
 def get_scan(page_num=1):
@@ -1254,17 +1323,21 @@ def get_vulnerability(page_num=1):
 def get_vulnerability_by_project():
     data = request.get_json()
     if "project" in data:
+        vul_dict = {}
         try:
             ref_project = Project.objects.get(name=data.get("project"))
         except Exception:
             return respond(False, True, message="Project does not exist"), 404
         try:
-            target_obj = Target.objects.get(project=ref_project.id)
+            target_obj = Target.objects(project=ref_project)
         except Exception:
             return respond(False, True, message="Target does not exist"), 404
         try:
-            ref_vuls = json.loads(Vulnerability.objects(target=target_obj.id).to_json())
-            return respond(True, False, data=ref_vuls)
+            for single_target in target_obj:
+                ref_vuls = json.loads(Vulnerability.objects(target=single_target).to_json())
+                vul_dict[single_target.name] = ref_vuls
+                  
+            return respond(True, False, data=vul_dict)
         except Exception as e:
             return respond(False, True, message="Vulnerability does not exist"), 404
     else:
@@ -1277,17 +1350,31 @@ def get_vulnerability_by_project():
 def get_scan_by_project():
     data = request.get_json()
     if "project" in data:
+        resp_dict = {}
         try:
             ref_project = Project.objects.get(name=data.get("project"))
+            resp_dict['project'] = ref_project.name
         except Exception:
             return respond(False, True, message="Project does not exist"), 404
         try:
-            target_obj = Target.objects.get(project=ref_project.id)
+            target_obj = Target.objects(project=ref_project)
+            print(target_obj)
         except Exception:
             return respond(False, True, message="Target does not exist"), 404
         try:
-            ref_scans = json.loads(Scan.objects(target=target_obj.id).to_json())
-            return respond(True, False, data=ref_scans)
+            resp_dict['data'] = []
+            for single_target in target_obj:
+                ref_scans = Scan.objects(target=single_target)
+                for single_scan in ref_scans:
+                    data_dict = {
+                        "name": single_scan.name,
+                        "target": single_target.name,
+                        "tool": single_scan.tool
+                    }
+                    print(data_dict)
+                    resp_dict['data'].append(data_dict)
+
+            return respond(True, False, data=resp_dict)
         except Exception as e:
             return respond(False, True, message="Scans does not exist"), 404
     else:
@@ -1560,16 +1647,29 @@ def get_asvs_vuls():
 def delete_feature():
     data = request.get_json()
     if "name" not in data and "project" not in data:
-        return respond(False, True, message="Mandatory fields 'name' and 'project' not in request"), 400
-    
+        return (
+            respond(
+                False,
+                True,
+                message="Mandatory fields 'name' and 'project' not in request",
+            ),
+            400,
+        )
+
     try:
-        ref_project = Project.objects.get(name = data.get('project'))
-        ref_use_case = UseCase.objects.get(short_name = data.get('name'), project=ref_project)
+        ref_project = Project.objects.get(name=data.get("project"))
+        ref_use_case = UseCase.objects.get(
+            short_name=data.get("name"), project=ref_project
+        )
         ref_use_case.delete()
-        return respond(True, False, message="Successfully deleted Feature: {}".format(data.get('name')))
+        return respond(
+            True,
+            False,
+            message="Successfully deleted Feature: {}".format(data.get("name")),
+        )
     except Exception as del_e:
         logger.error(del_e)
-        return respond(False,True,message="Unable to delete Use-Case"),500
+        return respond(False, True, message="Unable to delete Use-Case"), 500
 
 
 @app.route("/api/delete/abuser-story", methods=["POST"])
@@ -1577,16 +1677,29 @@ def delete_feature():
 def delete_abuse_case():
     data = request.get_json()
     if "name" not in data and "feature" not in data:
-        return respond(False, True, message="Mandatory fields 'name' and 'feature' not in request"), 400
-    
+        return (
+            respond(
+                False,
+                True,
+                message="Mandatory fields 'name' and 'feature' not in request",
+            ),
+            400,
+        )
+
     try:
-        ref_use_case = UseCase.objects.get(short_name = data.get('feature'))
-        ref_abuse = AbuseCase.objects.get(short_name = data.get('name'), use_case = ref_use_case)
+        ref_use_case = UseCase.objects.get(short_name=data.get("feature"))
+        ref_abuse = AbuseCase.objects.get(
+            short_name=data.get("name"), use_case=ref_use_case
+        )
         ref_abuse.delete()
-        return respond(True, False, message="Successfully deleted Abuser Story: {}".format(data.get('name')))
+        return respond(
+            True,
+            False,
+            message="Successfully deleted Abuser Story: {}".format(data.get("name")),
+        )
     except Exception as del_e:
         logger.error(del_e)
-        return respond(False,True,message="Unable to delete Abuser Story"),500
+        return respond(False, True, message="Unable to delete Abuser Story"), 500
 
 
 @app.route("/api/delete/scenario", methods=["POST"])
@@ -1594,16 +1707,29 @@ def delete_abuse_case():
 def delete_scenario():
     data = request.get_json()
     if "name" not in data and "abuser_story" not in data:
-        return respond(False, True, message="Mandatory fields 'name' and 'abuser_story' not in request"), 400
-    
+        return (
+            respond(
+                False,
+                True,
+                message="Mandatory fields 'name' and 'abuser_story' not in request",
+            ),
+            400,
+        )
+
     try:
-        ref_abuse_case = AbuseCase.objects.get(short_name = data.get('abuser_story'))
-        ref_scenario = ThreatModel.objects.get(name=data.get('name'), abuse_case = ref_abuse_case)
+        ref_abuse_case = AbuseCase.objects.get(short_name=data.get("abuser_story"))
+        ref_scenario = ThreatModel.objects.get(
+            name=data.get("name"), abuse_case=ref_abuse_case
+        )
         ref_scenario.delete()
-        return respond(True, False, message="Successfully deleted Threat Scenario: {}".format(data.get('name')))
+        return respond(
+            True,
+            False,
+            message="Successfully deleted Threat Scenario: {}".format(data.get("name")),
+        )
     except Exception as del_e:
         logger.error(del_e)
-        return respond(False,True,message="Unable to delete Threat Scenario"),500
+        return respond(False, True, message="Unable to delete Threat Scenario"), 500
 
 
 @app.route("/api/delete/test", methods=["POST"])
@@ -1611,16 +1737,27 @@ def delete_scenario():
 def delete_test():
     data = request.get_json()
     if "name" not in data and "scenario" not in data:
-        return respond(False, True, message="Mandatory fields 'name' and 'scenario' not in request"), 400
-    
+        return (
+            respond(
+                False,
+                True,
+                message="Mandatory fields 'name' and 'scenario' not in request",
+            ),
+            400,
+        )
+
     try:
-        ref_scenario = ThreatModel.objects.get(name=data.get('scenario'))
-        ref_test = Test.objects.get(name=data.get('name'), scenario=ref_scenario)
+        ref_scenario = ThreatModel.objects.get(name=data.get("scenario"))
+        ref_test = Test.objects.get(name=data.get("name"), scenario=ref_scenario)
         ref_scenario.delete()
-        return respond(True, False, message="Successfully deleted Test-Case: {}".format(data.get('name')))
+        return respond(
+            True,
+            False,
+            message="Successfully deleted Test-Case: {}".format(data.get("name")),
+        )
     except Exception as del_e:
         logger.error(del_e)
-        return respond(False,True,message="Unable to delete Test Case"), 500
+        return respond(False, True, message="Unable to delete Test Case"), 500
 
 
 @app.route("/api/delete/project", methods=["POST"])
@@ -1628,15 +1765,24 @@ def delete_test():
 def delete_project():
     data = request.get_json()
     if "name" not in data:
-        return respond(False, True, message="Mandatory fields 'name' not in request"), 400
-    
+        return (
+            respond(False, True, message="Mandatory fields 'name' not in request"),
+            400,
+        )
+
     try:
-        ref_project = Project.objects.get(name=data.get('name'))
+        ref_project = Project.objects.get(name=data.get("name"))
         ref_project.delete()
-        return respond(True, False, message="Successfully deleted Project {}".format(data.get('name')))
+        return respond(
+            True,
+            False,
+            message="Successfully deleted Project {}".format(data.get("name")),
+        )
     except Exception as del_e:
         logger.error(del_e)
-        return respond(False,True,message="Unable to delete Project"), 500
+        return respond(False, True, message="Unable to delete Project"), 500
+
 
 if __name__ == "__main__":
-    app.run(host = "0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True)
+
