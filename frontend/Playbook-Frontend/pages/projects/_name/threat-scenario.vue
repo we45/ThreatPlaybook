@@ -203,6 +203,9 @@
             <p v-if="tools.length > 0" class="title">
               Tools : {{ tools.toString() }}
             </p>
+            <v-chip class="ma-2" color="green" text-color="white" v-if="isExecuted">
+                Test Case Excuted
+              </v-chip>
           </v-card-text>
         </v-card>
       </v-card>
@@ -242,7 +245,8 @@ export default {
       testCase: '',
       testType: '',
       tools: [],
-      asvsData: []
+      asvsData: [],
+      isExecuted: false
     }
   },
   created() {
@@ -304,6 +308,7 @@ export default {
         if (event.tools) {
           this.tools = event.tools
         }
+        this.isExecuted = event.executed
       }
     },
   },
