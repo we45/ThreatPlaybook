@@ -1428,6 +1428,7 @@ def get_user_story_tree_by_project():
                         test_dict["test_case"] = test.test_case
                         test_dict["tools"] = test.tools
                         test_dict["test_type"] = test.test_type
+                        test_dict["executed"] = test.executed
                         test_dict["type"] = "tc"
                         test_dict["title"] = "Test Case"
                         threat_scenario_dict["children"].append(test_dict)
@@ -1480,6 +1481,7 @@ def get_abuser_story_tree_by_project():
                         test_dict = {}
                         test_dict["name"] = test.name
                         test_dict["test_case"] = test.test_case
+                        test_dict["executed"] = test.executed
                         test_dict["tools"] = test.tools
                         test_dict["test_type"] = test.test_type
                         test_dict["type"] = "tc"
@@ -1528,6 +1530,7 @@ def get_threat_scenario_tree_by_project():
                         test_dict["test_case"] = test.test_case
                         test_dict["tools"] = test.tools
                         test_dict["test_type"] = test.test_type
+                        test_dict["executed"] = test.executed
                         test_dict["type"] = "tc"
                         test_dict["title"] = "Test Case"
                         threat_scenario_dict["children"].append(test_dict)
@@ -1598,6 +1601,7 @@ def get_threatmap_by_project():
                         test_dict["title"] = test.test_case
                         test_dict["tools"] = test.tools
                         test_dict["test_type"] = test.test_type
+                        test_dict["executed"] = test.executed
                         test_dict["type"] = "Test Cases"
                         threat_scenario_dict["children"].append(test_dict)
         try:

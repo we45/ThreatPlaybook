@@ -39,8 +39,6 @@ services:
     command: sh -c "/app/wait-for mongo_db:27017 -- /usr/local/bin/python /app/app.py"
   frontend:
     image: we45/threatplaybook-frontend:latest
-    expose:
-      - "3000"
     environment:
       - VUE_APP_API_URL=http://api
     links:

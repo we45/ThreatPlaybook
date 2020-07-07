@@ -189,6 +189,9 @@
             <p v-if="dialogData.tools.length > 0" class="title">
               Tools : {{ dialogData.tools.toString() }}
             </p>
+            <v-chip class="ma-2" color="green" text-color="white" v-if="dialogData.executed">
+                Test Case Excuted
+              </v-chip>
           </v-card-text>
         </v-card>
       </v-card>

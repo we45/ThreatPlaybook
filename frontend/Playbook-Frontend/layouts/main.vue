@@ -67,13 +67,13 @@
         <template v-slot:activator="{ on }">
           <v-btn icon large v-on="on">
             <v-avatar color="indigo">
-              <span class="white--text headline">TT</span>
+              <v-icon dark>mdi-account-circle</v-icon>
             </v-avatar>
           </v-btn>
         </template>
         <v-card class="mx-auto" max-width="300" tile>
           <v-list shaped>
-            <v-subheader>Tilak T</v-subheader>
+            <!-- <v-subheader>Tilak T</v-subheader> -->
             <v-divider></v-divider>
             <v-list-item-group color="primary">
               <v-list-item v-for="(item, i) in userMenu" :key="i">
@@ -111,7 +111,7 @@ export default {
         { icon: 'mdi-note-multiple', text: 'Projects', link: '/projects' }
       ],
       userMenu: [
-        { text: 'Profile', icon: 'mdi-face-profile' },
+        // { text: 'Profile', icon: 'mdi-face-profile' },
         { text: 'Logout', icon: 'mdi-logout' }
       ]
     }
