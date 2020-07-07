@@ -345,7 +345,6 @@ def create_repo_scenario():
                 categories=ref_repo.categories,
                 upsert=True,
             )
-            print("HELLO WORLD")
             ref_scenario = ThreatModel.objects.get(name=tm_name)
             if ref_scenario not in ref_abuser_story.scenarios:
                 ref_abuser_story.scenarios.append(ref_scenario)
@@ -363,7 +362,6 @@ def create_repo_scenario():
 
         if ref_repo.tests:
             for single_test in ref_repo.tests:
-                print("TEST", single_test.name)
                 try:
                     Test.objects(name=single_test.name).update_one(
                         name=single_test.name,
@@ -708,10 +706,8 @@ def create_vulnerability():
 
                     try:
                         new_evid.save()
-                        # print(new_vul.cwe)
                         if new_evid not in new_vul.evidences:
                             new_vul.evidences.append(new_evid)
-                            print("append is happening")
                             new_vul.save()
                     except Exception as ev_e:
                         logger.error(ev_e)
@@ -773,13 +769,11 @@ def get_project(page_num=1):
 
     if request.method == "POST":
         data = request.get_json()
-        print(data)
         if "name" in data:
             try:
                 ref_project = json.loads(
                     Project.objects.get(name=data.get("name")).to_json()
                 )
-                print(ref_project)
                 return respond(True, False, data=ref_project)
             except Exception as e:
                 logger.exception(e)
@@ -1335,7 +1329,7 @@ def get_vulnerability_by_project():
         try:
             for single_target in target_obj:
                 ref_vuls = json.loads(Vulnerability.objects(target=single_target).to_json())
-                vul_dict[single_target.name] = ref_vuls
+                vul_dict['data'] = ref_vuls
                   
             return respond(True, False, data=vul_dict)
         except Exception as e:
@@ -1358,7 +1352,6 @@ def get_scan_by_project():
             return respond(False, True, message="Project does not exist"), 404
         try:
             target_obj = Target.objects(project=ref_project)
-            print(target_obj)
         except Exception:
             return respond(False, True, message="Target does not exist"), 404
         try:
@@ -1371,7 +1364,6 @@ def get_scan_by_project():
                         "target": single_target.name,
                         "tool": single_scan.tool
                     }
-                    print(data_dict)
                     resp_dict['data'].append(data_dict)
 
             return respond(True, False, data=resp_dict)

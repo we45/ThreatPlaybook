@@ -26,9 +26,9 @@ export const actions = {
       })
       .then(response => {
         if (response.data.success) {
-            const projectData = [];
+          const projectData = [];
           for (const data of response.data.data) {
-            projectData.push({name: data.name})
+            projectData.push({ name: data.name });
           }
           commit("FETCH_DATA", projectData);
           commit("IS_PAGE_LOADING", false);

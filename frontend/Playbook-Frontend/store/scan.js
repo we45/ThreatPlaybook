@@ -88,7 +88,7 @@ export const actions = {
       .then(response => {
         if (response.data.success) {
           const scanData = [];
-          for (const scan of response.data.data) {
+          for (const scan of response.data.data.data) {
             scanData.push({
               name: scan.name,
               scan_type: scan.scan_type,
