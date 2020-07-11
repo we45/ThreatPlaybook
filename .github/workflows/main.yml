@@ -13,5 +13,13 @@ jobs:
       run: cd $GITHUB_WORKSPACE/api/ && docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-server
     - name: Test Secret
       run: echo $DOCKER_LOGIN_USER
-    - name: Push to Hub
-      run: docker push we45/threatplaybook-server
+    - name: Build and Push
+      uses: zemuldo/docker-build-push@master
+      env:
+        DOCKER_USERNAME: "we45"
+        DOCKER_NAMESPACE: "we45"
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_LOGIN_PASS }}
+        REGISTRY_URL: "docker.io"
+      with:
+       image_name: "threatplaybook-server"
+       image_tag: "latest"
