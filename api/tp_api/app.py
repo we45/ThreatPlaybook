@@ -329,6 +329,7 @@ def create_repo_scenario():
         return respond(False, True, message="Input Validation Error"), 400
     else:
         repo_name = data.get("repo_name")
+        severity = data.get("severity", 1)
         try:
             ref_repo = Repo.objects.get(short_name=repo_name)
         except Exception:
@@ -343,6 +344,7 @@ def create_repo_scenario():
                 abuse_case=ref_abuser_story,
                 mitigations=ref_repo.mitigations,
                 categories=ref_repo.categories,
+                severity=severity,
                 upsert=True,
             )
             ref_scenario = ThreatModel.objects.get(name=tm_name)
