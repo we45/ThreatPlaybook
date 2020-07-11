@@ -10,6 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build API Docker Container 
-      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-api
+      run: cd $GITHUB_WORKSPACE/api/ && docker build . --file $GITHUB_WORKSPACE/api/Dockerfile --tag we45/threatplaybook-server
     - name: Test Secret
       run: echo $DOCKER_LOGIN_USER
+    - name: Push to Hub
+      run: docker push we45/threatplaybook-server
