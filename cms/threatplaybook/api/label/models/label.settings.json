@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "labels",
+  "info": {
+    "name": "Label"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "projects": {
+      "via": "labels",
+      "collection": "project"
+    },
+    "abuser_stories": {
+      "via": "labels",
+      "collection": "abuser-story"
+    },
+    "threat_scenarios": {
+      "via": "labels",
+      "collection": "threat-scenario"
+    },
+    "features": {
+      "via": "labels",
+      "collection": "feature"
+    },
+    "targets": {
+      "via": "labels",
+      "collection": "target"
+    }
+  }
+}

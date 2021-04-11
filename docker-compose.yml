@@ -11,7 +11,7 @@ services:
   mongo_db:
     image: 'docker.io/bitnami/mongodb:4.2-debian-10'
     volumes:
-      - './playbook:/bitnami/mongodb' 
+      - './playbook:/bitnami/mongodb'
     environment:
       - MONGODB_USERNAME=threatplaybook
       - MONGODB_PASSWORD=password123

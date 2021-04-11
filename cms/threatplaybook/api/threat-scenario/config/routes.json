@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/threat-scenarios",
+      "handler": "threat-scenario.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/threat-scenarios/count",
+      "handler": "threat-scenario.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/threat-scenarios/:id",
+      "handler": "threat-scenario.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/threat-scenarios",
+      "handler": "threat-scenario.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/threat-scenarios/:id",
+      "handler": "threat-scenario.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/threat-scenarios/:id",
+      "handler": "threat-scenario.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

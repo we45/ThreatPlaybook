@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "scans",
+  "info": {
+    "name": "scan",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "target": {
+      "model": "target"
+    },
+    "vulnerabilities": {
+      "collection": "vulnerability"
+    },
+    "scan_type": {
+      "type": "enumeration",
+      "enum": [
+        "SAST",
+        "SCA",
+        "DAST",
+        "IAST",
+        "Manual"
+      ]
+    }
+  }
+}

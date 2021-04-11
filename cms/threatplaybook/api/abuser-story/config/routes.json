@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/abuser-stories",
+      "handler": "abuser-story.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/abuser-stories/count",
+      "handler": "abuser-story.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/abuser-stories/:id",
+      "handler": "abuser-story.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/abuser-stories",
+      "handler": "abuser-story.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/abuser-stories/:id",
+      "handler": "abuser-story.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/abuser-stories/:id",
+      "handler": "abuser-story.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

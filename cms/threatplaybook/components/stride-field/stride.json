@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_stride_field_strides",
+  "info": {
+    "name": "stride",
+    "icon": "ghost"
+  },
+  "options": {},
+  "attributes": {
+    "spoofing": {
+      "type": "boolean"
+    },
+    "tampering": {
+      "type": "boolean"
+    },
+    "repudiation": {
+      "type": "boolean"
+    },
+    "information_disclosure": {
+      "type": "boolean"
+    },
+    "denial_of_service": {
+      "type": "boolean"
+    },
+    "elevation_of_privilege": {
+      "type": "boolean"
+    }
+  }
+}

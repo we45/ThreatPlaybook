@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mitigations",
+  "info": {
+    "name": "mitigation",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "richtext"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "threat_scenarios": {
+      "via": "mitigations",
+      "collection": "threat-scenario",
+      "dominant": true
+    }
+  }
+}
