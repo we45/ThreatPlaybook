@@ -25,7 +25,7 @@ more-itertools==8.2.0
 packaging==20.3
 pathspec==0.8.0
 pluggy==0.13.1
-py==1.8.1
+py==1.10.0
 pycodestyle==2.5.0
 pycparser==2.20
 pyflakes==2.1.1
