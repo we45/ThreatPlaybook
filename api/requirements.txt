@@ -9,7 +9,7 @@ entrypoints==0.3
 flake8==3.7.9
 flasgger==0.9.4
 Flask==1.1.2
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 flask-mongoengine==0.9.5
 Flask-WTF==0.14.3
 importlib-metadata==1.6.0
