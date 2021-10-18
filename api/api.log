@@ -1,0 +1,25 @@
+2021-09-19 09:22:16.221 | INFO     | main:create_user:39 - user dingri3@hungry3.com created
+2021-09-19 09:31:57.598 | ERROR    | utils:check_user_access_and_privs:274 - Unable to validate user authorization token
+2021-09-19 09:32:09.378 | ERROR    | utils:check_user_access_and_privs:274 - Unable to validate user authorization token
+2021-09-19 09:33:34.758 | ERROR    | utils:check_user_access_and_privs:274 - Unable to validate user authorization token
+2021-09-19 09:33:49.310 | ERROR    | utils:check_user_access_and_privs:275 - Unable to validate user authorization token
+2021-09-19 09:43:06.799 | ERROR    | main:assign_user_group:149 - Unable to assign dingri3@hungry3.com to developers
+2021-09-19 09:43:43.081 | ERROR    | main:assign_user_group:149 - Unable to assign dingri3@hungry3.com to developers
+2021-09-19 09:44:11.012 | INFO     | main:assign_user_group:142 - user dingri3@hungry3.com assigned to developers
+2021-09-19 09:54:06.140 | INFO     | main:create_namespace:175 - namespace acme-crm has been successfully created
+2021-09-19 10:44:19.500 | ERROR    | utils:check_user_access_and_privs:277 - Unable to validate user authorization token
+2021-09-19 10:44:27.264 | ERROR    | utils:check_user_access_and_privs:277 - Unable to validate user authorization token
+2021-09-19 10:45:00.878 | ERROR    | utils:check_user_access_and_privs:282 - user dingri3@hungry3.com is not authorized to create a group
+2021-09-19 10:58:58.445 | ERROR    | main:assign_namespace_group:243 - Unable to assign group developers to acme-crm
+2021-09-19 10:59:45.495 | ERROR    | main:assign_namespace_group:243 - Unable to assign group developers to acme-crm
+2021-09-19 11:00:53.762 | ERROR    | main:assign_namespace_group:243 - Unable to assign group developers to acme-crm
+2021-09-19 11:01:42.610 | ERROR    | main:assign_namespace_group:243 - Unable to assign group developers to acme-crm
+2021-09-19 11:02:20.372 | INFO     | main:assign_namespace_group:236 - group developers successfully assigned to acme-crm
+2021-10-18 14:48:01.556 | INFO     | main:create_user:38 - user dingri3@hungry3.com created
+2021-10-18 14:54:26.686 | ERROR    | main:create_group:123 - Error in:
+1: let createdDate = DATE_NOW() INSERT {"name": @name, "description": @description, "created_on": createdDate} into group RETURN NEW.
+->AQL: collection or view not found: group (while parsing). Errors: {'code': 404, 'error': True, 'errorMessage': 'AQL: collection or view not found: group (while parsing)', 'errorNum': 1203}
+2021-10-18 14:55:33.338 | INFO     | main:create_namespace:178 - namespace acme-crm has been successfully created
+2021-10-18 14:56:27.126 | INFO     | main:assign_namespace_group:235 - group developers successfully assigned to acme-crm with ['read', 'write']
+2021-10-18 14:57:14.106 | INFO     | main:create_user:38 - user dingri4@hungry4.com created
+2021-10-18 14:57:26.606 | INFO     | main:assign_user_group:143 - user dingri4@hungry4.com assigned to developers
