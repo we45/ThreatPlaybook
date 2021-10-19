@@ -1,6 +1,6 @@
 # this source file contains AQL/c8QL Queries which we'll use to perform queries against the database
 
-ARANGO_INSERT_USER = 'let createdDate = DATE_NOW() INSERT {"email": @email, "password": @password, "role": @role, "created_on": createdDate} into user RETURN NEW'
+ARANGO_INSERT_USER = 'let createdDate = DATE_NOW() INSERT {"email": @email, "password": @password, "created_on": createdDate} into user RETURN NEW'
 
 ARANGO_GET_USER_BY_EMAIL = (
     "FOR single in user FILTER single.email == @email RETURN single"
@@ -53,7 +53,11 @@ ARANGO_LOOKUP_USER_PRIVS = 'FOR single in user FILTER single.email == @email FOR
 
 ARANGO_CREATE_APPLICATION = [
     'let createdDate = DATE_NOW() INSERT {"name": @name, "description": @description, "app_type: @app_type, "hosting: @hosting, "compute: @compute, "created_on": createdDate',
-    '} into namespace LET inserted = NEW FOR appNS in [{"_from": inserted._id, "_to": @nsKey}, {"_from": @nsKey, "_to": inserted._id}] INSERT appNS INTO edges'
+    '} into application LET inserted = NEW FOR appNS in [{"_from": inserted._id, "_to": @nsKey}, {"_from": @nsKey, "_to": inserted._id}] INSERT appNS INTO edges'
 ]
 
 ARANGO_GET_APPLICATION_BY_NAME = "FOR single in application FILTER single.name == @name RETURN single"
+
+ARANGO_CREATE_USER_STORY = 'let createdDate = DATE_NOW() INSERT {"name": @name, "description": @description, stride: @stride, "created_on": createdDate } into user_story LET inserted = NEW FOR usApp in [{"_from": inserted._id, "_to": @appKey}, {"_from": @appKey, "_to": inserted._id}] INSERT usApp INTO edges'
+
+ARANGO_UPDATE_USER_STORY = 'FOR single in user_story FILTER single._key == @singleKey UPDATE {_key: single._key} WITH {name: @name, description: @description, stride: @stride} IN user_story RETURN NEW'

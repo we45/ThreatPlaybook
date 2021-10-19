@@ -152,8 +152,7 @@ def create_user_in_db(user: User):
             rawResults=True,
             bindVars={
                 "email": user.email,
-                "password": user.password,
-                "role": user.role,
+                "password": user.password
             },
         )
         return response

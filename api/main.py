@@ -33,6 +33,7 @@ def create_user(user: User):
     - email
     - password
     """
+    print(user)
     try:
         create_user_in_db(user)
         logger.info(f"user {user.email} created")
@@ -235,6 +236,7 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 
 # Namespace CRUD
 
+
 @myapp.get("/namespace/")
 def list_namespaces(request: Request):
     """
@@ -273,7 +275,11 @@ def get_namespace(ns_name: str, request: Request):
     if not q_ns and len(q_ns) == 0:
         return JSONResponse(
             status_code=404,
-            content={"success": False, "error": True, "message": f"Namespace '{ns_name}' does not exist"}
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Namespace '{ns_name}' does not exist",
+            },
         )
     return {"success": True, "error": False, "data": q_ns[0]}
 
@@ -296,7 +302,9 @@ def create_namespace(ns: Namespace, request: Request):
     ns_name = ns.name.replace(" ", "_").lower()
     if get_ns_from_db(ns_name):
         q_ns = db.AQLQuery(
-            ARANGO_UPDATE_NAMESPACE, rawResults=True, bindVars={"name": ns_name, "description": ns.description}
+            ARANGO_UPDATE_NAMESPACE,
+            rawResults=True,
+            bindVars={"name": ns_name, "description": ns.description},
         )
         if q_ns and len(q_ns) > 0:
             return {
@@ -336,9 +344,114 @@ def get_namespace(ns_name: str, request: Request):
     )
     print(q_ns)
     if not q_ns and len(q_ns) == 0:
-        return {"success": True, "error": False, "message": f"namespace '{ns_name}' has been deleted successfully."}
+        return {
+            "success": True,
+            "error": False,
+            "message": f"namespace '{ns_name}' has been deleted successfully.",
+        }
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------------------------
+# User Story
 
+
+@myapp.put("/userstory/create")
+def create_user_story(story: UserStoryCreate, request: Request):
+    """
+    creates a user story with name, description and stride (object)
+    stride format: {"spoofing": true, "tampering": true, etc}
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_app = db.AQLQuery(
+        ARANGO_GET_APPLICATION_BY_NAME,
+        rawResults=True,
+        bindVars={"name": story.application},
+    )
+    if not q_app and len(q_app) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Application '{story.application}' does not exist",
+            },
+        )
+
+    app_key = q_app[0].get("_id")
+    create_user_story = db.AQLQuery(
+        ARANGO_CREATE_USER_STORY,
+        rawResults=True,
+        bindVars={
+            "name": story.name,
+            "description": story.description,
+            "stride": story.stride,
+            "appKey": app_key,
+        },
+    )
+    if len(create_user_story) == 0:
+        logger.info(f"user story {story.name} has been successfully created")
+        return {
+            "success": True,
+            "error": False,
+            "message": f"user story '{story.name}' has been successfully created",
+        }
+
+    return JSONResponse(
+        status_code=400,
+        content={
+            "success": False,
+            "error": True,
+            "message": f"Unable to create user story `{story.name}`",
+        },
+    )
+
+
+@myapp.post("/userstory/update")
+def update_user_story(story: UserStoryUpdate, request: Request):
+    """
+    updates a user story with name, description and stride (object)
+    stride format: {"spoofing": true, "tampering": true, etc}
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    
+    create_user_story = db.AQLQuery(
+        ARANGO_UPDATE_USER_STORY,
+        rawResults=True,
+        bindVars={
+            "name": story.name,
+            "description": story.description,
+            "stride": story.stride,
+            "singleKey": story.key,
+        },
+    )
+    print(create_user_story)
+    if len(create_user_story) > 0:
+        logger.info(f"user story {story.name} has been successfully updated")
+        return {
+            "success": True,
+            "error": False,
+            "message": f"user story '{story.name}' has been successfully updated",
+            "data": create_user_story[0]
+        }
+
+    return JSONResponse(
+        status_code=400,
+        content={
+            "success": False,
+            "error": True,
+            "message": f"Unable to create user story `{story.name}`",
+        },
+    )
