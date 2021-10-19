@@ -134,7 +134,12 @@ def init_db():
 
     if not db.hasCollection("mitigation"):
         db.createCollection(name="mitigation")
+    
+    if not db.hasCollection("group"):
+        db.createCollection(name="group")
 
+    if not db.hasCollection("edges"):
+        db.createCollection(name="edges", className="Edges")
 
 class DuplicateUserException(Exception):
     pass
@@ -266,8 +271,7 @@ def validate_user_access(up: LookupUserPrivileges):
 
 
 def check_user_access_and_privs(
-    r: Request, lobj: str = None, ltype: str = None, expected_privs: str = None
-):
+    r: Request, lobj: str = None, ltype: str = None, expected_privs: str = None):
     token = validate_token(r)
     if not token:
         logger.error("Unable to validate user authorization token")

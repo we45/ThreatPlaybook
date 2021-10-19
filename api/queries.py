@@ -20,12 +20,33 @@ ARANGO_ASSIGN_USER_TO_GROUP = 'FOR userGroups in [{"_from": @userKey, "_to": @gr
 
 ARANGO_ASSIGN_GROUP_NAMESPACE = 'FOR groupNs in [{"_from": @groupKey, "_to": @nsKey, "privs": @privs}, {"_from": @nsKey, "_to": @groupKey, "privs": @privs}] INSERT groupNs INTO edges'
 
-ARANGO_CREATE_NAMESPACE = 'let createdDate = DATE_NOW() INSERT {"name": @name, "description": @description, "created_on": createdDate} into namespace RETURN NEW'
+ARANGO_CREATE_NAMESPACE = (
+    'let createdDate = DATE_NOW() '
+    'INSERT {"name": @name, "description": @description, "created_on": createdDate} into namespace '
+    'RETURN NEW'
+)
 
-ARANGO_LIST_NAMESPACES = "FOR single in namespace RETURN single"
+ARANGO_LIST_NAMESPACES = (
+    "FOR single in namespace "
+    "RETURN single"
+)
+
+ARANGO_UPDATE_NAMESPACE = (
+    "FOR ns in namespace "
+    "FILTER ns.name == @name "
+    "UPDATE {_key: ns._key} WITH {description: @description} IN namespace "
+    "RETURN NEW"
+)
+
+ARANGO_DELETE_NAMESPACE = (
+    "FOR ns in namespace "
+    "FILTER ns.name == @name "
+    "REMOVE ns IN namespace")
 
 ARANGO_GET_NAMESPACE_BY_NAME = (
-    "FOR single in namespace FILTER single.name == @name RETURN single"
+    "FOR single in namespace "
+    "FILTER single.name == @name "
+    "RETURN single"
 )
 
 ARANGO_LOOKUP_USER_PRIVS = 'FOR single in user FILTER single.email == @email FOR v,e,p in 1..@depth OUTBOUND single edges RETURN {"vertex": v, "edges": e}'

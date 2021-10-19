@@ -158,70 +158,6 @@ def assign_user_group(ga: UserGroupAssignment, r: Request):
         )
 
 
-# namespace CRUD
-@myapp.put("/namespace/create")
-def create_namespace(ns: Namespace, request: Request):
-    """
-    creates a namespace. this can only be invoked by an admin level user
-    """
-    if not check_user_access_and_privs(request):
-        return JSONResponse(
-            status_code=403,
-            content={"success": False, "error": True, "message": "Unauthorized access"},
-        )
-    db = get_db()
-    response = db.AQLQuery(
-        ARANGO_CREATE_NAMESPACE,
-        bindVars={"name": ns.name, "description": ns.description},
-    )
-    if response and len(response) > 0:
-        logger.info(f"namespace {ns.name} has been successfully created")
-        return {
-            "success": True,
-            "error": False,
-            "message": f"namespace {ns.name} has been successfully created",
-        }
-
-
-@myapp.get("/namespace/list")
-def list_namespaces(request: Request):
-    """
-    list all namespaces
-    TODO:
-    1. Pagination
-    """
-    if not check_user_access_and_privs(request):
-        return JSONResponse(
-            status_code=403,
-            content={"success": False, "error": True, "message": "Unauthorized access"},
-        )
-    db = get_db()
-    all_ns = db.AQLQuery(ARANGO_LIST_NAMESPACES, rawResults=True)
-    if not all_ns:
-        return JSONResponse(status_code=404)
-    ns_list = []
-    for single in all_ns:
-        ns_list.append(single)
-    return {"success": True, "error": False, "data": ns_list}
-
-
-@myapp.post("/namespace/get")
-def get_namespace(ns: NamespaceGet, request: Request):
-    if not check_user_access_and_privs(request):
-        return JSONResponse(
-            status_code=403,
-            content={"success": False, "error": True, "message": "Unauthorized access"},
-        )
-    db = get_db()
-    q_ns = db.AQLQuery(
-        ARANGO_GET_NAMESPACE_BY_NAME, rawResults=True, bindVars={"name": ns.name}
-    )
-    if not q_ns and len(q_ns) == 0:
-        return JSONResponse(status_code=404)
-
-    return {"success": True, "error": False, "data": q_ns[0]}
-
-
 @myapp.post("/namespace/assign")
 def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
     if not check_user_access_and_privs(r):
@@ -258,7 +194,7 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 #             status_code=403,
 #             content={"success": False, "error": True, "message": "Unauthorized access"},
 #         )
-    
+
 #     if not does_namespace_exist(apc.namespace):
 #         logger.error(f"namespace '{apc.namespace}' doesn't exist")
 #         return JSONResponse(status_code=404, content = {
@@ -266,7 +202,7 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 #             "error": True,
 #             "message": f"namespace '{apc.namespace}' doesn't exist"
 #         })
-    
+
 #     if apc.technologies:
 #         ARANGO_CREATE_APPLICATION.insert(1, ', "technologies": @technologies')
 #         create_app_query = ''.join(ARANGO_CREATE_APPLICATION)
@@ -281,7 +217,7 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 #                 "technologies": apc.technologies,
 #             })
 #         except Exception as e:
-            
+
 
 #     else:
 #         create_app_query = ''.join(ARANGO_CREATE_APPLICATION)
@@ -293,3 +229,116 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 #             "hosting": apc.hosting,
 #             "app_type": apc.app_type,
 #         })
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+# Namespace CRUD
+
+@myapp.get("/namespace/")
+def list_namespaces(request: Request):
+    """
+    List all namespaces.
+    Use the `/namespace/{namespace_name}` endpoint to fetch a specific namespace.
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    all_ns = db.AQLQuery(ARANGO_LIST_NAMESPACES, rawResults=True)
+    if not all_ns:
+        return JSONResponse(status_code=404)
+    ns_list = [namespace for namespace in all_ns]
+    return {"success": True, "error": False, "data": ns_list}
+
+
+@myapp.get("/namespace/{ns_name}")
+def get_namespace(ns_name: str, request: Request):
+    """
+    Fetch a specific namespace. Use the `/namespace` endpoint to fetch all namespaces
+    :param request:
+    :param ns_name: Namespace name(Case sensitive)
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_ns = db.AQLQuery(
+        ARANGO_GET_NAMESPACE_BY_NAME, rawResults=True, bindVars={"name": ns_name}
+    )
+    if not q_ns and len(q_ns) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={"success": False, "error": True, "message": f"Namespace '{ns_name}' does not exist"}
+        )
+    return {"success": True, "error": False, "data": q_ns[0]}
+
+
+@myapp.put("/namespace/")
+def create_namespace(ns: Namespace, request: Request):
+    """
+    Creates a namespace. Needs the following:
+        - name
+        - description
+
+    Example: {"name": "dev_project", "description": "namespace for all dev apps"}
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    ns_name = ns.name.replace(" ", "_").lower()
+    if get_ns_from_db(ns_name):
+        q_ns = db.AQLQuery(
+            ARANGO_UPDATE_NAMESPACE, rawResults=True, bindVars={"name": ns_name, "description": ns.description}
+        )
+        if q_ns and len(q_ns) > 0:
+            return {
+                "success": True,
+                "error": False,
+                "message": f"namespace '{ns_name}' has been successfully updated",
+            }
+
+    response = db.AQLQuery(
+        ARANGO_CREATE_NAMESPACE,
+        bindVars={"name": ns_name, "description": ns.description},
+    )
+    if response and len(response) > 0:
+        logger.info(f"namespace {ns_name} has been successfully created")
+        return {
+            "success": True,
+            "error": False,
+            "message": f"namespace '{ns_name}' has been successfully created",
+        }
+
+
+@myapp.delete("/namespace/{ns_name}")
+def get_namespace(ns_name: str, request: Request):
+    """
+    Delete a specific namespace. Use the `/namespace` endpoint to fetch all namespaces
+    :param ns_name: Namespace name(Case sensitive)
+    :param request: Authorization Token
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_ns = db.AQLQuery(
+        ARANGO_DELETE_NAMESPACE, rawResults=True, bindVars={"name": ns_name}
+    )
+    print(q_ns)
+    if not q_ns and len(q_ns) == 0:
+        return {"success": True, "error": False, "message": f"namespace '{ns_name}' has been deleted successfully."}
+
+# --------------------------------------------------------------------------------------------------------------------
+
+
+

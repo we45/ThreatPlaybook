@@ -10,8 +10,6 @@ import bcrypt
 class User(BaseModel):
     email: EmailStr
     password: str
-    role = "user"
-
     @validator("password", pre=True)
     def hash_password(cls, v):
         salt = bcrypt.gensalt()
