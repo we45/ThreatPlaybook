@@ -420,7 +420,7 @@ def create_application(apc: ApplicationCreate, request: Request):
 
 
 @myapp.get("/application/all")
-def list_applications(ns: NamespaceGet, request: Request):
+def list_applications(ns: NamespaceName, request: Request):
     """
     Lists all applications based on 'namespace name'
     format example: {"namespace": "dev"}

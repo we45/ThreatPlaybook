@@ -69,6 +69,14 @@ class NamespaceGet(BaseModel):
     key: str
 
 
+class NamespaceName(BaseModel):
+    """
+    body of the get namespace requests
+    """
+
+    namespace: str
+
+
 class Namespace(BaseModel):
     name: str
     description: Optional[str] = None
