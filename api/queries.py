@@ -33,8 +33,8 @@ ARANGO_LIST_NAMESPACES = (
 
 ARANGO_UPDATE_NAMESPACE = (
     "FOR ns in namespace "
-    "FILTER ns.name == @name "
-    "UPDATE {_key: ns._key} WITH {description: @description} IN namespace "
+    "FILTER ns._key == @key "
+    "UPDATE {_key: ns._key} WITH {name: @name, description: @description} IN namespace "
     "RETURN NEW"
 )
 
@@ -46,6 +46,12 @@ ARANGO_DELETE_NAMESPACE = (
 ARANGO_GET_NAMESPACE_BY_NAME = (
     "FOR single in namespace "
     "FILTER single.name == @namespace "
+    "RETURN single"
+)
+
+ARANGO_GET_NAMESPACE_BY_KEY = (
+    "FOR single in namespace "
+    "FILTER single._key == @key "
     "RETURN single"
 )
 
@@ -70,16 +76,17 @@ ARANGO_GET_ALL_APPLICATIONS_UNDER_NAMESPACE = (
     "RETURN app"
 )
 
-ARANGO_GET_APPLICATION_UNDER_NAMESPACE = (
-    "FOR single in namespace "
-    "FILTER single.name == @namespace "
+ARANGO_GET_APPLICATION_BY_KEY = (
     "FOR app in application "
-    "FILTER app.name == @application "
+    "FILTER app._key == @key "
     "RETURN app"
 )
 
-ARANGO_DELETE_APPLICATION = (
-
+ARANGO_UPDATE_APPLICATION = (
+    "FOR app in application "
+    "FILTER app._key == @key "
+    "UPDATE {_key: app._key} WITH {name: @name, description: @description, app_type: @app_type, hosting: @hosting, compute: @compute, technologies: @technologies} IN application "
+    "RETURN NEW"
 )
 
 ARANGO_CREATE_APPLICATION = [

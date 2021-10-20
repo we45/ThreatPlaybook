@@ -66,7 +66,7 @@ class NamespaceGet(BaseModel):
     body of the get namespace requests
     """
 
-    namespace: str
+    key: str
 
 
 class Namespace(BaseModel):
@@ -83,8 +83,7 @@ class Edge(BaseModel):
 
 
 class ApplicationGet(BaseModel):
-    application: str
-    namespace: str
+    key: str
 
 
 class Application(BaseModel):
@@ -100,6 +99,16 @@ class Application(BaseModel):
 class ApplicationCreate(BaseModel):
     name: str
     namespace: str
+    description: Optional[str]
+    app_type: Optional[str] = "webapp"
+    hosting: Optional[str] = "on-prem"
+    compute: Optional[str] = "vm"
+    technologies: Optional[List[str]]
+
+
+class ApplicationUpdate(BaseModel):
+    key: str
+    name: str
     description: Optional[str]
     app_type: Optional[str] = "webapp"
     hosting: Optional[str] = "on-prem"

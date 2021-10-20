@@ -261,9 +261,9 @@ def get_namespace(ns: NamespaceGet, request: Request):
         )
     db = get_db()
     q_ns = db.AQLQuery(
-        ARANGO_GET_NAMESPACE_BY_NAME,
+        ARANGO_GET_NAMESPACE_BY_KEY,
         rawResults=True,
-        bindVars={"namespace": ns.namespace},
+        bindVars={"key": ns.key},
     )
     if not q_ns and len(q_ns) == 0:
         return JSONResponse(
@@ -271,14 +271,14 @@ def get_namespace(ns: NamespaceGet, request: Request):
             content={
                 "success": False,
                 "error": True,
-                "message": f"Namespace '{ns.namespace}' does not exist",
+                "message": f"Namespace does not exist",
             },
         )
     return {"success": True, "error": False, "data": q_ns[0]}
 
 
 @myapp.put("/namespace/")
-def create_update_namespace(ns: Namespace, request: Request):
+def create_namespace(ns: Namespace, request: Request):
     if not validate_token(request):
         return JSONResponse(
             status_code=401,
@@ -286,17 +286,11 @@ def create_update_namespace(ns: Namespace, request: Request):
         )
     db = get_db()
     if get_ns_from_db(ns.name):
-        q_ns = db.AQLQuery(
-            ARANGO_UPDATE_NAMESPACE,
-            rawResults=True,
-            bindVars={"name": ns.name, "description": ns.description},
-        )
-        if q_ns and len(q_ns) > 0:
-            return {
-                "success": True,
-                "error": False,
-                "message": f"namespace '{ns.name}' has been successfully updated",
-            }
+        return JSONResponse(status_code=403,
+                            content={
+                                "success": False,
+                                "error": True,
+                                "message": f"Namespace '{ns.name}' already exists"})
     response = db.AQLQuery(
         ARANGO_CREATE_NAMESPACE,
         bindVars={"name": ns.name, "description": ns.description},
@@ -307,6 +301,31 @@ def create_update_namespace(ns: Namespace, request: Request):
             "success": True,
             "error": False,
             "message": f"namespace '{ns.name}' has been successfully created",
+        }
+
+
+@myapp.post("/namespace/")
+def update_namespace(uns: NamespaceUpdate, request: Request):
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    response = db.AQLQuery(
+        ARANGO_UPDATE_NAMESPACE,
+        rawResults=True,
+        bindVars={
+            "key": uns.key,
+            "name": uns.name,
+            "description": uns.description
+        }
+    )
+    if response and len(response) > 0:
+        return {
+            "success": True,
+            "error": False,
+            "message": f"namespace '{uns.name}' has been updated successfully!",
         }
 
 
@@ -455,24 +474,10 @@ def get_application(ap: ApplicationGet, request: Request):
             content={"success": False, "error": True, "message": "Unauthorized access"},
         )
     db = get_db()
-    q_ns = db.AQLQuery(
-        ARANGO_GET_NAMESPACE_BY_NAME,
-        rawResults=True,
-        bindVars={"namespace": ap.namespace},
-    )
-    if not q_ns and len(q_ns) == 0:
-        return JSONResponse(
-            status_code=404,
-            content={
-                "success": False,
-                "error": True,
-                "message": f"Namespace '{ap.namespace}' does not exist",
-            },
-        )
     q_app = db.AQLQuery(
-        ARANGO_GET_APPLICATION_UNDER_NAMESPACE,
+        ARANGO_GET_APPLICATION_BY_KEY,
         rawResults=True,
-        bindVars={"namespace": ap.namespace, "application": ap.application},
+        bindVars={"key": ap.key},
     )
     if q_app and len(q_app) > 0:
         return {"success": True, "error": False, "data": q_app[0]}
@@ -482,8 +487,51 @@ def get_application(ap: ApplicationGet, request: Request):
             content={
                 "success": False,
                 "error": True,
-                "message": f"Application '{ap.application}' under '{ap.namespace}' namespace Not found",
+                "message": f"Application Not found",
             },
+        )
+
+
+@myapp.post("/application/")
+def update_application(apu: ApplicationUpdate, request: Request):
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_app = db.AQLQuery(
+        ARANGO_GET_APPLICATION_BY_KEY,
+        rawResults=True,
+        bindVars={"key": apu.key},
+    )
+    if not q_app and len(q_app) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Application Not found",
+            },
+        )
+    u_app = db.AQLQuery(
+        ARANGO_UPDATE_APPLICATION, rawResults=True,
+        bindVars={
+            "key": apu.key,
+            "name": apu.name,
+            "description": apu.description,
+            "app_type": apu.app_type,
+            "hosting": apu.hosting,
+            "compute": apu.compute,
+            "technologies": apu.technologies}
+    )
+    if u_app and len(u_app) > 0:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "error": False,
+                "message": f"Application updated successfully"}
         )
 
 # -------------------------------------------------------------------------------------------------------------------
