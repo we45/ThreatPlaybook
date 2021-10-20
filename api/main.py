@@ -233,14 +233,11 @@ def assign_namespace_group(ns: NamespaceGroupAssignment, r: Request):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# Namespace CRUD
+# Namespace
 
-@myapp.get("/namespace/")
+
+@myapp.get("/namespace/all")
 def list_namespaces(request: Request):
-    """
-    List all namespaces.
-    Use the `/namespace/{namespace_name}` endpoint to fetch a specific namespace.
-    """
     if not validate_token(request):
         return JSONResponse(
             status_code=401,
@@ -254,13 +251,8 @@ def list_namespaces(request: Request):
     return {"success": True, "error": False, "data": ns_list}
 
 
-@myapp.get("/namespace/{ns_name}")
-def get_namespace(ns_name: str, request: Request):
-    """
-    Fetch a specific namespace. Use the `/namespace` endpoint to fetch all namespaces
-    :param request:
-    :param ns_name: Namespace name(Case sensitive)
-    """
+@myapp.get("/namespace/")
+def get_namespace(ns: NamespaceGet, request: Request):
     if not validate_token(request):
         return JSONResponse(
             status_code=401,
@@ -268,62 +260,81 @@ def get_namespace(ns_name: str, request: Request):
         )
     db = get_db()
     q_ns = db.AQLQuery(
-        ARANGO_GET_NAMESPACE_BY_NAME, rawResults=True, bindVars={"name": ns_name}
+        ARANGO_GET_NAMESPACE_BY_NAME,
+        rawResults=True,
+        bindVars={"namespace": ns.namespace},
     )
     if not q_ns and len(q_ns) == 0:
         return JSONResponse(
             status_code=404,
-            content={"success": False, "error": True, "message": f"Namespace '{ns_name}' does not exist"}
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Namespace '{ns.namespace}' does not exist",
+            },
         )
     return {"success": True, "error": False, "data": q_ns[0]}
 
 
 @myapp.put("/namespace/")
-def create_namespace(ns: Namespace, request: Request):
-    """
-    Creates a namespace. Needs the following:
-        - name
-        - description
-
-    Example: {"name": "dev_project", "description": "namespace for all dev apps"}
-    """
+def create_update_namespace(ns: Namespace, request: Request):
     if not validate_token(request):
         return JSONResponse(
             status_code=401,
             content={"success": False, "error": True, "message": "Unauthorized access"},
         )
     db = get_db()
-    ns_name = ns.name.replace(" ", "_").lower()
-    if get_ns_from_db(ns_name):
+    if get_ns_from_db(ns.name):
         q_ns = db.AQLQuery(
-            ARANGO_UPDATE_NAMESPACE, rawResults=True, bindVars={"name": ns_name, "description": ns.description}
+            ARANGO_UPDATE_NAMESPACE,
+            rawResults=True,
+            bindVars={"name": ns.name, "description": ns.description},
         )
         if q_ns and len(q_ns) > 0:
             return {
                 "success": True,
                 "error": False,
-                "message": f"namespace '{ns_name}' has been successfully updated",
+                "message": f"namespace '{ns.name}' has been successfully updated",
             }
-
     response = db.AQLQuery(
         ARANGO_CREATE_NAMESPACE,
-        bindVars={"name": ns_name, "description": ns.description},
+        bindVars={"name": ns.name, "description": ns.description},
     )
     if response and len(response) > 0:
-        logger.info(f"namespace {ns_name} has been successfully created")
+        logger.info(f"namespace {ns.name} has been successfully created")
         return {
             "success": True,
             "error": False,
-            "message": f"namespace '{ns_name}' has been successfully created",
+            "message": f"namespace '{ns.name}' has been successfully created",
         }
 
 
-@myapp.delete("/namespace/{ns_name}")
-def get_namespace(ns_name: str, request: Request):
+# @myapp.delete("/namespace/")
+# def delete_namespace(ns: NamespaceGet, request: Request):
+#     if not validate_token(request):
+#         return JSONResponse(
+#             status_code=401,
+#             content={"success": False, "error": True, "message": "Unauthorized access"},
+#         )
+#     db = get_db()
+#     q_ns = db.AQLQuery(
+#         ARANGO_DELETE_NAMESPACE, rawResults=True, bindVars={"name": ns.namespace}
+#     )
+#     if not q_ns and len(q_ns) == 0:
+#         return {"success": True, "error": False, "message": f"namespace '{ns.namespace}' has been deleted successfully."}
+
+# --------------------------------------------------------------------------------------------------------------------
+
+# Application
+
+
+@myapp.put("/application/")
+def create_application(apc: ApplicationCreate, request: Request):
     """
-    Delete a specific namespace. Use the `/namespace` endpoint to fetch all namespaces
-    :param ns_name: Namespace name(Case sensitive)
-    :param request: Authorization Token
+    Creates an application in a particular namespace.
+    Namespace needs to exist.
+    format example: {"name": "app1", "namespace": "dev", "description": "app1 description", "app_type": "webapp",
+    "hosting": "on-prem", "compute": "vm", "technologies": ["nodejs", "python", "golang", "react"]}
     """
     if not validate_token(request):
         return JSONResponse(
@@ -332,13 +343,147 @@ def get_namespace(ns_name: str, request: Request):
         )
     db = get_db()
     q_ns = db.AQLQuery(
-        ARANGO_DELETE_NAMESPACE, rawResults=True, bindVars={"name": ns_name}
+        ARANGO_GET_NAMESPACE_BY_NAME,
+        rawResults=True,
+        bindVars={"namespace": apc.namespace},
     )
-    print(q_ns)
     if not q_ns and len(q_ns) == 0:
-        return {"success": True, "error": False, "message": f"namespace '{ns_name}' has been deleted successfully."}
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Namespace '{apc.namespace}' does not exist",
+            },
+        )
+    namespace_id = q_ns[0].get("_id")
+    check_app_in_ns = db.AQLQuery(
+        ARANGO_GET_ALL_APPLICATIONS_UNDER_NAMESPACE,
+        rawResults=True,
+        bindVars={"namespace": apc.namespace},
+    )
+    if check_app_in_ns and len(check_app_in_ns) > 0:
+        for app in check_app_in_ns:
+            if app.get("name") == apc.name:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "success": False,
+                        "error": True,
+                        "message": f"Application '{apc.name}' already exists under '{apc.namespace}' Namespace",
+                    },
+                )
 
-# --------------------------------------------------------------------------------------------------------------------
+    create_app = db.AQLQuery(
+        ARANGO_CREATE_APP,
+        rawResults=True,
+        bindVars={
+            "name": apc.name,
+            "description": apc.description,
+            "app_type": apc.app_type,
+            "compute": apc.compute,
+            "hosting": apc.hosting,
+            "technologies": apc.technologies,
+        },
+    )
+    if create_app and len(create_app) > 0:
+        application_id = create_app[0].get("_id")
+        edge_app_ns = db.AQLQuery(
+            ARANGO_EDGE_APP_NAMESPACE,
+            rawResults=True,
+            bindVars={"application_id": application_id, "namespace_id": namespace_id},
+        )
+        if edge_app_ns and len(edge_app_ns) > 0:
+            return {
+                "success": True,
+                "error": False,
+                "message": f"application '{apc.name}' has been successfully created under '{apc.namespace}' namespace",
+            }
 
 
+# READ
+@myapp.get("/application/all")
+def list_applications(ns: NamespaceGet, request: Request):
+    """
+    Lists all applications based on 'namespace name'
+    format example: {"namespace": "dev"}
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_ns = db.AQLQuery(
+        ARANGO_GET_NAMESPACE_BY_NAME,
+        rawResults=True,
+        bindVars={"namespace": ns.namespace},
+    )
+    if not q_ns and len(q_ns) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Namespace '{ns.namespace}' does not exist",
+            },
+        )
+    q_apps = db.AQLQuery(
+        ARANGO_GET_ALL_APPLICATIONS_UNDER_NAMESPACE,
+        rawResults=True,
+        bindVars={"namespace": ns.namespace},
+    )
+    if not q_apps and len(q_apps) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"No Applications under '{ns.namespace}' namespace",
+            },
+        )
+    return {"success": True, "error": False, "data": list(q_apps)}
 
+
+@myapp.get("/application/")
+def get_application(ap: ApplicationGet, request: Request):
+    """
+    Fetches individual application details based on 'Application name' and 'Namespace name'
+    format example: {"namespace": "dev", "application": "app"}
+    """
+    if not validate_token(request):
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "error": True, "message": "Unauthorized access"},
+        )
+    db = get_db()
+    q_ns = db.AQLQuery(
+        ARANGO_GET_NAMESPACE_BY_NAME,
+        rawResults=True,
+        bindVars={"namespace": ap.namespace},
+    )
+    if not q_ns and len(q_ns) == 0:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Namespace '{ap.namespace}' does not exist",
+            },
+        )
+    q_app = db.AQLQuery(
+        ARANGO_GET_APPLICATION_UNDER_NAMESPACE,
+        rawResults=True,
+        bindVars={"namespace": ap.namespace, "application": ap.application},
+    )
+    if q_app and len(q_app) > 0:
+        return {"success": True, "error": False, "data": q_app[0]}
+    else:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "error": True,
+                "message": f"Application '{ap.application}' under '{ap.namespace}' namespace Not found",
+            },
+        )

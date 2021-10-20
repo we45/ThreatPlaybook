@@ -65,7 +65,7 @@ class NamespaceGet(BaseModel):
     body of the get namespace requests
     """
 
-    name: str
+    namespace: str
 
 
 class Namespace(BaseModel):
@@ -79,6 +79,11 @@ class Edge(BaseModel):
     _to: str
     relation: Optional[str] = None
     _created_on: datetime = PrivateAttr(default_factory=datetime.utcnow)
+
+
+class ApplicationGet(BaseModel):
+    application: str
+    namespace: str
 
 
 class Application(BaseModel):

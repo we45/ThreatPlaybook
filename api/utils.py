@@ -295,7 +295,7 @@ def check_user_access_and_privs(
 
 def get_ns_from_db(name: str):
     db = get_db()
-    ns_exists = db.AQLQuery(ARANGO_GET_NAMESPACE_BY_NAME, bindVars={"name": name})
+    ns_exists = db.AQLQuery(ARANGO_GET_NAMESPACE_BY_NAME, bindVars={"namespace": name})
     if ns_exists and len(ns_exists) > 0:
         return ns_exists[0]
 

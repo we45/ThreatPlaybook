@@ -45,11 +45,42 @@ ARANGO_DELETE_NAMESPACE = (
 
 ARANGO_GET_NAMESPACE_BY_NAME = (
     "FOR single in namespace "
-    "FILTER single.name == @name "
+    "FILTER single.name == @namespace "
     "RETURN single"
 )
 
 ARANGO_LOOKUP_USER_PRIVS = 'FOR single in user FILTER single.email == @email FOR v,e,p in 1..@depth OUTBOUND single edges RETURN {"vertex": v, "edges": e}'
+
+ARANGO_CREATE_APP = (
+    'LET createdDate = DATE_NOW() '
+    'INSERT {"name": @name, "description": @description, "app_type": @app_type, "hosting": @hosting, "compute": @compute, "technologies": @technologies, "created_on": createdDate} INTO application '
+    'RETURN NEW'
+)
+
+ARANGO_EDGE_APP_NAMESPACE = (
+    'FOR appNS in [{"_from": @application_id, "_to": @namespace_id}, {"_from": @namespace_id, "_to": @application_id}] '
+    'INSERT appNS INTO edges '
+    'RETURN NEW'
+)
+
+ARANGO_GET_ALL_APPLICATIONS_UNDER_NAMESPACE = (
+    "FOR single in namespace "
+    "FILTER single.name == @namespace "
+    "FOR app in 1..1 OUTBOUND single edges "
+    "RETURN app"
+)
+
+ARANGO_GET_APPLICATION_UNDER_NAMESPACE = (
+    "FOR single in namespace "
+    "FILTER single.name == @namespace "
+    "FOR app in application "
+    "FILTER app.name == @application "
+    "RETURN app"
+)
+
+ARANGO_DELETE_APPLICATION = (
+
+)
 
 ARANGO_CREATE_APPLICATION = [
     'let createdDate = DATE_NOW() INSERT {"name": @name, "description": @description, "app_type: @app_type, "hosting: @hosting, "compute: @compute, "created_on": createdDate',
