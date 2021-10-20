@@ -23,3 +23,7 @@
 2021-10-18 14:56:27.126 | INFO     | main:assign_namespace_group:235 - group developers successfully assigned to acme-crm with ['read', 'write']
 2021-10-18 14:57:14.106 | INFO     | main:create_user:38 - user dingri4@hungry4.com created
 2021-10-18 14:57:26.606 | INFO     | main:assign_user_group:143 - user dingri4@hungry4.com assigned to developers
+2021-10-19 18:34:21.839 | INFO     | main:create_user:39 - user dingri@hungry.com created
+2021-10-19 18:45:02.198 | INFO     | main:create_user_story:371 - user story User Story has been successfully created
+2021-10-19 18:50:39.772 | INFO     | main:create_user_story:400 - user story User Story has been successfully created
+2021-10-19 19:50:31.679 | INFO     | main:update_user_story:442 - user story User Story3 has been successfully updated

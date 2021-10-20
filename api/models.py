@@ -10,6 +10,7 @@ import bcrypt
 class User(BaseModel):
     email: EmailStr
     password: str
+    
     @validator("password", pre=True)
     def hash_password(cls, v):
         salt = bcrypt.gensalt()
@@ -122,17 +123,24 @@ class Component(BaseModel):
     _created_on: datetime = PrivateAttr(default_factory=datetime.utcnow)
 
 
-class UserStory(BaseModel):
+class UserStoryCreate(BaseModel):
     name: str
     description: str
-    stride: Dict[str, bool] = None
-    _created_on: datetime = PrivateAttr(default_factory=datetime.utcnow)
+    stride: List[str] = None
+    application: str
 
 
-class AbuserStory(BaseModel):
+class UserStoryUpdate(BaseModel):
+    key: str
     name: str
     description: str
-    _created_on: datetime = PrivateAttr(default_factory=datetime.utcnow)
+    stride: List[str] = None
+
+
+class AbuserStoryCreate(BaseModel):
+    name: str
+    description: str
+    us_id: str
 
 
 class ThreatScenario(BaseModel):
