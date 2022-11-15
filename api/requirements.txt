@@ -44,3 +44,4 @@ wcwidth==0.1.9
 Werkzeug==1.0.1
 WTForms==2.3.1
 zipp==3.1.0
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
