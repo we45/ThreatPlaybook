@@ -8,7 +8,7 @@ click==7.1.1
 entrypoints==0.3
 flake8==3.7.9
 flasgger==0.9.4
-Flask==1.1.2
+Flask==2.2.5
 Flask-Cors==3.0.8
 flask-mongoengine==0.9.5
 Flask-WTF==0.14.3
