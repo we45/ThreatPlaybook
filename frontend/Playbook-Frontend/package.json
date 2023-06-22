@@ -15,7 +15,7 @@
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.3.6",
     "apexcharts": "^3.19.0",
-    "nuxt": "^2.0.0",
+    "nuxt": "^3.4.3",
     "uuid": "^8.0.0",
     "vue-apexcharts": "^1.5.3",
     "vue-organization-chart": "^1.1.6",
